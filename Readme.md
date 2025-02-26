@@ -4,7 +4,7 @@ Winter 2025
 
 Tate McCauley
 Jaren McLaughlin
-Nathan Seneca
+Nathan Seneca Proof that I can Commit
 Ben Gutierrez
 
 
