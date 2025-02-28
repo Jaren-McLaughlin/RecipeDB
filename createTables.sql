@@ -1,46 +1,43 @@
-CREATE TABLE User
-(
-  userID INT NOT NULL,
-  userName INT NOT NULL,
-  email INT NOT NULL,
-  passwordHash INT NOT NULL,
-  PRIMARY KEY (userID),
+CREATE TABLE User (
+  userID SERIAL PRIMARY KEY,
+  userName VARCHAR NOT NULL,
+  email VARCHAR NOT NULL,
+  passwordHash VARCHAR NOT NULL,
   UNIQUE (email)
 );
 
-CREATE TABLE Recipe
-(
-  recipeID INT NOT NULL,
-  title INT NOT NULL,
-  instructions INT NOT NULL,
-  notes INT,
+CREATE TABLE Recipe (
+  recipeID SERIAL PRIMARY KEY,
+  title VARCHAR NOT NULL,
+  instructions VARCHAR NOT NULL,
+  notes VARCHAR,
   userID INT NOT NULL,
-  PRIMARY KEY (recipeID),
-  FOREIGN KEY (userID) REFERENCES User(userID)
+  FOREIGN KEY (userID) REFERENCES User(userID) ON DELETE CASCADE
 );
 
-CREATE TABLE Ingredients
-(
-  Name INT NOT NULL,
-  Measurement INT NOT NULL,
-  PRIMARY KEY (Name)
+CREATE TABLE Ingredients (
+  ingredientID SERIAL PRIMARY KEY,
+  name VARCHAR NOT NULL,
+  measurement VARCHAR, 
+  userID INT, 
+  UNIQUE(name),
+  FOREIGN KEY (userID) REFERENCES User(userID) ON DELETE SET NULL
 );
 
-CREATE TABLE UsedIn
-(
-  Quantity INT NOT NULL,
+CREATE TABLE UsedIn (
   recipeID INT NOT NULL,
-  Name INT NOT NULL,
-  PRIMARY KEY (recipeID, Name),
-  FOREIGN KEY (recipeID) REFERENCES Recipe(recipeID),
-  FOREIGN KEY (Name) REFERENCES Ingredients(Name)
+  ingredientID INT NOT NULL,
+  quantity VARCHAR NOT NULL,
+  unit VARCHAR,
+  PRIMARY KEY (recipeID, ingredientID),
+  FOREIGN KEY (recipeID) REFERENCES Recipe(recipeID) ON DELETE CASCADE,
+  FOREIGN KEY (ingredientID) REFERENCES Ingredients(ingredientID) ON DELETE CASCADE
 );
 
-CREATE TABLE Shares
-(
+CREATE TABLE Shares (
   userID_1 INT NOT NULL,
-  SharesuserID_2 INT NOT NULL,
-  PRIMARY KEY (userID_1, SharesuserID_2),
-  FOREIGN KEY (userID_1) REFERENCES User(userID),
-  FOREIGN KEY (SharesuserID_2) REFERENCES User(userID)
+  userID_2 INT NOT NULL,
+  PRIMARY KEY (userID_1, userID_2),
+  FOREIGN KEY (userID_1) REFERENCES User(userID) ON DELETE CASCADE,
+  FOREIGN KEY (userID_2) REFERENCES User(userID) ON DELETE CASCADE
 );
