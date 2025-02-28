@@ -1,43 +1,43 @@
--- Insert Users
-INSERT INTO User (userID, userName, email, passwordHash) VALUES
-(1, 'JohnDoe', 'john.doe@example.com', 'hashedpassword1'),
-(2, 'JaneSmith', 'jane.smith@example.com', 'hashedpassword2'),
-(3, 'BobJohnson', 'bob.johnson@example.com', 'hashedpassword3');
+-- Insert Users 
+INSERT INTO User (userName, email, passwordHash) VALUES
+('JohnDoe', 'john.doe@example.com', 'hashedpassword1'),
+('JaneSmith', 'jane.smith@example.com', 'hashedpassword2'),
+('BobJohnson', 'bob.johnson@example.com', 'hashedpassword3');
 
--- Insert Recipes
-INSERT INTO Recipe (recipeID, title, instructions, notes, userID) VALUES
-(1, 'Spaghetti Bolognese', 'Boil pasta. \r\n Cook meat and tomato sauce.', 'Best served with garlic bread.', 1),
-(2, 'Chicken Curry', 'Fry chicken. \r\n Add curry paste and coconut milk.', 'Serve with rice.', 2),
-(3, 'Chocolate Cake', 'Mix ingredients. \r\n Bake at 350°F for 30 minutes.', 'Use dark chocolate for rich flavor.', 3);
+-- Insert Recipes 
+INSERT INTO Recipe (title, instructions, notes, userID) VALUES
+('Spaghetti Bolognese', 'Boil pasta. \r\n Cook meat and tomato sauce.', 'Best served with garlic bread.', 1),
+('Chicken Curry', 'Fry chicken. \r\n Add curry paste and coconut milk.', 'Serve with rice.', 2),
+('Chocolate Cake', 'Mix ingredients. \r\n Bake at 350°F for 30 minutes.', 'Use dark chocolate for rich flavor.', 3);
 
--- Insert Ingredients
-INSERT INTO Ingredients (Name, Measurement) VALUES
-('Spaghetti', 'grams'),
-('Tomato Sauce', 'cups'),
-('Ground Beef', 'grams'),
-('Chicken Breast', 'pieces'),
-('Curry Paste', 'tablespoons'),
-('Coconut Milk', 'cans'),
-('Flour', 'cups'),
-('Sugar', 'cups'),
-('Cocoa Powder', 'tablespoons'),
-('Eggs', 'pieces');
+-- Insert Ingredients 
+INSERT INTO Ingredients (name, measurement, userID) VALUES
+('Spaghetti', 'grams', 1),
+('Tomato Sauce', 'cups', 1),
+('Ground Beef', 'grams', 1),
+('Chicken Breast', 'pieces', 2),
+('Curry Paste', 'tablespoons', 2),
+('Coconut Milk', 'cans', 2),
+('Flour', 'cups', 3),
+('Sugar', 'cups', 3),
+('Cocoa Powder', 'tablespoons', 3),
+('Eggs', 'pieces', 3);
 
--- Insert UsedIn (Mapping recipes to ingredients)
-INSERT INTO UsedIn (Quantity, recipeID, Name) VALUES
-(200, 1, 'Spaghetti'),
-(2, 1, 'Tomato Sauce'),
-(300, 1, 'Ground Beef'),
-(2, 2, 'Chicken Breast'),
-(3, 2, 'Curry Paste'),
-(1, 2, 'Coconut Milk'),
-(1, 3, 'Flour'),
-(1, 3, 'Sugar'),
-(3, 3, 'Cocoa Powder'),
-(2, 3, 'Eggs');
+-- Insert UsedIn 
+INSERT INTO UsedIn (recipeID, ingredientID, quantity, unit) VALUES
+(1, 1, '200', 'grams'),
+(1, 2, '2', 'cups'),
+(1, 3, '300', 'grams'),
+(2, 4, '2', 'pieces'),
+(2, 5, '3', 'tablespoons'),
+(2, 6, '1', 'can'),
+(3, 7, '1', 'cup'),
+(3, 8, '1', 'cup'),
+(3, 9, '3', 'tablespoons'),
+(3, 10, '2', 'pieces');
 
--- Insert Shares (User sharing recipes with other users)
-INSERT INTO Shares (userID_1, SharesuserID_2) VALUES
+-- Insert Shares 
+INSERT INTO Shares (userID_1, userID_2) VALUES
 (1, 2),
 (2, 3),
 (3, 1);
