@@ -1,24 +1,24 @@
 CREATE TABLE User (
   userID SERIAL PRIMARY KEY,
-  userName VARCHAR(255) NOT NULL,
+  userName VARCHAR(30) NOT NULL,
   email VARCHAR(255) NOT NULL,
-  passwordHash VARCHAR(255) NOT NULL,
+  passwordHash VARCHAR(64) NOT NULL,
   UNIQUE (email)
 );
 
 CREATE TABLE Recipe (
   recipeID SERIAL PRIMARY KEY,
-  title VARCHAR(255) NOT NULL,
-  instructions VARCHAR(255) NOT NULL,
-  notes VARCHAR(255),
+  title VARCHAR(100) NOT NULL,
+  instructions VARCHAR(5000) NOT NULL,
+  notes VARCHAR(1000),
   userID BIGINT UNSIGNED NOT NULL,
   FOREIGN KEY (userID) REFERENCES User(userID) ON DELETE CASCADE
 );
 
 CREATE TABLE Ingredients (
   ingredientID SERIAL PRIMARY KEY,
-  name VARCHAR(255) NOT NULL,
-  measurement VARCHAR(255), 
+  name VARCHAR(50) NOT NULL,
+  measurement VARCHAR(50), 
   userID BIGINT UNSIGNED, 
   UNIQUE(name),
   FOREIGN KEY (userID) REFERENCES User(userID) ON DELETE SET NULL
