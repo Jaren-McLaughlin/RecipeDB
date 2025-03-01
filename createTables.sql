@@ -27,7 +27,7 @@ CREATE TABLE Ingredients (
 CREATE TABLE UsedIn (
   recipeID BIGINT UNSIGNED NOT NULL,
   ingredientID BIGINT UNSIGNED NOT NULL,
-  quantity VARCHAR(255) NOT NULL,
+  quantity VARCHAR(50) NOT NULL,
   PRIMARY KEY (recipeID, ingredientID),
   FOREIGN KEY (recipeID) REFERENCES Recipe(recipeID) ON DELETE CASCADE,
   FOREIGN KEY (ingredientID) REFERENCES Ingredients(ingredientID) ON DELETE CASCADE
