@@ -42,29 +42,6 @@ INSERT INTO Shares (userID_1, userID_2) VALUES
 (2, 3),
 (3, 1);
 
-
--- Delete Shares
-DELETE FROM Shares WHERE userID_1 = 1 AND SharesuserID_2 = 2;
-DELETE FROM Shares WHERE userID_1 = 2 AND SharesuserID_2 = 3;
-DELETE FROM Shares WHERE userID_1 = 3 AND SharesuserID_2 = 1;
-
--- Delete UsedIn (Ingredients used in Recipes)
-DELETE FROM UsedIn WHERE recipeID = 1 AND Name = 'Spaghetti';
-DELETE FROM UsedIn WHERE recipeID = 1 AND Name = 'Tomato Sauce';
-DELETE FROM UsedIn WHERE recipeID = 1 AND Name = 'Ground Beef';
-DELETE FROM UsedIn WHERE recipeID = 2 AND Name = 'Chicken Breast';
-DELETE FROM UsedIn WHERE recipeID = 2 AND Name = 'Curry Paste';
-DELETE FROM UsedIn WHERE recipeID = 2 AND Name = 'Coconut Milk';
-DELETE FROM UsedIn WHERE recipeID = 3 AND Name = 'Flour';
-DELETE FROM UsedIn WHERE recipeID = 3 AND Name = 'Sugar';
-DELETE FROM UsedIn WHERE recipeID = 3 AND Name = 'Cocoa Powder';
-DELETE FROM UsedIn WHERE recipeID = 3 AND Name = 'Eggs';
-
--- Delete Recipes
-DELETE FROM Recipe WHERE recipeID = 1;
-DELETE FROM Recipe WHERE recipeID = 2;
-DELETE FROM Recipe WHERE recipeID = 3;
-
 -- Delete Users
 DELETE FROM User WHERE userID = 1;
 DELETE FROM User WHERE userID = 2;
