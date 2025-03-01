@@ -24,17 +24,17 @@ INSERT INTO Ingredients (name, measurement, userID) VALUES
 ('Eggs', 'pieces', 3);
 
 -- Insert UsedIn 
-INSERT INTO UsedIn (recipeID, ingredientID, quantity, unit) VALUES
-(1, 1, '200', 'grams'),
-(1, 2, '2', 'cups'),
-(1, 3, '300', 'grams'),
-(2, 4, '2', 'pieces'),
-(2, 5, '3', 'tablespoons'),
-(2, 6, '1', 'can'),
-(3, 7, '1', 'cup'),
-(3, 8, '1', 'cup'),
-(3, 9, '3', 'tablespoons'),
-(3, 10, '2', 'pieces');
+INSERT INTO UsedIn (recipeID, ingredientID, quantity) VALUES
+(1, 1, '200'),
+(1, 2, '2'),
+(1, 3, '300'),
+(2, 4, '2'),
+(2, 5, '3'),
+(2, 6, '1'),
+(3, 7, '1'),
+(3, 8, '1'),
+(3, 9, '3'),
+(3, 10, '2');
 
 -- Insert Shares 
 INSERT INTO Shares (userID_1, userID_2) VALUES
