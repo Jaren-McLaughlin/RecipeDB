@@ -18,3 +18,15 @@ FROM Ingredients i
 INNER JOIN UsedIn uI ON i.ingredientID = uI.ingredientID
 INNER JOIN Recipe r ON uI.recipeID = r.recipeID
 INNER JOIN User u ON r.userID = u.userID;
+
+-- View User Profile
+CREATE VIEW UserProfileView AS 
+SELECT userID, userName, email 
+FROM User;
+
+-- View All Recipes
+CREATE VIEW RecipeDashboard AS
+SELECT r.recipeID, r.title, u.userName, 
+       (SELECT COUNT(*) FROM UsedIn WHERE recipeID = r.recipeID) AS ingredientCount
+FROM Recipe r
+INNER JOIN User u ON r.userID = u.userID;
