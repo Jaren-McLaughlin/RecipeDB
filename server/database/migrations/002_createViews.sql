@@ -24,6 +24,13 @@ CREATE VIEW UserProfileView AS
 SELECT userID, userName, email 
 FROM User;
 
+-- View Individual Recipe
+CREATE VIEW singleRecipe AS
+SELECT recipeID, title, instructions, notes, ingredientID, name, measurement, quantity
+FROM Recipe
+INNER JOIN UsedIn ON Recipe.recipeID = UsedIn.recipeID 
+INNER JOIN Ingredients ON UsedIn.ingredientID = Ingredients.ingredientID;
+
 -- View All Recipes
 CREATE VIEW RecipeDashboard AS
 SELECT r.recipeID, r.title, u.userName, 
