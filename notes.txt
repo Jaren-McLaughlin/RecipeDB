@@ -1,0 +1,5 @@
+Useful libraries to use in backend development from node.js
+bcrypt/bcryptjs
+mysql2
+express
+dotenv?
