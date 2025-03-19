@@ -31,13 +31,22 @@ SELECT
     Recipe.title, 
     Recipe.instructions, 
     Recipe.notes, 
-    Ingredients.ingredientID, 
-    Ingredients.name, 
-    Ingredients.measurement,
-    UsedIn.quantity
+    JSON_ARRAYAGG(
+        JSON_OBJECT(
+            'ingredientID', Ingredients.ingredientID,
+            'name', Ingredients.name,
+            'quantity', UsedIn.quantity,
+            'measurement', Ingredients.measurement
+        )
+    ) AS ingredients_json
 FROM Recipe
 INNER JOIN UsedIn ON Recipe.recipeID = UsedIn.recipeID 
 INNER JOIN Ingredients ON UsedIn.ingredientID = Ingredients.ingredientID
+GROUP BY 
+    Recipe.recipeID, 
+    Recipe.title, 
+    Recipe.instructions, 
+    Recipe.notes;
 
 -- View All Recipes
 CREATE VIEW RecipeDashboard AS
