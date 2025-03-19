@@ -41,20 +41,3 @@ INSERT INTO Shares (userID_1, userID_2) VALUES
 (1, 2),
 (2, 3),
 (3, 1);
-
--- Delete Users
-DELETE FROM User WHERE userID = 1;
-DELETE FROM User WHERE userID = 2;
-DELETE FROM User WHERE userID = 3;
-
--- Delete Ingredients
-DELETE FROM Ingredients WHERE Name = 'Spaghetti';
-DELETE FROM Ingredients WHERE Name = 'Tomato Sauce';
-DELETE FROM Ingredients WHERE Name = 'Ground Beef';
-DELETE FROM Ingredients WHERE Name = 'Chicken Breast';
-DELETE FROM Ingredients WHERE Name = 'Curry Paste';
-DELETE FROM Ingredients WHERE Name = 'Coconut Milk';
-DELETE FROM Ingredients WHERE Name = 'Flour';
-DELETE FROM Ingredients WHERE Name = 'Sugar';
-DELETE FROM Ingredients WHERE Name = 'Cocoa Powder';
-DELETE FROM Ingredients WHERE Name = 'Eggs';
