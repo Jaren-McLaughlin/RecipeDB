@@ -37,7 +37,7 @@ SELECT
     UsedIn.quantity
 FROM Recipe
 INNER JOIN UsedIn ON Recipe.recipeID = UsedIn.recipeID 
-INNER JOIN Ingredients ON UsedIn.ingredientID = Ingredients
+INNER JOIN Ingredients ON UsedIn.ingredientID = Ingredients.ingredientID
 
 -- View All Recipes
 CREATE VIEW RecipeDashboard AS
