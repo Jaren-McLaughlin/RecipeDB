@@ -2,11 +2,20 @@ import React, { useEffect, useState } from 'react';
 import './App.css';
 import PageContainer from './components/layout/PageContainer';
 import { Container, Typography, Box, CircularProgress } from '@mui/material';
+import RecipeGrid from './components/dashboard/RecipeGrid';
 
 function App() {
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(true);
+
+  //Dummy Hander Functions
+  const handleEdit = (id) => {
+    console.log(`Edit recipe with id of ${id}`)
+  }
   
+  const handleDelete = (id) => {
+    console.log(`Delete recipe with id of ${id}`)
+  }
   useEffect(() => {
     // Test connection to backend
     fetch('/api/test')
@@ -46,6 +55,14 @@ function App() {
                 </Box>
               )
             )}
+
+            {/* Recipe Dashboard Section */}
+            <Box sx={{ mt: 6, mb: 4, textAlign: 'left' }}>
+              <Typography variant="h4" component="h2" gutterBottom>
+                My Recipes
+              </Typography>
+              <RecipeGrid />
+            </Box>
           </Box>
         </Container>
       </PageContainer>
