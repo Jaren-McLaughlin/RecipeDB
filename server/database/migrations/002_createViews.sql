@@ -26,10 +26,18 @@ FROM User;
 
 -- View Individual Recipe
 CREATE VIEW singleRecipe AS
-SELECT recipeID, title, instructions, notes, ingredientID, name, measurement, quantity
+SELECT 
+    Recipe.recipeID, 
+    Recipe.title, 
+    Recipe.instructions, 
+    Recipe.notes, 
+    Ingredients.ingredientID, 
+    Ingredients.name, 
+    Ingredients.measurement,
+    UsedIn.quantity
 FROM Recipe
 INNER JOIN UsedIn ON Recipe.recipeID = UsedIn.recipeID 
-INNER JOIN Ingredients ON UsedIn.ingredientID = Ingredients.ingredientID;
+INNER JOIN Ingredients ON UsedIn.ingredientID = Ingredients
 
 -- View All Recipes
 CREATE VIEW RecipeDashboard AS
