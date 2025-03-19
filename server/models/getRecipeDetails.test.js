@@ -31,7 +31,7 @@ describe('getRecipeDetails', () => {
       `INSERT INTO recipe (
         title,
         instructions,
-        userID,
+        userID
       ) VALUES (?, ?, ?)`,
       [
         'myRecipe',
@@ -44,7 +44,7 @@ describe('getRecipeDetails', () => {
       `INSERT INTO ingredients (
         name,
         measurement,
-        userID,
+        userID
       ) VALUES (?, ?, ?)`,
       [
         'flour',
@@ -87,7 +87,8 @@ describe('getRecipeDetails', () => {
   });
   it('should work and get a recipe', async () => {
     expect.assertions(1);
-    const response = await getRecipeDetails({ id: createdRecipe });
+    const response = await getRecipeDetails({ id: recipeId });
+    console.log(response);
     expect(response).toStrictEqual(
       expect.objectContaining({
         
