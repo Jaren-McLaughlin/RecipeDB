@@ -1,13 +1,13 @@
 const pool = require('../config/db');
 
 async function getRecipeDetails ({
-  id,
+  recipeId,
 }) {
   const connection = await pool.getConnection();
 
   const [[response]] = await connection.execute(
     'SELECT * from `getRecipeDetails` WHERE `recipeID` = ?',
-    [id],
+    [recipeId],
   );
 
   await connection.release();
