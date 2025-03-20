@@ -1,23 +1,23 @@
-require('dotenv').config();
-const mysql = require('mysql2/promise');
+const pool = require('../config/db');
 
 async function getRecipeDetails ({
   id,
 }) {
-  const connection = await mysql.createConnection({
-    database: process.env.database,
-    host: process.env.host,
-    password: process.env.password,
-    user: process.env.user,
-  });
+  const connection = await pool.getConnection();
 
-  const [results] = await connection.execute(
-    'SELECT * from `recipe` WHERE `recipeID` = ?',
+  const [[response]] = await connection.execute(
+    'SELECT * from `getRecipeDetails` WHERE `recipeID` = ?',
     [id],
   );
 
-  await connection.end();
-  return results;
+  await connection.release();
+  return {
+    title: response.title,
+    from: response.from,
+    ingredients: response.ingredients,
+    instructions: response.instructions,
+    notes: response.notes,
+  };
 }
 
 module.exports = getRecipeDetails;

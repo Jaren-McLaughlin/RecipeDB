@@ -1,20 +1,13 @@
-require('dotenv').config();
-const mysql = require('mysql2/promise');
+const pool = require('../config/db');
 const getRecipeDetails = require('./getRecipeDetails');
 
 let connection;
 let ingredientId;
 let recipeId;
-let usedIn;
 
 describe('getRecipeDetails', () => {
   beforeAll(async () => {
-    connection = await mysql.createConnection({
-      database: process.env.database,
-      host: process.env.host,
-      password: process.env.password,
-      user: process.env.user,
-    });
+    connection = await pool.getConnection();
     ([{ insertId: userId }] = await connection.execute(
       `INSERT INTO User (
         userName,
@@ -35,8 +28,7 @@ describe('getRecipeDetails', () => {
       ) VALUES (?, ?, ?)`,
       [
         'myRecipe',
-        `cook the food you fool!
-        It's not that hard is it?`,
+        'cook the food you fool!\nIt\'s not that hard is it?',
         userId,
       ],
     ));
@@ -45,9 +37,12 @@ describe('getRecipeDetails', () => {
         name,
         measurement,
         userID
-      ) VALUES (?, ?, ?)`,
+      ) VALUES (?, ?, ?), (?, ?, ?)`,
       [
         'flour',
+        'cup',
+        userId,
+        'water',
         'cup',
         userId,
       ],
@@ -57,42 +52,45 @@ describe('getRecipeDetails', () => {
         recipeID,
         ingredientID,
         quantity
-      ) VALUES (?, ?, ?)`,
+      ) VALUES (?, ?, ?), (?, ?, ?)`,
       [
         recipeId,
         ingredientId,
         1,
+        recipeId,
+        (ingredientId + 1),
+        1.5,
       ],
     );
-    console.log(userId, recipeId, ingredientId);
   });
   afterAll(async () => {
-    await connection.execute(
-      'DELETE FROM usedIn WHERE recipeID = ? AND ingredientID = ?',
-      [recipeId, ingredientId],
-    );
-    await connection.execute(
-      'DELETE FROM ingredients WHERE ingredientID = ?',
-      [ingredientId],
-    );
-    await connection.execute(
-      'DELETE FROM recipe WHERE recipeID = ?',
-      [recipeId],
-    );
     await connection.execute(
       'DELETE FROM user WHERE userID = ?',
       [userId],
     );
-    await connection.end();
+    await pool.end();
   });
   it('should work and get a recipe', async () => {
     expect.assertions(1);
     const response = await getRecipeDetails({ id: recipeId });
-    console.log(response);
     expect(response).toStrictEqual(
       expect.objectContaining({
-        
-      })
-    )
-  })
-})
+        title: 'myRecipe',
+        instructions: 'cook the food you fool!\nIt\'s not that hard is it?',
+        notes: null,
+        ingredients: expect.arrayContaining([
+          expect.objectContaining({
+            name: 'flour',
+            quantity: '1',
+            measurement: 'cup',
+          }),
+          expect.objectContaining({
+            name: 'water',
+            quantity: '1.5',
+            measurement: 'cup',
+          }),
+        ]),
+      }),
+    );
+  });
+});
