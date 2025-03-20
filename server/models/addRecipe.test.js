@@ -14,8 +14,8 @@ describe('addRecipe', () => {
         passwordHash
       ) VALUES (?, ?, ?)`,
       [
-        'getRecipeListsTest',
-        'getRecipeLists@FakeEmail.com',
+        'addRecipeTest',
+        'addRecipeTest@FakeEmail.com',
         'password',
       ],
     ));

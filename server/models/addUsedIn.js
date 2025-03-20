@@ -7,7 +7,7 @@ async function addUsedIn ({
 }) {
   const connection = await pool.getConnection();
 
-  const [results] = await connection.execute(
+  await connection.execute(
     `INSERT INTO usedIn (
       recipeID,
       ingredientID,
