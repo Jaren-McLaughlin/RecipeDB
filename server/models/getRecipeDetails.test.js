@@ -2,7 +2,7 @@ const pool = require('../config/db');
 const getRecipeDetails = require('./getRecipeDetails');
 
 let connection;
-let ingredientId;
+let userId;
 let recipeId;
 
 describe('getRecipeDetails', () => {
@@ -32,7 +32,7 @@ describe('getRecipeDetails', () => {
         userId,
       ],
     ));
-    ([{ insertId: ingredientId }] = await connection.execute(
+    const [{ insertId: ingredientId }] = await connection.execute(
       `INSERT INTO ingredients (
         name,
         measurement,
@@ -46,7 +46,7 @@ describe('getRecipeDetails', () => {
         'cup',
         userId,
       ],
-    ));
+    );
     await connection.execute(
       `INSERT INTO usedin (
         recipeID,
@@ -72,7 +72,7 @@ describe('getRecipeDetails', () => {
   });
   it('should work and get a recipe', async () => {
     expect.assertions(1);
-    const response = await getRecipeDetails({ id: recipeId });
+    const response = await getRecipeDetails({ recipeId });
     expect(response).toStrictEqual(
       expect.objectContaining({
         title: 'myRecipe',
