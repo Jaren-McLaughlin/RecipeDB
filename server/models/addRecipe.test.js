@@ -28,7 +28,7 @@ describe('addRecipe', () => {
     await pool.end();
   });
   it('should work and create a recipe', async () => {
-    expect.assertions(1);
+    expect.assertions(2);
     const response = await addRecipe({
       title: 'addRecipeTest',
       instructions: 'Lets cook up some code to start this',
@@ -37,6 +37,20 @@ describe('addRecipe', () => {
     });
     expect(response).toStrictEqual({
       recipeId: expect.any(Number),
+    });
+
+    const [[selectResult]] = await connection.execute(
+      `SELECT * FROM recipe WHERE recipeID = ?`,
+      [
+        response.recipeId
+      ],
+    );
+    expect(selectResult).toStrictEqual({
+      recipeID: response.recipeId,
+      title: 'addRecipeTest',
+      instructions: 'Lets cook up some code to start this',
+      notes: 'This is only a test, cooking this is not recommened.\nConsume at your own risk.',
+      userID: userId,
     });
   });
 });
