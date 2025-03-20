@@ -16,8 +16,8 @@ describe('addUsedIn', () => {
         passwordHash
       ) VALUES (?, ?, ?)`,
       [
-        'getRecipeListsTest',
-        'getRecipeLists@FakeEmail.com',
+        'addUsedInTest',
+        'addUsedInTest@FakeEmail.com',
         'password',
       ],
     ));

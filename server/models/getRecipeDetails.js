@@ -13,7 +13,6 @@ async function getRecipeDetails ({
   await connection.release();
   return {
     title: response.title,
-    from: response.from,
     ingredients: response.ingredients,
     instructions: response.instructions,
     notes: response.notes,

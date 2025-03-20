@@ -1,5 +1,4 @@
--- DROP VIEW IF EXISTS userRecipes;
-DROP VIEW IF EXISTS getRecipeList;
+DROP VIEW IF EXISTS userRecipes;
 CREATE VIEW getRecipeList AS
 SELECT User.userID, recipeID, title, userName
 FROM Recipe
