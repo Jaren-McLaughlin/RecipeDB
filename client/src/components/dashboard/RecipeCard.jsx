@@ -1,5 +1,6 @@
 // src/components/Dashboard/RecipeCard.jsx
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
     Card, //Card: a surface-level container for grouping related components.
     CardActions, //Card Actions: an optional wrapper that groups a set of buttons.
@@ -12,6 +13,25 @@ import {Edit, Delete} from '@mui/icons-material';
 
 const RecipeCard = ({ recipe, onEdit, onDelete}) => { // These are the functions that will be associated with this object
     const { id, title, description} = recipe; // attributes of a recipe
+    const navigate = useNavigate();
+
+  // Function to handle card click
+  const handleCardClick = () => {
+    navigate(`/recipe/${id}`); // Navigate to the recipe page
+  };
+  
+  // Stop propagation to prevent navigation when clicking edit or delete buttons
+  const handleEditClick = (e) => {
+    e.stopPropagation();
+    if (onEdit) onEdit(id);
+  };
+  
+  const handleDeleteClick = (e) => {
+    e.stopPropagation();
+    if (onDelete) onDelete(id);
+  };
+
+
   return (
     <Card sx={{ 
       height: '100%', 
@@ -20,9 +40,10 @@ const RecipeCard = ({ recipe, onEdit, onDelete}) => { // These are the functions
       transition: 'transform 0.3s, box-shadow 0.3s',
       '&:hover': {
         transform: 'translateY(-5px)',
-        boxShadow: '0 8px 16px rgba(0,0,0,0.2)'
+        boxShadow: '0 8px 16px rgba(0,0,0,0.2)',
+        cursor: 'pointer'
       }
-    }}>
+    }}onClick={handleCardClick} >
     <CardContent sx={{ flexGrow: 1 }}>
     <Typography gutterBottom variant="h5" component="div">
       {title}
@@ -33,10 +54,10 @@ const RecipeCard = ({ recipe, onEdit, onDelete}) => { // These are the functions
   </CardContent>
   <CardActions disableSpacing>
     <Box sx={{ marginLeft: 'auto' }}>
-      <IconButton aria-label="edit" onClick={() => onEdit(id)}>
+      <IconButton aria-label="edit" onClick={handleEditClick}>
         <Edit />
       </IconButton>
-      <IconButton aria-label="delete" onClick={() => onDelete(id)}>
+      <IconButton aria-label="delete" onClick={handleDeleteClick}>
         <Delete />
       </IconButton>
     </Box>
