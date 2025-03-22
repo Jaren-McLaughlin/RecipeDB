@@ -1,3 +1,7 @@
+CREATE DATABASE recipes;
+
+USE recipes;
+
 CREATE TABLE User (
   userID SERIAL PRIMARY KEY,
   userName VARCHAR(30) NOT NULL,
