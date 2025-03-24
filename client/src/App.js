@@ -6,6 +6,7 @@ import DashboardPage from './pages/DashboardPage';
 import RecipePage from './pages/RecipePage';
 import ApiTestPage from './pages/ApiTestPage';
 import EditRecipePage from './pages/EditRecipePage';
+import SignInPage from './pages/SignupPage';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
             {/* You can add more routes here as your app grows */}
             {/* <Route path="/create-recipe" element={<CreateRecipePage />} /> */}
             <Route path="/edit-recipe/:id" element={<EditRecipePage />} />
+            <Route path="/signup" element={<SignInPage />} />
           </Routes>
         </PageContainer>
       </div>
