@@ -97,7 +97,7 @@ function DashboardPage() {
   const handleEdit = (id) => {
     // In a real app, navigate to edit page
     console.log(`Edit recipe with id of ${id}`);
-    // navigate(`/recipe/edit/${id}`);
+    navigate(`/edit-recipe/${id}`);
     
     // For now, just show a notification
     setNotification({
