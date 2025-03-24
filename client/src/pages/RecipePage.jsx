@@ -43,6 +43,7 @@ function RecipePage() {
 
   const handleEdit = () => {
     console.log('Edit recipe', id);
+    navigate(`/edit-recipe/${id}`)
   };
 
   const handleDelete = () => {

@@ -23,7 +23,7 @@ const RecipeCard = ({ recipe, onEdit, onDelete}) => { // These are the functions
   // Stop propagation to prevent navigation when clicking edit or delete buttons
   const handleEditClick = (e) => {
     e.stopPropagation();
-    if (onEdit) onEdit(id);
+    navigate(`/edit-recipe/${id}`);
   };
   
   const handleDeleteClick = (e) => {

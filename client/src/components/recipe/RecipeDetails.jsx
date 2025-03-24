@@ -18,10 +18,6 @@ function RecipeDetails({ recipe }) {
           {recipe.title}
         </Typography>
         
-        <Typography variant="body1" paragraph>
-          {recipe.description}
-        </Typography>
-        
         <Divider sx={{ my: 2 }} />
         
         <Typography variant="h6" gutterBottom>
