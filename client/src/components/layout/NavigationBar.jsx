@@ -18,7 +18,7 @@ const Navbar = () => {
   };
 
   const handleNavigateAddRecipe = () => {
-    navigate('/'); // Assuming this is your route for adding recipes
+    navigate('/add-recipe'); 
   };
 
   const handleNavigateLogin = () => {
