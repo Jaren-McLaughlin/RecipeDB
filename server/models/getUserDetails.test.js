@@ -27,7 +27,7 @@ describe('getUserDetails', () => {
     );
     await pool.end();
   });
-  it('should work and get a list of ingredients', async () => {
+  it('should get the users details', async () => {
     expect.assertions(1);
     const { userDetails } = await getUserDetails({ userId });
 
