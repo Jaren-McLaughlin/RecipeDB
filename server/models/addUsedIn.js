@@ -9,8 +9,8 @@ async function addUsedIn ({
 
   await connection.execute(
     `INSERT INTO usedIn (
-      recipeID,
-      ingredientID,
+      recipeId,
+      ingredientId,
       quantity
     ) VALUES (?, ?, ?)`,
     [

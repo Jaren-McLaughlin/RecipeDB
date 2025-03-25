@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const mysql = require('mysql2/promise');
 
-const updateTables = async ({ logging }) => {
+const deleteData = async ({ logging }) => {
   const connection = await mysql.createConnection({
     host: process.env.DB_HOST || 'localhost',
     user: process.env.DB_USER || 'root',
@@ -11,23 +11,19 @@ const updateTables = async ({ logging }) => {
     database: process.env.DB_NAME || 'recipeDB',
     multipleStatements: true,
   });
-  const migrationPath = path.join(__dirname, 'migrations');
-  const files = fs.readdirSync(migrationPath)
-  for (const file of files) {
-    const filePath = path.join(migrationPath,file)
-    const sqlCommands = fs.readFileSync(filePath, 'utf8');
-    try {
-      await connection.query(sqlCommands)
-    } catch (e) {
-      if (logging) {
-        console.log(e);
-      }
+  const deleteDataPath = path.join(__dirname, 'seeds/deleteData.sql');
+  const sqlCommands = fs.readFileSync(deleteDataPath, 'utf8');
+  try {
+    await connection.query(sqlCommands)
+  } catch (e) {
+    if (logging) {
+      console.log(e);
     }
-  };
+  }
   await connection.end();
 };
 
-updateTables(
+deleteData(
   process.argv[2] === 'true'
   ? { logging: process.argv[2] }
   : { logging: false }
