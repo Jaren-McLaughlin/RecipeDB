@@ -12,7 +12,7 @@ describe('getRecipeDetails', () => {
       `INSERT INTO user (
         userName,
         email,
-        password
+        \`password\`
       ) VALUES (?, ?, ?)`,
       [
         'getRecipeDetailsTest',

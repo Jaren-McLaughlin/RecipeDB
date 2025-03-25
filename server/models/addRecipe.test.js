@@ -11,7 +11,7 @@ describe('addRecipe', () => {
       `INSERT INTO user (
         userName,
         email,
-        password
+        \`password\`
       ) VALUES (?, ?, ?)`,
       [
         'addRecipeTest',

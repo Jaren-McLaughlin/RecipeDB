@@ -13,7 +13,7 @@ describe('addUsedIn', () => {
       `INSERT INTO user (
         userName,
         email,
-        password
+        \`password\`
       ) VALUES (?, ?, ?)`,
       [
         'addUsedInTest',

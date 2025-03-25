@@ -2,7 +2,7 @@ const pool = require('../config/db');
 const addIngredient = require('./addIngredient');
 
 let connection;
-let userId
+let userId;
 
 describe('addIngredient', () => {
   beforeAll(async () => {
@@ -11,7 +11,7 @@ describe('addIngredient', () => {
       `INSERT INTO user (
         userName,
         email,
-        password
+        \`password\`
       ) VALUES (?, ?, ?)`,
       [
         'addIngredientTest',

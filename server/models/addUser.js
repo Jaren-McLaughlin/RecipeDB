@@ -11,7 +11,7 @@ async function addUser ({
     `INSERT INTO user (
       userName,
       email,
-      password
+      \`password\`
     ) VALUES (?, ?, ?)`,
     [
       userName,

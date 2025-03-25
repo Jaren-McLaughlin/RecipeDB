@@ -11,7 +11,7 @@ describe('getRecipeList', () => {
       `INSERT INTO user (
         userName,
         email,
-        password
+        \`password\`
       ) VALUES (?, ?, ?)`,
       [
         'getRecipeListsTest',
@@ -37,7 +37,7 @@ describe('getRecipeList', () => {
   });
   afterAll(async () => {
     await connection.execute(
-      'DELETE FROM user WHERE userId in (?)',
+      'DELETE FROM user WHERE userId = ?',
       [userId],
     );
     await pool.end();

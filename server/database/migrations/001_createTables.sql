@@ -1,3 +1,4 @@
+-- TODO: find a better way to create a db and create these migrations
 CREATE DATABASE recipedb;
 
 USE recipedb;

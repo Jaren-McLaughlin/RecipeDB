@@ -36,7 +36,7 @@ SELECT ingredientId, name, measurement
 FROM ingredient;
 
 CREATE VIEW getUserPassword AS
-SELECT userId, password
+SELECT userId, `password`
 FROM user;
 
 CREATE VIEW getSharing AS
