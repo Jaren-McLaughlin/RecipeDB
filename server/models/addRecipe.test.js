@@ -8,10 +8,10 @@ describe('addRecipe', () => {
   beforeAll(async () => {
     connection = await pool.getConnection();
     ([{ insertId: userId }] = await connection.execute(
-      `INSERT INTO User (
+      `INSERT INTO user (
         userName,
         email,
-        passwordHash
+        password
       ) VALUES (?, ?, ?)`,
       [
         'addRecipeTest',
@@ -22,7 +22,7 @@ describe('addRecipe', () => {
   });
   afterAll(async () => {
     await connection.execute(
-      'DELETE FROM user WHERE userID = ?',
+      'DELETE FROM user WHERE userId = ?',
       [userId],
     );
     await pool.end();
@@ -40,17 +40,17 @@ describe('addRecipe', () => {
     });
 
     const [[selectResult]] = await connection.execute(
-      `SELECT * FROM recipe WHERE recipeID = ?`,
+      `SELECT * FROM recipe WHERE recipeId = ?`,
       [
         response.recipeId
       ],
     );
     expect(selectResult).toStrictEqual({
-      recipeID: response.recipeId,
+      recipeId: response.recipeId,
       title: 'addRecipeTest',
       instructions: 'Lets cook up some code to start this',
       notes: 'This is only a test, cooking this is not recommened.\nConsume at your own risk.',
-      userID: userId,
+      userId,
     });
   });
 });

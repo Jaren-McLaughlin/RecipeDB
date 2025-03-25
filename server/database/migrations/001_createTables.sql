@@ -1,8 +1,8 @@
-CREATE DATABASE recipes;
+CREATE DATABASE recipedb;
 
-USE recipes;
+USE recipedb;
 
-CREATE TABLE User (
+CREATE TABLE user (
   userID SERIAL PRIMARY KEY,
   userName VARCHAR(30) NOT NULL,
   email VARCHAR(255) NOT NULL,
@@ -10,7 +10,7 @@ CREATE TABLE User (
   UNIQUE (email)
 );
 
-CREATE TABLE Recipe (
+CREATE TABLE recipe (
   recipeID SERIAL PRIMARY KEY,
   title VARCHAR(100) NOT NULL,
   instructions VARCHAR(5000) NOT NULL,
@@ -19,7 +19,7 @@ CREATE TABLE Recipe (
   FOREIGN KEY (userID) REFERENCES User(userID) ON DELETE CASCADE
 );
 
-CREATE TABLE Ingredients (
+CREATE TABLE ingredients (
   ingredientID SERIAL PRIMARY KEY,
   name VARCHAR(50) NOT NULL,
   measurement VARCHAR(50), 
@@ -28,7 +28,7 @@ CREATE TABLE Ingredients (
   FOREIGN KEY (userID) REFERENCES User(userID) ON DELETE SET NULL
 );
 
-CREATE TABLE UsedIn (
+CREATE TABLE usedIn (
   recipeID BIGINT UNSIGNED NOT NULL,
   ingredientID BIGINT UNSIGNED NOT NULL,
   quantity VARCHAR(50) NOT NULL,
@@ -37,7 +37,7 @@ CREATE TABLE UsedIn (
   FOREIGN KEY (ingredientID) REFERENCES Ingredients(ingredientID) ON DELETE CASCADE
 );
 
-CREATE TABLE Shares (
+CREATE TABLE shares (
   userID_1 BIGINT UNSIGNED NOT NULL,
   userID_2 BIGINT UNSIGNED NOT NULL,
   PRIMARY KEY (userID_1, userID_2),

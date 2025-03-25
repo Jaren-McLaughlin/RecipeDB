@@ -2,16 +2,16 @@ const pool = require('../config/db');
 const addIngredient = require('./addIngredient');
 
 let connection;
-let userId;
+let userId
 
 describe('addIngredient', () => {
   beforeAll(async () => {
     connection = await pool.getConnection();
     ([{ insertId: userId }] = await connection.execute(
-      `INSERT INTO User (
+      `INSERT INTO user (
         userName,
         email,
-        passwordHash
+        password
       ) VALUES (?, ?, ?)`,
       [
         'addIngredientTest',
@@ -22,7 +22,7 @@ describe('addIngredient', () => {
   });
   afterAll(async () => {
     await connection.execute(
-      'DELETE FROM user WHERE userID = ?',
+      'DELETE FROM user WHERE userId = ?',
       [userId],
     );
     await pool.end();
@@ -39,7 +39,7 @@ describe('addIngredient', () => {
     });
 
     const [[selectResult]] = await connection.execute(
-      `SELECT * FROM ingredients WHERE ingredientID = ?`,
+      `SELECT * FROM ingredient WHERE ingredientId = ?`,
       [
         response.ingredientId
       ],
@@ -48,7 +48,7 @@ describe('addIngredient', () => {
       expect.objectContaining({
       name: 'chocoloate chips',
       measurement: 'cup',
-      userID: userId,
+      userId,
     }));
   });
 });

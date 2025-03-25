@@ -13,7 +13,7 @@ async function addRecipe ({
       instructions,
       notes,
       title,
-      userID
+      userId
     ) VALUES (?, ?, ?, ?)`,
     [
       instructions,

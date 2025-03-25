@@ -10,10 +10,10 @@ describe('addUsedIn', () => {
   beforeAll(async () => {
     connection = await pool.getConnection();
     ([{ insertId: userId }] = await connection.execute(
-      `INSERT INTO User (
+      `INSERT INTO user (
         userName,
         email,
-        passwordHash
+        password
       ) VALUES (?, ?, ?)`,
       [
         'addUsedInTest',
@@ -25,7 +25,7 @@ describe('addUsedIn', () => {
       `INSERT INTO recipe (
         title,
         instructions,
-        userID
+        userId
       ) VALUES (?, ?, ?)`,
       [
         'myRecipe',
@@ -34,10 +34,10 @@ describe('addUsedIn', () => {
       ],
     ));
     ([{ insertId: ingredientId }] = await connection.execute(
-      `INSERT INTO ingredients (
+      `INSERT INTO ingredient (
         name,
         measurement,
-        userID
+        userId
       ) VALUES (?, ?, ?)`,
       [
         'flour',
@@ -48,7 +48,7 @@ describe('addUsedIn', () => {
   });
   afterAll(async () => {
     await connection.execute(
-      'DELETE FROM user WHERE userID = ?',
+      'DELETE FROM user WHERE userId = ?',
       [userId],
     );
     await pool.end();
@@ -63,15 +63,15 @@ describe('addUsedIn', () => {
     expect(response).toBe(true);
 
     const [[selectResult]] = await connection.execute(
-      `SELECT * FROM usedIn WHERE recipeID = ? AND ingredientID = ?`,
+      `SELECT * FROM usedIn WHERE recipeId = ? AND ingredientId = ?`,
       [
         recipeId,
         ingredientId
       ],
     );
     expect(selectResult).toStrictEqual({
-      recipeID: recipeId,
-      ingredientID: ingredientId,
+      recipeId,
+      ingredientId,
       quantity: "1",
     });
   });

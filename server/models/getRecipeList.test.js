@@ -8,10 +8,10 @@ describe('getRecipeList', () => {
   beforeAll(async () => {
     connection = await pool.getConnection();
     ([{ insertId: userId }] = await connection.execute(
-      `INSERT INTO User (
+      `INSERT INTO user (
         userName,
         email,
-        passwordHash
+        password
       ) VALUES (?, ?, ?)`,
       [
         'getRecipeListsTest',
@@ -23,7 +23,7 @@ describe('getRecipeList', () => {
       `INSERT INTO recipe (
         title,
         instructions,
-        userID
+        userId
       ) VALUES (?, ?, ?), (?, ?, ?)`,
       [
         'myRecipe',
@@ -37,7 +37,7 @@ describe('getRecipeList', () => {
   });
   afterAll(async () => {
     await connection.execute(
-      'DELETE FROM user WHERE userID = ?',
+      'DELETE FROM user WHERE userId in (?)',
       [userId],
     );
     await pool.end();
