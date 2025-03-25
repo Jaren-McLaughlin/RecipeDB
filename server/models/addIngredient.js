@@ -8,10 +8,10 @@ async function addIngredient ({
   const connection = await pool.getConnection();
 
   const [results] = await connection.execute(
-    `INSERT INTO ingredients (
+    `INSERT INTO ingredient (
       name,
       measurement,
-      userID
+      userId
     ) VALUES (?, ?, ?)`,
     [
       name,

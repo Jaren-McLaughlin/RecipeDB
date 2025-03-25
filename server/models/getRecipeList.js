@@ -6,15 +6,16 @@ async function getRecipeList ({
   const connection = await pool.getConnection();
 
   const [results] = await connection.execute(
-    'SELECT * from `getRecipeList` WHERE `userID` = ?',
+    'SELECT * from getRecipeList WHERE userId = ?',
     [userId],
   );
+
   const response = results.map((recipe) => ({
-    recipeId: recipe.recipeID,
+    recipeId: recipe.recipeId,
     title: recipe.title,
     userName: recipe.userName,
   }));
-  console.log(response)
+
   await connection.release();
   return { recipeList: response};
 }
