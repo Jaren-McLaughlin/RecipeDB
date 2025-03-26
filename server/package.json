@@ -9,7 +9,7 @@
     "dev": "nodemon server.js",
     "createData": "node ./database/createData.js",  
     "deleteData": "node ./database/deleteData.js",
-    "updateTable": "node ./database/updateTables.js"
+    "updateTables": "node ./database/updateTables.js"
   },
   "keywords": [],
   "author": "",
