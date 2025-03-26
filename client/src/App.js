@@ -18,7 +18,6 @@ function App() {
             <Route path="/recipe/:id" element={<RecipePage />} />
             <Route path="/api" element={<ApiTestPage />} />
             {/* You can add more routes here as your app grows */}
-            {/* <Route path="/create-recipe" element={<CreateRecipePage />} /> */}
             <Route path="/edit-recipe/:id" element={<EditRecipePage />} />
             <Route path="/signup" element={<SignInPage />} />
           </Routes>
