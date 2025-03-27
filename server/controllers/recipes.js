@@ -7,7 +7,7 @@ const addRecipe = require(`../models/addRecipe`)
 
 router.get(`/:id`, async (req, res) => {
     try{
-    const recipe = await recipeDetails.getRecipeDetails({recipeId: req.params.id})
+    const { recipeDetails: recipe } = await recipeDetails.getRecipeDetails({recipeId: req.params.id})
     if(!recipe) res.status(404).send(`Recipe with ID ${req.params.id} does not exist`)
     else res.status(200).send(recipe)
     } catch (error) {
