@@ -5,6 +5,7 @@ const recipeDetails = require(`../models/getRecipeDetails`)
 const recipeList = require(`../models/getRecipeList`)
 const addRecipe = require(`../models/addRecipe`)
 
+// :id is recipe id
 router.get(`/:id`, async (req, res) => {
     try{
     const { recipeDetails: recipe } = await recipeDetails.getRecipeDetails({recipeId: req.params.id})
@@ -17,6 +18,7 @@ router.get(`/:id`, async (req, res) => {
 
 })
 
+// :id is user id
 router.get(`/dashboard/:id`, async (req, res) => {
     try{
         const recipes = await recipeList.getRecipeList({userId: req.params.id})
@@ -28,6 +30,7 @@ router.get(`/dashboard/:id`, async (req, res) => {
     }
 })
 
+// :id is user id
 router.post(`/:id`, async (req, res) => {
     try{
         userId = req.params.id
