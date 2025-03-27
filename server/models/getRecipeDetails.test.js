@@ -72,8 +72,8 @@ describe('getRecipeDetails', () => {
   });
   it('should work and get a recipe', async () => {
     expect.assertions(1);
-    const response = await getRecipeDetails({ recipeId });
-    expect(response).toStrictEqual(
+    const { recipeDetails } = await getRecipeDetails({ recipeId });
+    expect(recipeDetails).toStrictEqual(
       expect.objectContaining({
         title: 'myRecipe',
         instructions: 'cook the food you fool!\nIt\'s not that hard is it?',

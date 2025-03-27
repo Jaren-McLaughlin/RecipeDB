@@ -3,6 +3,11 @@ const fs = require('fs');
 const path = require('path');
 const mysql = require('mysql2/promise');
 
+/**
+ * Deletes all the data in the sql tables. You can use npm run deleteData to run this file
+ * @param {boolean} logging - toggles whether failed deletes should be logged
+ */
+
 const deleteData = async ({ logging }) => {
   const connection = await mysql.createConnection({
     host: process.env.DB_HOST || 'localhost',
