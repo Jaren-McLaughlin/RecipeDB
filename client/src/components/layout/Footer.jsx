@@ -1,3 +1,13 @@
+
+/**
+ * Footer component with application information and links.
+ * @memberof Layout
+ * @function Footer
+ * @returns {JSX.Element} Footer component
+ * @example
+ * <Footer />
+ */
+
 import React from 'react';
 import { 
   Box, 

@@ -1,3 +1,17 @@
+
+/**
+ * Provider component for theme context.
+ * @memberof Contexts
+ * @function ThemeProvider
+ * @param {Object} props - Component properties
+ * @param {React.ReactNode} props.children - Child components to access the theme context
+ * @returns {JSX.Element} Theme provider component
+ * @example
+ * <ThemeProvider>
+ *   <App />
+ * </ThemeProvider>
+ */
+
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
 import { createAppTheme } from '../theme/theme';

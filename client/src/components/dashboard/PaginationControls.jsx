@@ -1,4 +1,26 @@
-// src/components/dashboard/PaginationControls.jsx
+
+/**
+ * Controls for paginating through recipe results.
+ * @memberof Dashboard
+ * @function PaginationControls
+ * @param {Object} props - Component properties
+ * @param {number} props.totalItems - Total number of items to paginate
+ * @param {number} props.itemsPerPage - Number of items to display per page
+ * @param {number} props.currentPage - Current active page
+ * @param {Function} props.onPageChange - Function called when page changes
+ * @param {Function} props.onItemsPerPageChange - Function called when items per page changes
+ * @returns {JSX.Element} Pagination controls component
+ * @example
+ * <PaginationControls
+ *   totalItems={100}
+ *   itemsPerPage={10}
+ *   currentPage={1}
+ *   onPageChange={(page) => setCurrentPage(page)}
+ *   onItemsPerPageChange={(count) => setItemsPerPage(count)}
+ * />
+ */
+
+
 import React from 'react';
 import { 
     Box, 

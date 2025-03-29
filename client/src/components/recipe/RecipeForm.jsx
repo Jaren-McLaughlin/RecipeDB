@@ -1,4 +1,24 @@
-// src/components/recipe/RecipeForm.jsx
+
+
+/**
+ * Form for creating or editing recipes.
+ * @memberof Recipe
+ * @function RecipeForm
+ * @param {Object} props - Component properties
+ * @param {Object} props.recipe - Recipe data object with initial values
+ * @param {Function} props.onSubmit - Function called when form is submitted
+ * @param {Function} props.onCancel - Function called when cancel button is clicked
+ * @returns {JSX.Element} Recipe form component
+ * @example
+ * const recipe = createBlankRecipe();
+ * 
+ * <RecipeForm
+ *   recipe={recipe}
+ *   onSubmit={(formData) => handleSubmit(formData)}
+ *   onCancel={() => navigate('/')}
+ * />
+ */
+
 import React, { useState } from 'react';
 import {
   Box,
@@ -18,7 +38,6 @@ function RecipeForm({ recipe, onSubmit, onCancel }) {
   // Initialize form state with recipe data or defaults
   const [formData, setFormData] = useState({
     title: recipe?.title || '',
-    description: recipe?.description || '',
     ingredients: recipe?.ingredients || [''],
     instructions: recipe?.instructions || [''],
     notes: recipe?.notes || '',
