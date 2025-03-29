@@ -1,9 +1,7 @@
 // src/pages/RecipePage.jsx
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Container, CircularProgress } from '@mui/material';
-
-// Import the extracted components
+import { Container, CircularProgress, Alert } from '@mui/material';
 import RecipeActionBar from '../components/recipe/RecipeActionBar';
 import RecipeDetails from '../components/recipe/RecipeDetails';
 import DeleteConfirmationDialog from '../components/common/DeleteConfirmationDialog';
@@ -13,47 +11,55 @@ function RecipePage() {
   const navigate = useNavigate();
   const [recipe, setRecipe] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
-  // Fetch recipe data (same as before)
   useEffect(() => {
-    // Simulate fetching recipe data
-    setTimeout(() => {
-      setRecipe({
-        id: parseInt(id),
-        title: 'Sample Recipe ' + id,
-        description: 'This is a detailed description of the recipe.',
-        ingredients: [
-          '2 cups flour',
-          '1 cup sugar',
-          '3 eggs',
-          '1/2 tsp salt'
-        ],
-        instructions: [
-          'Preheat oven to 350°F.',
-          'Mix dry ingredients in a bowl.',
-          'Add wet ingredients and mix well.',
-          'Bake for 30 minutes.'
-        ],
-        notes: 'This recipe was passed down from my grandmother.'
-      });
-      setLoading(false);
-    }, 800);
+    const fetchRecipeData = async () => {
+      try {
+        const response = await fetch(`http://localhost:3001/api/recipes/${id}`);
+        if (!response.ok) throw new Error('Recipe not found');
+        
+        const data = await response.json();
+        setRecipe({
+          id: parseInt(id),
+          title: data.title,
+          ingredients: data.ingredients,
+          instructions: data.instructions.split('\r\n'),
+          notes: data.notes
+        });
+      } catch (error) {
+        console.error('Error fetching recipe:', error);
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRecipeData();
   }, [id]);
 
   const handleEdit = () => {
-    console.log('Edit recipe', id);
-    navigate(`/edit-recipe/${id}`)
+    navigate(`/edit-recipe/${id}`);
   };
 
   const handleDelete = () => {
     setDeleteDialogOpen(true);
   };
 
-  const confirmDelete = () => {
-    console.log('Deleting recipe', id);
+  const confirmDelete = async () => {
+    try {
+      const response = await fetch(`http://localhost:3001/api/recipes/${id}`, {
+        method: 'DELETE'
+      });
+      
+      if (!response.ok) throw new Error('Delete failed');
+      navigate('/');
+    } catch (error) {
+      console.error('Delete error:', error);
+      setError('Failed to delete recipe');
+    }
     setDeleteDialogOpen(false);
-    navigate('/');
   };
 
   const goBack = () => {
@@ -68,19 +74,27 @@ function RecipePage() {
     );
   }
 
+  if (error) {
+    return (
+      <Container sx={{ mt: 4 }}>
+        <Alert severity="error">{error}</Alert>
+      </Container>
+    );
+  }
+
   return (
     <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
       <RecipeActionBar 
-        onBack={goBack}
-        onEdit={handleEdit}
+        onBack={() => navigate('/')}
+        onEdit={() => navigate(`/edit-recipe/${id}`)}
         onDelete={handleDelete}
       />
       
-      <RecipeDetails recipe={recipe} />
+      {recipe && <RecipeDetails recipe={recipe} />}
       
       <DeleteConfirmationDialog
         open={deleteDialogOpen}
-        title={recipe.title}
+        title={recipe?.title || ''}
         onClose={() => setDeleteDialogOpen(false)}
         onConfirm={confirmDelete}
       />

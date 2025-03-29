@@ -6,21 +6,19 @@
  * @returns {Object} A Recipe object formatted for front-end use
  */
 export function createRecipe(recipeData) {
-    return {
-      id: recipeData.id || recipeData.recipeID || null,
-      title: recipeData.title || '',
-      description: recipeData.description || '',
-      ingredients: Array.isArray(recipeData.ingredients) 
-        ? recipeData.ingredients 
-        : [], // Ensure ingredients is always an array
-      instructions: Array.isArray(recipeData.instructions)
-        ? recipeData.instructions
-        : recipeData.instructions?.split('\n') || [], // Handle string to array conversion
-      notes: recipeData.notes || '',
-      createdAt: recipeData.createdAt || new Date().toISOString(),
-      updatedAt: recipeData.updatedAt || new Date().toISOString()
-    };
-  }
+  return {
+    id: recipeData.id || recipeData.recipeID || null,
+    title: recipeData.title || '',
+    ingredients: Array.isArray(recipeData.ingredients) 
+      ? recipeData.ingredients 
+      : [],
+    instructions: Array.isArray(recipeData.instructions)
+      ? recipeData.instructions
+      : (recipeData.instructions || '').split('\n'),
+    notes: recipeData.notes || '',
+    author: recipeData.userName || ''
+  };
+}
   
   /**
    * Validates a recipe object
@@ -59,8 +57,8 @@ export function createRecipe(recipeData) {
       description: '',
       ingredients: [],
       instructions: [],
-      notes: '',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      notes: ''
+      //createdAt: new Date().toISOString(),
+      //updatedAt: new Date().toISOString()
     };
   }

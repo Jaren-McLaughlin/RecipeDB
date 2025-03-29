@@ -1,4 +1,3 @@
-// src/components/recipe/RecipeDetails.jsx
 import React from 'react';
 import {
   Card,
@@ -26,7 +25,9 @@ function RecipeDetails({ recipe }) {
         <List>
           {recipe.ingredients.map((ingredient, index) => (
             <ListItem key={index} disablePadding>
-              <ListItemText primary={ingredient} />
+              <ListItemText 
+                primary={`${ingredient.quantity} ${ingredient.measurement} ${ingredient.name}`}
+              />
             </ListItem>
           ))}
         </List>

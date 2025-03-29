@@ -1,16 +1,7 @@
-// This page will:
-
-// Fetch the current recipe data using the recipe ID from URL params
-// Provide a form for editing all recipe details
-// Handle form submission and API calls
-// Provide navigation back to the recipe view
-
-// src/pages/EditRecipePage.jsx
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Container, Typography, CircularProgress, Alert, Box } from '@mui/material';
 import RecipeForm from '../components/recipe/RecipeForm';
-import { fetchRecipe, updateRecipe } from '../Api/RecipeApi';
 
 function EditRecipePage() {
   const { id } = useParams();
@@ -19,117 +10,74 @@ function EditRecipePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [saveStatus, setSaveStatus] = useState({ saving: false, error: null });
-  
-  // Fetch the recipe data
+
   useEffect(() => {
-    async function loadRecipe() {
+    const fetchRecipeData = async () => {
       try {
-        // In a real app, you'd use the API call:
-        // const recipeData = await fetchRecipe(id);
+        const response = await fetch(`http://localhost:3001/api/recipes/${id}`);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         
-        // For now, we'll simulate fetching data
-        setTimeout(() => {
-          const mockRecipe = {
-            id: parseInt(id),
-            title: 'Sample Recipe ' + id,
-            description: 'This is a detailed description of the recipe.',
-            ingredients: [
-              '2 cups flour',
-              '1 cup sugar',
-              '3 eggs',
-              '1/2 tsp salt'
-            ],
-            instructions: [
-              'Preheat oven to 350°F.',
-              'Mix dry ingredients in a bowl.',
-              'Add wet ingredients and mix well.',
-              'Bake for 30 minutes.'
-            ],
-            notes: 'This recipe was passed down from my grandmother.'
-          };
-          
-          setRecipe(mockRecipe);
-          setLoading(false);
-        }, 800);
+        const data = await response.json();
+        setRecipe({
+          id: parseInt(id),
+          title: data.title,
+          ingredients: data.ingredients,
+          instructions: data.instructions.split('\r\n'),
+          notes: data.notes
+        });
       } catch (error) {
         console.error('Error loading recipe:', error);
-        setError('Failed to load recipe. Please try again.');
+        setError(error.message);
+      } finally {
         setLoading(false);
       }
-    }
-    
-    loadRecipe();
+    };
+
+    fetchRecipeData();
   }, [id]);
-  
-  // Handle form submission
+
   const handleSubmit = async (formData) => {
     setSaveStatus({ saving: true, error: null });
     
     try {
-      // In a real app, you'd use the API call:
-      // await updateRecipe(id, formData);
-      
-      // For now,  simulate the API call
-      console.log('Saving updated recipe:', formData);
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // After successful save, navigate back to the recipe view
-      navigate(`/recipe/${id}`);
-    } catch (error) {
-      console.error('Error saving recipe:', error);
-      setSaveStatus({ 
-        saving: false, 
-        error: 'Failed to save recipe. Please try again.' 
+      const response = await fetch(`http://localhost:3001/api/recipes/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: formData.title,
+          instructions: formData.instructions.join('\r\n'),
+          notes: formData.notes,
+          ingredients: formData.ingredients
+        })
       });
+
+      if (!response.ok) throw new Error('Save failed');
+      navigate(`/recipes/${id}`);
+    } catch (error) {
+      setSaveStatus({ saving: false, error: error.message });
     }
   };
-  
-  // Handle cancel
-  const handleCancel = () => {
-    navigate(`/recipe/${id}`);
-  };
-  
-  // Show loading state
-  if (loading) {
-    return (
-      <Container sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
-        <CircularProgress />
-      </Container>
-    );
-  }
-  
-  // Show error state
-  if (error) {
-    return (
-      <Container sx={{ mt: 4 }}>
-        <Alert severity="error">{error}</Alert>
-      </Container>
-    );
-  }
-  
+
+  const handleCancel = () => navigate(`/recipes/${id}`);
+
+  if (loading) return <Container sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}><CircularProgress /></Container>;
+  if (error) return <Container sx={{ mt: 4 }}><Alert severity="error">{error}</Alert></Container>;
+
   return (
     <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
       <Typography variant="h4" component="h1" gutterBottom>
         Edit Recipe
       </Typography>
       
-      {saveStatus.error && (
-        <Alert severity="error" sx={{ mb: 3 }}>
-          {saveStatus.error}
-        </Alert>
-      )}
+      {saveStatus.error && <Alert severity="error" sx={{ mb: 3 }}>{saveStatus.error}</Alert>}
       
-      <RecipeForm 
+      {recipe && <RecipeForm 
         recipe={recipe} 
         onSubmit={handleSubmit} 
         onCancel={handleCancel}
-      />
+      />}
       
-      {saveStatus.saving && (
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
-          <CircularProgress />
-        </Box>
-      )}
+      {saveStatus.saving && <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}><CircularProgress /></Box>}
     </Container>
   );
 }
