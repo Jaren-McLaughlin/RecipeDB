@@ -2,7 +2,7 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
-
+const recipeRoutes = require(`./controllers/recipes`)
 const app = express();
 
 // Middleware
@@ -17,7 +17,7 @@ app.get('/api/test', (req, res) => {
 
 // Routes will be added here later
 // app.use('/api/auth', authRoutes);
-// app.use('/api/recipes', recipeRoutes);
+app.use('/api/recipes', recipeRoutes);
 // app.use('/api/users', userRoutes);
 
 // Error handling middleware

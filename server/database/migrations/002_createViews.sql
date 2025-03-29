@@ -3,7 +3,7 @@ CREATE VIEW userRecipes AS
 SELECT recipeID, title, userName
 FROM Recipe
 INNER JOIN User
-ON Recipe.userID = User.userID
+ON Recipe.userID = User.userID;
 
 -- View Search for recipe
 CREATE VIEW RecipeSearch AS

@@ -7,9 +7,26 @@ import {
   useTheme
 } from '@mui/material';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
+import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
   const theme = useTheme();
+  const navigate = useNavigate(); // navigation hook
+
+  const handleNavigateHome = () => {
+    navigate('/');
+  };
+
+  const handleNavigateAddRecipe = () => {
+  };
+
+  const handleNavigateLogin = () => {
+    navigate('/'); // Navigate to login page
+  };
+
+  const handleNavigateSignUp = () => {
+    navigate('/signup'); // Navigate to sign up page
+  };
 
   return (
     <AppBar position="static">
@@ -36,14 +53,14 @@ const Navbar = () => {
           flexGrow: 1,
           mx: 2
         }}>
-          <Button color="inherit" sx={{ mx: 1 }}>Home</Button>
-          <Button color="inherit" sx={{ mx: 1 }}>My Recipes</Button>
-          <Button color="inherit" sx={{ mx: 1 }}>Add Recipe</Button>
+          {/* <Button color="inherit" sx={{ mx: 1 }}>Home</Button> */}
+          <Button color="inherit" sx={{ mx: 1 }} onClick={handleNavigateHome}>My Recipes</Button>
+          <Button color="inherit" sx={{ mx: 1 }} onClick={handleNavigateAddRecipe}>Add Recipe</Button>
         </Box>
         
         {/* Right section: Auth buttons */}
         <Box>
-          <Button color="inherit">Login</Button>
+        <Button color="inherit" onClick={handleNavigateLogin}>Login</Button>
           <Button 
             color="inherit"
             variant="outlined" 
@@ -54,6 +71,7 @@ const Navbar = () => {
                 backgroundColor: 'rgba(255, 255, 255, 0.1)'
               }
             }}
+            onClick={handleNavigateSignUp}
           >
             Sign Up
           </Button>
