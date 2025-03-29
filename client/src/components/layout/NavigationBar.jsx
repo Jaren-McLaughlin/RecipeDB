@@ -19,7 +19,6 @@ const Navbar = () => {
   };
 
   const handleNavigateAddRecipe = () => {
-    navigate('/add-recipe'); 
   };
 
   const handleNavigateLogin = () => {

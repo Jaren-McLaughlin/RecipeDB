@@ -9,10 +9,10 @@ describe('getRecipeDetails', () => {
   beforeAll(async () => {
     connection = await pool.getConnection();
     ([{ insertId: userId }] = await connection.execute(
-      `INSERT INTO User (
+      `INSERT INTO user (
         userName,
         email,
-        passwordHash
+        \`password\`
       ) VALUES (?, ?, ?)`,
       [
         'getRecipeDetailsTest',
@@ -24,19 +24,22 @@ describe('getRecipeDetails', () => {
       `INSERT INTO recipe (
         title,
         instructions,
-        userID
-      ) VALUES (?, ?, ?)`,
+        userId
+      ) VALUES (?, ?, ?), (?, ?, ?)`,
       [
         'myRecipe',
         'cook the food you fool!\nIt\'s not that hard is it?',
         userId,
+        'myIngredientLessRecipe',
+        'Why would you not have an ingredient in your recipe?',
+        userId,
       ],
     ));
     const [{ insertId: ingredientId }] = await connection.execute(
-      `INSERT INTO ingredients (
+      `INSERT INTO ingredient (
         name,
         measurement,
-        userID
+        userId
       ) VALUES (?, ?, ?), (?, ?, ?)`,
       [
         'flour',
@@ -48,9 +51,9 @@ describe('getRecipeDetails', () => {
       ],
     );
     await connection.execute(
-      `INSERT INTO usedin (
-        recipeID,
-        ingredientID,
+      `INSERT INTO usedIn (
+        recipeId,
+        ingredientId,
         quantity
       ) VALUES (?, ?, ?), (?, ?, ?)`,
       [
@@ -65,15 +68,15 @@ describe('getRecipeDetails', () => {
   });
   afterAll(async () => {
     await connection.execute(
-      'DELETE FROM user WHERE userID = ?',
+      'DELETE FROM user WHERE userId = ?',
       [userId],
     );
     await pool.end();
   });
   it('should work and get a recipe', async () => {
     expect.assertions(1);
-    const response = await getRecipeDetails({ recipeId });
-    expect(response).toStrictEqual(
+    const { recipeDetails } = await getRecipeDetails({ recipeId });
+    expect(recipeDetails).toStrictEqual(
       expect.objectContaining({
         title: 'myRecipe',
         instructions: 'cook the food you fool!\nIt\'s not that hard is it?',
@@ -89,6 +92,25 @@ describe('getRecipeDetails', () => {
             quantity: '1.5',
             measurement: 'cup',
           }),
+        ]),
+      }),
+    );
+  });
+  it('should work and get a recipe with no ingredients', async () => {
+    expect.assertions(1);
+    const { recipeDetails } = await getRecipeDetails({ recipeId: recipeId + 1 });
+
+    expect(recipeDetails).toStrictEqual(
+      expect.objectContaining({
+        title: 'myIngredientLessRecipe',
+        instructions: 'Why would you not have an ingredient in your recipe?',
+        notes: null,
+        ingredients: expect.arrayContaining([
+          expect.objectContaining({
+            name: null,
+            quantity: null,
+            measurement: null
+          })
         ]),
       }),
     );

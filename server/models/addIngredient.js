@@ -1,5 +1,23 @@
 const pool = require('../config/db');
 
+/**
+ * @typedef {Object} addIngredientParams
+ * @property {string} name - The ingredient name
+ * @property {string} measurement - The measurement
+ * @property {number} userId - The userId
+ */
+
+/**
+ * @typedef {Object} addIngredientResponse
+ * @property {number} ingredientId - The ingredientId
+ */
+
+/**
+ * Adds an ingredient
+ * @param {addIngredientParams} params - The parameters
+ * @returns {Promise<addIngredientResponse>} - The response
+ */
+
 async function addIngredient ({
   name,
   measurement,
@@ -8,10 +26,10 @@ async function addIngredient ({
   const connection = await pool.getConnection();
 
   const [results] = await connection.execute(
-    `INSERT INTO ingredients (
+    `INSERT INTO ingredient (
       name,
       measurement,
-      userID
+      userId
     ) VALUES (?, ?, ?)`,
     [
       name,

@@ -3,7 +3,12 @@ const fs = require('fs');
 const path = require('path');
 const mysql = require('mysql2/promise');
 
-const updateTables = async () => {
+/**
+ * Updates the sql tables with all the migration files. You can use npm run updateTables to run this file
+ * @param {boolean} logging - toggles whether failed updates should be logged
+ */
+
+const updateTables = async ({ logging }) => {
   const connection = await mysql.createConnection({
     host: process.env.DB_HOST || 'localhost',
     user: process.env.DB_USER || 'root',
@@ -19,11 +24,16 @@ const updateTables = async () => {
     try {
       await connection.query(sqlCommands)
     } catch (e) {
-      // commented to reduce noise, uncomment to debug if needs be
-      // console.log(e);
+      if (logging) {
+        console.log(e);
+      }
     }
   };
   await connection.end();
 };
 
-updateTables();
+updateTables(
+  process.argv[2] === 'true'
+  ? { logging: process.argv[2] }
+  : { logging: false }
+);
