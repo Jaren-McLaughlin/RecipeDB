@@ -3,17 +3,23 @@ import {
   Box, 
   Typography, 
   Link, 
-  Divider
+  Divider,
+  useTheme
 } from '@mui/material';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import GitHubIcon from '@mui/icons-material/GitHub';
 
 const Footer = () => {
+  const theme = useTheme();
+  
   return (
     <Box 
       component="footer" 
       sx={{ 
-        backgroundColor: '#f5f5f5',
+        backgroundColor: theme.palette.mode === 'dark' 
+          ? 'rgba(30, 30, 30, 0.9)' // Dark footer background
+          : '#f5f5f5',               // Light footer background
+        color: theme.palette.text.primary,
         width: '100%',
         marginTop: 'auto',
         boxSizing: 'border-box',
@@ -73,7 +79,7 @@ const Footer = () => {
                 display: 'flex', 
                 alignItems: 'center', 
                 mt: 1,
-                color: 'primary.main'
+                color: theme.palette.primary.main
               }}
             >
               <GitHubIcon sx={{ mr: 0.5 }} />
