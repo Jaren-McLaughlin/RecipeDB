@@ -76,7 +76,7 @@ const RecipeCard = ({ recipe, onEdit, onDelete}) => { // These are the functions
       {title}
     </Typography>
     <Typography variant="body2" color="text.secondary">
-      {description}
+      {notes}
     </Typography> 
   </CardContent>
   <CardActions disableSpacing>
