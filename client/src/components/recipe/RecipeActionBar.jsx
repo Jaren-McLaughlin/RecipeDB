@@ -1,4 +1,22 @@
-// src/components/recipe/RecipeActionBar.jsx
+
+
+/**
+ * Action bar for recipe pages with back, edit, and delete buttons.
+ * @memberof Recipe
+ * @function RecipeActionBar
+ * @param {Object} props - Component properties
+ * @param {Function} props.onBack - Function called when back button is clicked
+ * @param {Function} props.onEdit - Function called when edit button is clicked
+ * @param {Function} props.onDelete - Function called when delete button is clicked
+ * @returns {JSX.Element} Action bar component
+ * @example
+ * <RecipeActionBar
+ *   onBack={() => navigate('/')}
+ *   onEdit={() => handleEdit(recipeId)}
+ *   onDelete={() => setDeleteDialogOpen(true)}
+ * />
+ */
+
 import React from 'react';
 import { Box, Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';

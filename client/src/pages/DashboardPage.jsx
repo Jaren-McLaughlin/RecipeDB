@@ -37,20 +37,20 @@ function DashboardPage() {
     // Simulate API call
     setTimeout(() => {
       const mockRecipes = [
-        { id: 1, title: 'Spaghetti Bolognese', description: 'Classic Italian pasta dish with meat sauce.' },
-        { id: 2, title: 'Chicken Curry', description: 'Spicy chicken curry with coconut milk.' },
-        { id: 3, title: 'Chocolate Cake', description: 'Rich and moist chocolate cake.' },
-        { id: 4, title: 'Greek Salad', description: 'Fresh salad with feta cheese and olives.' },
-        { id: 5, title: 'Beef Stir Fry', description: 'Quick and easy beef with vegetables.' },
-        { id: 6, title: 'Vegetable Soup', description: 'Hearty soup with seasonal vegetables.' },
-        { id: 7, title: 'Mushroom Risotto', description: 'Creamy Italian rice dish with mushrooms.' },
-        { id: 8, title: 'Fish Tacos', description: 'Light and flavorful tacos with fresh fish.' },
-        { id: 9, title: 'BBQ Chicken Wings', description: 'Spicy and tangy chicken wings for game day.' },
-        { id: 10, title: 'Apple Pie', description: 'Classic American dessert with cinnamon and apples.' },
-        { id: 11, title: 'Vegetable Lasagna', description: 'Layered pasta dish with vegetables and cheese.' },
-        { id: 12, title: 'Beef Tacos', description: 'Traditional Mexican tacos with seasoned beef.' },
-        { id: 13, title: 'Carrot Cake', description: 'Moist cake with cream cheese frosting.' },
-        { id: 14, title: 'Chicken Noodle Soup', description: 'Comforting soup for cold days.' },
+        { id: 1, title: 'Spaghetti Bolognese',  notes: 'Classic Italian pasta dish with meat sauce.' },
+        { id: 2, title: 'Chicken Curry', notes: 'Spicy chicken curry with coconut milk.' },
+        { id: 3, title: 'Chocolate Cake', notes: 'Rich and moist chocolate cake.' },
+        { id: 4, title: 'Greek Salad', notes: 'Fresh salad with feta cheese and olives.' },
+        { id: 5, title: 'Beef Stir Fry', notes: 'Quick and easy beef with vegetables.' },
+        { id: 6, title: 'Vegetable Soup', notes: 'Hearty soup with seasonal vegetables.' },
+        { id: 7, title: 'Mushroom Risotto', notes: 'Creamy Italian rice dish with mushrooms.' },
+        { id: 8, title: 'Fish Tacos', notes: 'Light and flavorful tacos with fresh fish.' },
+        { id: 9, title: 'BBQ Chicken Wings', notes: 'Spicy and tangy chicken wings for game day.' },
+        { id: 10, title: 'Apple Pie', notes: 'Classic American dessert with cinnamon and apples.' },
+        { id: 11, title: 'Vegetable Lasagna', notes: 'Layered pasta dish with vegetables and cheese.' },
+        { id: 12, title: 'Beef Tacos', notes: 'Traditional Mexican tacos with seasoned beef.' },
+        { id: 13, title: 'Carrot Cake', notes: 'Moist cake with cream cheese frosting.' },
+        { id: 14, title: 'Chicken Noodle Soup', notes: 'Comforting soup for cold days.' },
       ];
       setRecipes(mockRecipes);
       setFilteredRecipes(mockRecipes);
@@ -65,7 +65,7 @@ function DashboardPage() {
     } else {
       const filtered = recipes.filter(recipe => 
         recipe.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        recipe.description.toLowerCase().includes(searchTerm.toLowerCase())
+        recipe.notes.toLowerCase().includes(searchTerm.toLowerCase())
       );
       setFilteredRecipes(filtered);
     }
