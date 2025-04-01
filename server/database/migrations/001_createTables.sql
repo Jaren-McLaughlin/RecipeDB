@@ -1,7 +1,7 @@
--- TODO: find a better way to create a db and create these migrations
-CREATE DATABASE recipedb;
+-- TODO: find a better way to create a db from scratch before creating these migrations
+-- CREATE DATABASE recipedb;
 
-USE recipedb;
+-- USE recipedb;
 
 CREATE TABLE user (
   userID SERIAL PRIMARY KEY,
