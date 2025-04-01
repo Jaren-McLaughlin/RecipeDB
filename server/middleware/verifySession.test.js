@@ -19,7 +19,6 @@ describe('verifySession', () => {
   it('should create a session jwt', async () => {
     expect.assertions(1);
     const { jwtData } = await verifySession({ token });
-    console.log(jwtData)
     expect(jwtData).toStrictEqual(expect.objectContaining({
       userId: 1,
     }));

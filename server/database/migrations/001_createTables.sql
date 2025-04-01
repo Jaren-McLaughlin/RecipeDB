@@ -1,8 +1,3 @@
--- TODO: find a better way to create a db from scratch before creating these migrations
--- CREATE DATABASE recipedb;
-
--- USE recipedb;
-
 CREATE TABLE user (
   userID SERIAL PRIMARY KEY,
   userName VARCHAR(30) NOT NULL,

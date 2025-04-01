@@ -74,9 +74,11 @@ describe('getRecipeDetails', () => {
     await pool.end();
   });
   it('should work and get a recipe', async () => {
-    expect.assertions(1);
-    const { recipeDetails } = await getRecipeDetails({ recipeId });
-    expect(recipeDetails).toStrictEqual(
+    expect.assertions(2);
+    const response = await getRecipeDetails({ recipeId });
+
+    expect(response.userId).toStrictEqual(userId);
+    expect(response.recipeDetails).toStrictEqual(
       expect.objectContaining({
         title: 'myRecipe',
         instructions: 'cook the food you fool!\nIt\'s not that hard is it?',
@@ -97,10 +99,11 @@ describe('getRecipeDetails', () => {
     );
   });
   it('should work and get a recipe with no ingredients', async () => {
-    expect.assertions(1);
-    const { recipeDetails } = await getRecipeDetails({ recipeId: recipeId + 1 });
+    expect.assertions(2);
+    const response = await getRecipeDetails({ recipeId: recipeId + 1 });
 
-    expect(recipeDetails).toStrictEqual(
+    expect(response.userId).toStrictEqual(userId)
+    expect(response.recipeDetails).toStrictEqual(
       expect.objectContaining({
         title: 'myIngredientLessRecipe',
         instructions: 'Why would you not have an ingredient in your recipe?',
