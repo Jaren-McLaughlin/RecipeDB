@@ -49,7 +49,7 @@ function RecipePage() {
 
   const confirmDelete = async () => {
     try {
-      const response = await fetch(`http://localhost:001/api/recipes/${id}`, {
+      const response = await fetch(`http://localhost:5001/api/recipes/${id}`, {
         method: 'DELETE'
       });
       
