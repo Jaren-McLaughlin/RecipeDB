@@ -32,48 +32,56 @@ function DashboardPage() {
   
   const navigate = useNavigate();
 
-  // Fetch recipes - This would be replaced with your actual API call
+  // Fetch recipes from API
   useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
-      const mockRecipes = [
-        { id: 1, title: 'Spaghetti Bolognese',  notes: 'Classic Italian pasta dish with meat sauce.' },
-        { id: 2, title: 'Chicken Curry', notes: 'Spicy chicken curry with coconut milk.' },
-        { id: 3, title: 'Chocolate Cake', notes: 'Rich and moist chocolate cake.' },
-        { id: 4, title: 'Greek Salad', notes: 'Fresh salad with feta cheese and olives.' },
-        { id: 5, title: 'Beef Stir Fry', notes: 'Quick and easy beef with vegetables.' },
-        { id: 6, title: 'Vegetable Soup', notes: 'Hearty soup with seasonal vegetables.' },
-        { id: 7, title: 'Mushroom Risotto', notes: 'Creamy Italian rice dish with mushrooms.' },
-        { id: 8, title: 'Fish Tacos', notes: 'Light and flavorful tacos with fresh fish.' },
-        { id: 9, title: 'BBQ Chicken Wings', notes: 'Spicy and tangy chicken wings for game day.' },
-        { id: 10, title: 'Apple Pie', notes: 'Classic American dessert with cinnamon and apples.' },
-        { id: 11, title: 'Vegetable Lasagna', notes: 'Layered pasta dish with vegetables and cheese.' },
-        { id: 12, title: 'Beef Tacos', notes: 'Traditional Mexican tacos with seasoned beef.' },
-        { id: 13, title: 'Carrot Cake', notes: 'Moist cake with cream cheese frosting.' },
-        { id: 14, title: 'Chicken Noodle Soup', notes: 'Comforting soup for cold days.' },
-      ];
-      setRecipes(mockRecipes);
-      setFilteredRecipes(mockRecipes);
-      setLoading(false);
-    }, 1000);
+    const fetchRecipes = async () => {
+      try {
+        setLoading(true);
+        const userId = 1; // Hardcoded for testing
+        const response = await fetch(`http://localhost:5001/api/recipes/dashboard/${userId}`);
+        if (!response.ok) throw new Error('Failed to fetch recipes');
+        
+        const data = await response.json();
+        const formattedRecipes = data.recipeList.map(recipe => ({
+          id: recipe.recipeId,
+          title: recipe.title,
+          description: `Created by ${recipe.userName}`
+        }));
+
+        setRecipes(formattedRecipes);
+        setFilteredRecipes(formattedRecipes);
+      } catch (error) {
+        console.error('Error fetching recipes:', error);
+        setNotification({
+          open: true,
+          message: 'Failed to load recipes. Please try again later.',
+          severity: 'error'
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRecipes();
   }, []);
 
   // Filter recipes when search term changes
   useEffect(() => {
-    if (searchTerm.trim() === '') {
-      setFilteredRecipes(recipes);
-    } else {
-      const filtered = recipes.filter(recipe => 
+    const filterRecipes = () => {
+      if (searchTerm.trim() === '') {
+        return recipes;
+      }
+      return recipes.filter(recipe => 
         recipe.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         recipe.notes.toLowerCase().includes(searchTerm.toLowerCase())
       );
-      setFilteredRecipes(filtered);
-    }
-    // Reset to first page when search changes
+    };
+
+    setFilteredRecipes(filterRecipes());
     setCurrentPage(1);
   }, [searchTerm, recipes]);
 
-  // Update paginated recipes when filtered recipes, current page, or items per page changes
+  // Update paginated recipes
   useEffect(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
@@ -91,50 +99,55 @@ function DashboardPage() {
 
   const handleItemsPerPageChange = (value) => {
     setItemsPerPage(value);
-    setCurrentPage(1); // Reset to first page when changing items per page
+    setCurrentPage(1);
   };
 
-  const handleEdit = (id) => {
-    // In a real app, navigate to edit page
-    console.log(`Edit recipe with id of ${id}`);
-    navigate(`/edit-recipe/${id}`);
-    
-    // For now, just show a notification
-    setNotification({
-      open: true,
-      message: `Editing recipe ${id}`,
-      severity: 'info'
-    });
+  const handleViewRecipe = async (recipeId) => {
+    // Directly navigate to the recipe view page with ID in URL
+    navigate(`/recipes/${recipeId}`);
   };
+
+  const handleEdit = (recipeId) => {
+    navigate(`/edit-recipe/${recipeId}`);
+  };
+
   
   const handleDelete = (id) => {
-    // Find the recipe to delete (for showing title in confirmation)
     const recipe = recipes.find(r => r.id === id);
     setRecipeToDelete(recipe);
     setDeleteDialogOpen(true);
   };
   
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     if (!recipeToDelete) return;
     
-    // In a real app, call API to delete recipe
-    console.log(`Deleting recipe ${recipeToDelete.id}`);
+    try {
+      const response = await fetch(`http://localhost:5001/api/recipes/${recipeToDelete.id}`, {
+        method: 'DELETE'
+      });
+      
+      if (!response.ok) throw new Error('Delete failed');
+      
+      const updatedRecipes = recipes.filter(recipe => recipe.id !== recipeToDelete.id);
+      setRecipes(updatedRecipes);
+      
+      setNotification({
+        open: true,
+        message: `Recipe "${recipeToDelete.title}" deleted successfully`,
+        severity: 'success'
+      });
+    } catch (error) {
+      setNotification({
+        open: true,
+        message: 'Failed to delete recipe. Please try again.',
+        severity: 'error'
+      });
+    }
     
-    // Update local state
-    const updatedRecipes = recipes.filter(recipe => recipe.id !== recipeToDelete.id);
-    setRecipes(updatedRecipes);
-    
-    // Close dialog and show notification
     setDeleteDialogOpen(false);
-    setNotification({
-      open: true,
-      message: `Recipe "${recipeToDelete.title}" deleted`,
-      severity: 'success'
-    });
     setRecipeToDelete(null);
   };
   
-  // Close notification
   const handleCloseNotification = () => {
     setNotification({ ...notification, open: false });
   };
@@ -145,23 +158,21 @@ function DashboardPage() {
         My Recipes
       </Typography>
       
-      {/* Search Bar */}
       <SearchBar 
         searchTerm={searchTerm}
         onSearchChange={handleSearchChange}
       />
       
-      {/* Recipe Grid */}
       <Box sx={{ mt: 3 }}>
         <RecipeGrid 
           recipes={paginatedRecipes} 
           loading={loading}
-          onEdit={handleEdit} 
+          onView={handleViewRecipe}
+          onEdit={handleEdit}
           onDelete={handleDelete} 
         />
       </Box>
       
-      {/* Pagination Controls */}
       <PaginationControls
         totalItems={filteredRecipes.length}
         itemsPerPage={itemsPerPage}
@@ -170,7 +181,6 @@ function DashboardPage() {
         onItemsPerPageChange={handleItemsPerPageChange}
       />
       
-      {/* Delete Confirmation Dialog */}
       <DeleteConfirmationDialog
         open={deleteDialogOpen}
         title={recipeToDelete?.title || ''}
@@ -178,7 +188,6 @@ function DashboardPage() {
         onConfirm={confirmDelete}
       />
       
-      {/* Notification Snackbar */}
       <Snackbar 
         open={notification.open} 
         autoHideDuration={6000} 

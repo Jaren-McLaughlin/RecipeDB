@@ -4,8 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { Container, Typography } from '@mui/material';
 import RecipeForm from '../components/recipe/RecipeForm';
 import { createBlankRecipe } from '../models/Recipe';
-// Import your API function when ready
-// import { createRecipe } from '../Api/RecipeApi';
 
 function AddRecipePage() {
   const navigate = useNavigate();
