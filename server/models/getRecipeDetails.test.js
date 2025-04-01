@@ -25,10 +25,13 @@ describe('getRecipeDetails', () => {
         title,
         instructions,
         userId
-      ) VALUES (?, ?, ?)`,
+      ) VALUES (?, ?, ?), (?, ?, ?)`,
       [
         'myRecipe',
         'cook the food you fool!\nIt\'s not that hard is it?',
+        userId,
+        'myIngredientLessRecipe',
+        'Why would you not have an ingredient in your recipe?',
         userId,
       ],
     ));
@@ -89,6 +92,25 @@ describe('getRecipeDetails', () => {
             quantity: '1.5',
             measurement: 'cup',
           }),
+        ]),
+      }),
+    );
+  });
+  it('should work and get a recipe with no ingredients', async () => {
+    expect.assertions(1);
+    const { recipeDetails } = await getRecipeDetails({ recipeId: recipeId + 1 });
+
+    expect(recipeDetails).toStrictEqual(
+      expect.objectContaining({
+        title: 'myIngredientLessRecipe',
+        instructions: 'Why would you not have an ingredient in your recipe?',
+        notes: null,
+        ingredients: expect.arrayContaining([
+          expect.objectContaining({
+            name: null,
+            quantity: null,
+            measurement: null
+          })
         ]),
       }),
     );

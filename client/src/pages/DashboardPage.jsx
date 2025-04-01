@@ -73,7 +73,7 @@ function DashboardPage() {
       }
       return recipes.filter(recipe => 
         recipe.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        recipe.description.toLowerCase().includes(searchTerm.toLowerCase())
+        recipe.notes.toLowerCase().includes(searchTerm.toLowerCase())
       );
     };
 

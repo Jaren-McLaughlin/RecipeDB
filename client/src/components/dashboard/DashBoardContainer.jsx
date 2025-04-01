@@ -1,3 +1,12 @@
+
+/**
+ * Container component for the recipes dashboard.
+ * @memberof Dashboard
+ * @function DashboardContainer
+ * @returns {JSX.Element} Container component for the dashboard
+ * @example
+ * <DashboardContainer />
+ */
 import React from 'react';
 import { Container, Typography, Box } from '@mui/material';
 import RecipeGrid from './RecipeGrid';
