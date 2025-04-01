@@ -1,3 +1,13 @@
+/**
+* Toggle button for switching between light and dark themes.
+* @memberof Layout
+* @function ThemeToggle
+* @returns {JSX.Element} Theme toggle component
+* @example
+* <ThemeToggle />
+*/
+
+
 import React from 'react';
 import { IconButton, Tooltip, useTheme, Box } from '@mui/material';
 import LightModeIcon from '@mui/icons-material/LightMode';

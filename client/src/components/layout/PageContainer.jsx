@@ -1,3 +1,17 @@
+
+/**
+ * Container component for page layout with navigation and footer.
+ * @memberof Layout
+ * @function PageContainer
+ * @param {Object} props - Component properties
+ * @param {React.ReactNode} props.children - Child components to render within the container
+ * @returns {JSX.Element} Page container component
+ * @example
+ * <PageContainer>
+ *   <DashboardPage />
+ * </PageContainer>
+ */
+
 import React from 'react';
 import { Box } from '@mui/material';
 import Navbar from './NavigationBar'; 

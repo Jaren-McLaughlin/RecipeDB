@@ -1,4 +1,26 @@
-// src/components/recipe/DeleteConfirmationDialog.jsx
+
+/**
+ * Dialog for confirming deletion actions.
+ * @memberof Common
+ * @function DeleteConfirmationDialog
+ * @param {Object} props - Component properties
+ * @param {boolean} props.open - Whether the dialog is open
+ * @param {string} props.title - Title to display in the dialog
+ * @param {Function} props.onClose - Function called when dialog is closed
+ * @param {Function} props.onConfirm - Function called when delete is confirmed
+ * @returns {JSX.Element} Confirmation dialog component
+ * @example
+ * const [dialogOpen, setDialogOpen] = useState(false);
+ * 
+ * <DeleteConfirmationDialog
+ *   open={dialogOpen}
+ *   title="Recipe Title"
+ *   onClose={() => setDialogOpen(false)}
+ *   onConfirm={() => handleDelete(recipeId)}
+ * />
+ */
+
+
 import React from 'react';
 import {
   Dialog,

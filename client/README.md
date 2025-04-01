@@ -1,70 +1,41 @@
-# Getting Started with Create React App
+# Recipe Management Suite - Frontend Documentation
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Overview
+This documentation covers the React components and structure for the Recipe Management Suite frontend. The application allows users to manage personal recipes with features for viewing, adding, editing, and deleting recipes.
 
-## Available Scripts
+## Component Structure
 
-In the project directory, you can run:
+### Dashboard Components
+Components for the main dashboard view, including:
+- RecipeGrid - Grid layout of recipe cards
+- RecipeCard - Individual recipe display card
+- SearchBar - Search functionality for recipes
+- PaginationControls - Controls for paginated recipe display
 
-### `npm start`
+### Recipe Components
+Components for working with individual recipes:
+- RecipeDetails - Detailed view of a recipe
+- RecipeForm - Form for creating and editing recipes
+- RecipeActionBar - Actions for individual recipe pages
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### Layout Components
+Structural components for the application layout:
+- PageContainer - Main container for all pages
+- NavigationBar - Top navigation bar
+- Footer - Application footer
+- ThemeToggle - Toggle for light/dark theme
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Common Components
+Reusable UI components used throughout the application:
+- DeleteConfirmationDialog - Confirmation dialog for delete actions
 
-### `npm test`
+## Pages
+Full page components:
+- DashboardPage - Main recipe listing page
+- RecipePage - Individual recipe view
+- EditRecipePage - Recipe editing page
+- AddRecipePage - New recipe creation page
+- SignupPage - User signup/login page
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Setup and Development
+Instructions for setting up and running the frontend development environment.

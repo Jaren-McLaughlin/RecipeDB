@@ -1,3 +1,29 @@
+
+
+/**
+ * Displays a grid of recipe cards with optional loading state.
+ * @memberof Dashboard
+ * @function RecipeGrid
+ * @param {Object} props - Component properties
+ * @param {Array} props.recipes - Array of recipe data objects
+ * @param {boolean} props.loading - Whether recipes are currently loading
+ * @param {Function} props.onEdit - Function called when edit button is clicked on a recipe
+ * @param {Function} props.onDelete - Function called when delete button is clicked on a recipe
+ * @returns {JSX.Element} Grid layout of recipe cards
+ * @example
+ * const recipes = [
+ *   { id: 1, title: "Pancakes", description: "Breakfast favorite" },
+ *   { id: 2, title: "Lasagna", description: "Italian classic" }
+ * ];
+ * 
+ * <RecipeGrid 
+ *   recipes={recipes}
+ *   loading={false}
+ *   onEdit={(id) => handleEdit(id)}
+ *   onDelete={(id) => handleDelete(id)}
+ * />
+ */
+
 import React from 'react';
 import { Grid, CircularProgress, Box, Typography } from '@mui/material';
 import RecipeCard from './RecipeCard';

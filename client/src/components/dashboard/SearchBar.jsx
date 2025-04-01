@@ -1,3 +1,21 @@
+
+/**
+ * Search bar component for filtering recipes.
+ * @memberof Dashboard
+ * @function SearchBar
+ * @param {Object} props - Component properties
+ * @param {string} props.searchTerm - Current search term
+ * @param {Function} props.onSearchChange - Function called when search input changes
+ * @returns {JSX.Element} Search bar component
+ * @example
+ * const [searchTerm, setSearchTerm] = useState('');
+ * 
+ * <SearchBar 
+ *   searchTerm={searchTerm}
+ *   onSearchChange={(value) => setSearchTerm(value)}
+ * />
+ */
+
 import React from 'react';
 import { Paper, InputBase, IconButton } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';

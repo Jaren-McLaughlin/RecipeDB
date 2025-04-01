@@ -1,4 +1,31 @@
-// src/components/Dashboard/RecipeCard.jsx
+
+/**
+ * Displays a recipe as a card with title, notes, and action buttons.
+ * @memberof Dashboard
+ * @function RecipeCard
+ * @param {Object} props - Component properties
+ * @param {Object} props.recipe - Recipe data object
+ * @param {number} props.recipe.id - Recipe ID
+ * @param {string} props.recipe.title - Recipe title
+ * @param {string} props.recipe.notes - Brief recipe description
+ * @param {Function} props.onEdit - Function called when edit button is clicked
+ * @param {Function} props.onDelete - Function called when delete button is clicked
+ * @returns {JSX.Element} A card component for displaying recipe information
+ * @example
+ * const recipe = {
+ *   id: 1,
+ *   title: "Spaghetti Bolognese",
+ *   notes: "Classic Italian pasta dish"
+ * };
+ * 
+ * <RecipeCard 
+ *   recipe={recipe}
+ *   onEdit={(id) => console.log('Edit recipe', id)}
+ *   onDelete={(id) => console.log('Delete recipe', id)}
+ * />
+ */
+
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -12,7 +39,7 @@ import {
 import {Edit, Delete} from '@mui/icons-material';
 
 const RecipeCard = ({ recipe, onEdit, onDelete}) => { // These are the functions that will be associated with this object
-    const { id, title, description} = recipe; // attributes of a recipe
+    const { id, title, notes} = recipe; // attributes of a recipe
     const navigate = useNavigate();
 
   // Function to handle card click
@@ -49,7 +76,7 @@ const RecipeCard = ({ recipe, onEdit, onDelete}) => { // These are the functions
       {title}
     </Typography>
     <Typography variant="body2" color="text.secondary">
-      {description}
+      {notes}
     </Typography> 
   </CardContent>
   <CardActions disableSpacing>
