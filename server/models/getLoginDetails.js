@@ -1,6 +1,10 @@
 const pool = require('../config/db');
 
 /**
+ * @module getLoginDetails
+ */
+
+/**
  * @typedef {Object} getLoginDetailsParams
  * @property {string} email - The users email
  */
@@ -19,7 +23,7 @@ const pool = require('../config/db');
 /**
  * Gets the login details for a user
  * @param {getLoginDetailsParams} params - The parameters
- * @returns {Promise<getLoginDetailsResponse>} - The response
+ * @returns {Promise<getLoginDetailsResponse>} - The response object
  */
 
 async function getLoginDetails ({

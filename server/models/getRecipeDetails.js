@@ -1,8 +1,12 @@
 const pool = require('../config/db');
 
 /**
+ * @module getRecipeDetails
+ */
+
+/**
  * @typedef {Object} getRecipeDetailsParams
- * @property {number} recipeId - The recipeId
+ * @property {number} recipeId - The recipe id
  */
 
 /**
@@ -15,20 +19,21 @@ const pool = require('../config/db');
 /**
  * @typedef {Object} recipeDetails
  * @property {number} title - The recipe title
- * @property {ingredientDetails[]} ingredients - The ingredient name
+ * @property {ingredientDetails[]} ingredients - The ingredient object
  * @property {string} instructions - The recipe instructions
  * @property {string} notes - The recipe notes
  */
 
 /**
  * @typedef {Object} getRecipeDetailsResponse
- * @property {recipeDetails} recipeDetails - The ingredientId
+ * @property {recipeDetails} recipeDetails - The recipe card
+ * @property {number} userId - The owner of the recipe
  */
 
 /**
  * Gets the details of a recipe
  * @param {getRecipeDetailsParams} params - The parameters
- * @returns {Promise<getRecipeDetailsResponse>} - The response
+ * @returns {Promise<getRecipeDetailsResponse>} - The response object
  */
 
 async function getRecipeDetails ({

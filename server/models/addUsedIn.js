@@ -1,6 +1,10 @@
 const pool = require('../config/db');
 
 /**
+ * @module addUsedIn
+ */
+
+/**
  * @typedef {Object} addUsedInParams
  * @property {number} recipeId - The recipeId
  * @property {number} ingredientId - The ingredientId
