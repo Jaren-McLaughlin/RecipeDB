@@ -1,11 +1,11 @@
 require('dotenv').config();
-const verifySession = require('./verifySession');
+const verifyToken = require('./verifyToken');
 const jwt = require('jsonwebtoken');
 
 const secretKey = process.env.JWT_SECRET
 let token;
 
-describe('verifySession', () => {
+describe('verifyToken', () => {
   beforeAll(async () => {
     token = jwt.sign(
       {
@@ -16,9 +16,9 @@ describe('verifySession', () => {
     );
   });
 
-  it('should create a session jwt', async () => {
+  it('should verify a jwt', async () => {
     expect.assertions(1);
-    const { jwtData } = await verifySession({ token });
+    const { jwtData } = await verifyToken({ token });
     expect(jwtData).toStrictEqual(expect.objectContaining({
       userId: 1,
     }));
