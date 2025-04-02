@@ -10,7 +10,8 @@ import DashboardPage from './pages/DashboardPage';
 import RecipePage from './pages/RecipePage';
 import ApiTestPage from './pages/ApiTestPage';
 import EditRecipePage from './pages/EditRecipePage';
-import SignInPage from './pages/SignupPage';
+import SignInPage from './pages/SigninPage';
+import SignUpPage from './pages/SignUpPage';
 
 import { ThemeProvider } from './contexts/ThemeProvider';
 
@@ -27,7 +28,8 @@ function App() {
                 <Route path="/api" element={<ApiTestPage />} />
                 {/* You can add more routes here as your app grows */}
                 <Route path="/edit-recipe/:id" element={<EditRecipePage />} />
-                <Route path="/signup" element={<SignInPage />} />
+                <Route path="/signin" element={<SignInPage />} />
+                <Route path="/signup" element={<SignUpPage />} />
               </Routes>
             </PageContainer>
           </div>
