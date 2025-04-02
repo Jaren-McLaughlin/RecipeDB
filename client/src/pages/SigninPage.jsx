@@ -1,168 +1,177 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import {
-  Box,
-  Button,
-  Checkbox,
-  Container,
-  FormControlLabel,
-  Divider,
-  FormLabel,
-  FormControl,
-  Link,
-  TextField,
-  Typography,
-  Card,
-  Paper
-} from '@mui/material';
-import RestaurantIcon from '@mui/icons-material/Restaurant';
+import { Box, FormControlLabel, Checkbox, Alert } from '@mui/material';
+
+import AuthLayout from '../components/auth/AuthLayout';
+import AuthHeader from '../components/auth/AuthHeader';
+import EmailField from '../components/auth/EmailField';
+import PasswordField from '../components/auth/PasswordField';
+import AuthSubmitButton from '../components/auth/AuthSubmitButton';
+import AuthDivider from '../components/auth/AuthDivider';
+import AuthFooter from '../components/auth/AuthFooter';
 
 function SignInPage() {
-  const navigate = useNavigate();
-  const [emailError, setEmailError] = useState(false);
-  const [emailErrorMessage, setEmailErrorMessage] = useState('');
-  const [passwordError, setPasswordError] = useState(false);
-  const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  // Form state
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+    rememberMe: false
+  });
+  
+  // Error states
+  const [errors, setErrors] = useState({
+    email: false,
+    password: false
+  });
+  
+  // Error messages
+  const [errorMessages, setErrorMessages] = useState({
+    email: '',
+    password: ''
+  });
+  
+  // Form status
+  const [formStatus, setFormStatus] = useState({
+    submitting: false,
+    error: null
+  });
+  
+  // Handle input changes
+  const handleChange = (e) => {
+    const { name, value, checked } = e.target;
+    setFormData({
+      ...formData,
+      [name]: name === 'rememberMe' ? checked : value
+    });
     
-    if (!validateInputs()) {
+    // Clear errors
+    if (errors[name]) {
+      setErrors({
+        ...errors,
+        [name]: false
+      });
+      setErrorMessages({
+        ...errorMessages,
+        [name]: ''
+      });
+    }
+  };
+  
+  // Form validation
+  const validateForm = () => {
+    let isValid = true;
+    const newErrors = { ...errors };
+    const newErrorMessages = { ...errorMessages };
+    
+    // Validate email
+    if (!formData.email || !/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = true;
+      newErrorMessages.email = 'Please enter a valid email address';
+      isValid = false;
+    }
+    
+    // Validate password
+    if (!formData.password) {
+      newErrors.password = true;
+      newErrorMessages.password = 'Password is required';
+      isValid = false;
+    }
+    
+    setErrors(newErrors);
+    setErrorMessages(newErrorMessages);
+    return isValid;
+  };
+  
+  // Form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!validateForm()) {
       return;
     }
     
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
+    setFormStatus({
+      submitting: true,
+      error: null
     });
     
-    // authenticate the user here
-    // For now, just navigate to the home page
-    navigate('/');
-  };
-
-  const validateInputs = () => {
-    const email = document.getElementById('email');
-    const password = document.getElementById('password');
-
-    let isValid = true;
-
-    if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
-      setEmailError(true);
-      setEmailErrorMessage('Please enter a valid email address.');
-      isValid = false;
-    } else {
-      setEmailError(false);
-      setEmailErrorMessage('');
+    try {
+      // Simulate API call
+      console.log('Signing in with:', formData);
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // For now, just simulate success
+      window.location.href = '/'; // Or use navigate
+    } catch (error) {
+      console.error('Sign in error:', error);
+      setFormStatus({
+        submitting: false,
+        error: 'Invalid email or password. Please try again.'
+      });
     }
-
-    if (!password.value || password.value.length < 6) {
-      setPasswordError(true);
-      setPasswordErrorMessage('Password must be at least 6 characters long.');
-      isValid = false;
-    } else {
-      setPasswordError(false);
-      setPasswordErrorMessage('');
-    }
-
-    return isValid;
   };
-
+  
   return (
-      <Container maxWidth="sm" sx={{ mt: 8, mb: 4 }}>
-        <Paper
-          elevation={3}
-          sx={{
-            p: 4,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: 2
-          }}
-        >
-          <RestaurantIcon color="primary" sx={{ fontSize: 40 }} />
-          <Typography component="h1" variant="h4">
-            Sign in
-          </Typography>
-          
-          <Box
-            component="form"
-            onSubmit={handleSubmit}
-            noValidate
-            sx={{
-              width: '100%',
-              mt: 1,
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 2,
-            }}
-          >
-            <FormControl>
-              <FormLabel htmlFor="email">Email</FormLabel>
-              <TextField
-                error={emailError}
-                helperText={emailErrorMessage}
-                id="email"
-                type="email"
-                name="email"
-                placeholder="your@email.com"
-                autoComplete="email"
-                autoFocus
-                required
-                fullWidth
-                variant="outlined"
-                color={emailError ? 'error' : 'primary'}
-              />
-            </FormControl>
-            
-            <FormControl>
-              <FormLabel htmlFor="password">Password</FormLabel>
-              <TextField
-                error={passwordError}
-                helperText={passwordErrorMessage}
-                name="password"
-                placeholder="••••••"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-                required
-                fullWidth
-                variant="outlined"
-                color={passwordError ? 'error' : 'primary'}
-              />
-            </FormControl>
-            
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
+    <AuthLayout>
+      <AuthHeader title="Sign In" />
+      
+      {formStatus.error && (
+        <Alert severity="error" sx={{ width: '100%' }}>
+          {formStatus.error}
+        </Alert>
+      )}
+      
+      <Box
+        component="form"
+        onSubmit={handleSubmit}
+        noValidate
+        sx={{
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 2,
+        }}
+      >
+        <EmailField
+          value={formData.email}
+          onChange={handleChange}
+          error={errors.email}
+          helperText={errorMessages.email}
+          autoFocus={true}
+        />
+        
+        <PasswordField
+          value={formData.password}
+          onChange={handleChange}
+          error={errors.password}
+          helperText={errorMessages.password}
+        />
+        
+        <FormControlLabel
+          control={
+            <Checkbox
+              name="rememberMe"
+              checked={formData.rememberMe}
+              onChange={handleChange}
+              color="primary"
             />
-            
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              size="large"
-              sx={{ mt: 1 }}
-            >
-              Sign in
-            </Button>
-          </Box>
-          
-          <Divider sx={{ width: '100%', my: 2 }}>or</Divider>
-          
-          <Typography sx={{ textAlign: 'center' }}>
-            Don't have an account?{' '}
-            <Link
-              component="button"
-              variant="body2"
-              onClick={() => navigate('/signup')}
-            >
-              Sign up
-            </Link>
-          </Typography>
-        </Paper>
-      </Container>
+          }
+          label="Remember me"
+        />
+        
+        <AuthSubmitButton
+          label="Sign In"
+          isSubmitting={formStatus.submitting}
+        />
+      </Box>
+      
+      <AuthDivider />
+      
+      <AuthFooter
+        message="Don't have an account?"
+        linkText="Sign Up"
+        linkPath="/signup"
+      />
+    </AuthLayout>
   );
 }
 
