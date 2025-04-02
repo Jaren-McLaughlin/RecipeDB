@@ -1,3 +1,13 @@
+
+/**
+ * Main navigation bar for the application.
+ * @memberof Layout
+ * @function NavigationBar
+ * @returns {JSX.Element} Navigation bar component
+ * @example
+ * <NavigationBar />
+ */
+
 import { 
   AppBar, 
   Toolbar, 
@@ -8,6 +18,7 @@ import {
 } from '@mui/material';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import { useNavigate } from 'react-router-dom';
+import ThemeToggle from './ThemeToggle';
 
 const Navbar = () => {
   const theme = useTheme();
@@ -53,14 +64,16 @@ const Navbar = () => {
           flexGrow: 1,
           mx: 2
         }}>
-          {/* <Button color="inherit" sx={{ mx: 1 }}>Home</Button> */}
           <Button color="inherit" sx={{ mx: 1 }} onClick={handleNavigateHome}>My Recipes</Button>
           <Button color="inherit" sx={{ mx: 1 }} onClick={handleNavigateAddRecipe}>Add Recipe</Button>
         </Box>
         
-        {/* Right section: Auth buttons */}
-        <Box>
-        <Button color="inherit" onClick={handleNavigateLogin}>Login</Button>
+        {/* Right section: Auth buttons and theme toggle */}
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          {/* Add the theme toggle button */}
+          <ThemeToggle />
+          
+          <Button color="inherit" onClick={handleNavigateLogin}>Login</Button>
           <Button 
             color="inherit"
             variant="outlined" 
@@ -80,5 +93,6 @@ const Navbar = () => {
     </AppBar>
   );
 };
+
 
 export default Navbar;

@@ -38,7 +38,7 @@ function DashboardPage() {
       try {
         setLoading(true);
         const userId = 1; // Hardcoded for testing
-        const response = await fetch(`http://localhost:3001/api/recipes/dashboard/${userId}`);
+        const response = await fetch(`http://localhost:5001/api/recipes/dashboard/${userId}`);
         if (!response.ok) throw new Error('Failed to fetch recipes');
         
         const data = await response.json();
@@ -73,7 +73,7 @@ function DashboardPage() {
       }
       return recipes.filter(recipe => 
         recipe.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        recipe.description.toLowerCase().includes(searchTerm.toLowerCase())
+        recipe.notes.toLowerCase().includes(searchTerm.toLowerCase())
       );
     };
 
@@ -122,7 +122,7 @@ function DashboardPage() {
     if (!recipeToDelete) return;
     
     try {
-      const response = await fetch(`http://localhost:3001/api/recipes/${recipeToDelete.id}`, {
+      const response = await fetch(`http://localhost:5001/api/recipes/${recipeToDelete.id}`, {
         method: 'DELETE'
       });
       

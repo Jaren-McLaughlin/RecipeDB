@@ -14,7 +14,7 @@ function EditRecipePage() {
   useEffect(() => {
     const fetchRecipeData = async () => {
       try {
-        const response = await fetch(`http://localhost:3001/api/recipes/${id}`);
+        const response = await fetch(`http://localhost:5001/api/recipes/${id}`);
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         
         const data = await response.json();
@@ -40,7 +40,7 @@ function EditRecipePage() {
     setSaveStatus({ saving: true, error: null });
     
     try {
-      const response = await fetch(`http://localhost:3001/api/recipes/${id}`, {
+      const response = await fetch(`http://localhost:5001/api/recipes/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
