@@ -32,7 +32,7 @@ const Navbar = () => {
   };
 
   const handleNavigateLogin = () => {
-    navigate('/'); // Navigate to login page
+    navigate('/signin'); // Navigate to login page
   };
 
   const handleNavigateSignUp = () => {
@@ -73,7 +73,7 @@ const Navbar = () => {
           {/* Add the theme toggle button */}
           <ThemeToggle />
           
-          <Button color="inherit" onClick={handleNavigateLogin}>Login</Button>
+          <Button color="inherit" onClick={handleNavigateLogin}>Sign In</Button>
           <Button 
             color="inherit"
             variant="outlined" 
