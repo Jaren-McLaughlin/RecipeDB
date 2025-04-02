@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, FormControlLabel, Checkbox, Alert } from '@mui/material';
+import { Box, FormControlLabel, Checkbox, Alert, Typography } from '@mui/material';
 
 import AuthLayout from '../components/auth/AuthLayout';
 import AuthHeader from '../components/auth/AuthHeader';
