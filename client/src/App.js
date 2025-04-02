@@ -10,7 +10,7 @@ import DashboardPage from './pages/DashboardPage';
 import RecipePage from './pages/RecipePage';
 import ApiTestPage from './pages/ApiTestPage';
 import EditRecipePage from './pages/EditRecipePage';
-import SignInPage from './pages/SignInPage';
+import SignInPage from './pages/SigninPage';
 import SignUpPage from './pages/SignUpPage';
 
 import { ThemeProvider } from './contexts/ThemeProvider';
