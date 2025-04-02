@@ -16,6 +16,7 @@ const createData = async ({ logging }) => {
     database: process.env.DB_NAME || 'recipeDB',
     multipleStatements: true,
   });
+  
   const createDataPath = path.join(__dirname, 'seeds/insertData.sql');
   const sqlCommands = fs.readFileSync(createDataPath, 'utf8');
   try {

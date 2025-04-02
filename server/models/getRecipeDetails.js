@@ -49,6 +49,7 @@ async function getRecipeDetails ({
       instructions: response.instructions,
       notes: response.notes,
     },
+    userId: response.userId,
   };
 }
 
