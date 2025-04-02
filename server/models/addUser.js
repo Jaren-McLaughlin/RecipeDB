@@ -1,6 +1,10 @@
 const pool = require('../config/db');
 
 /**
+ * @module addUser
+ */
+
+/**
  * @typedef {Object} addUserParams
  * @property {string} userName - The users userName
  * @property {string} email - The users email
@@ -15,7 +19,7 @@ const pool = require('../config/db');
 /**
  * Adds a user
  * @param {addUserParams} params - The parameters
- * @returns {Promise<addUserResponse>} - The response
+ * @returns {Promise<addUserResponse>} - The response object
  */
 
 async function addUser ({

@@ -4,25 +4,32 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "node ./node_modules/jest/bin/jest.js --verbose",
-    "start": "node server.js",
-    "dev": "nodemon server.js",
     "createData": "node ./database/createData.js",
     "deleteData": "node ./database/deleteData.js",
+    "dev": "nodemon server.js",
+    "genDocs": "jsdoc -c jsdoc.config.json",
+    "lint": "eslint . --ext *.js",
+    "start": "node server.js",
+    "test": "node ./node_modules/jest/bin/jest.js --verbose",
     "updateTables": "node ./database/updateTables.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.7",
-    "express": "^4.21.2",
+    "cors": "2.8.5",
+    "dotenv": "16.4.7",
+    "express": "4.21.2",
     "jsonwebtoken": "9.0.2",
     "mysql2": "3.13.0"
   },
   "devDependencies": {
+    "@eslint/js": "^9.23.0",
+    "clean-jsdoc-theme": "^4.3.0",
+    "eslint": "^9.23.0",
+    "globals": "^16.0.0",
     "jest": "29.7.0",
-    "nodemon": "^3.1.9"
+    "jsdoc": "4.0.4",
+    "nodemon": "3.1.9"
   }
 }
