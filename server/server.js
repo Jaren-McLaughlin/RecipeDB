@@ -10,7 +10,7 @@ const cookieParser = require('cookie-parser');
 
 // Middleware
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: process.env.FRONTENDURI || 'http://localhost:3000',
   credentials: true
 }));
 app.use(express.json());
