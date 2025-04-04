@@ -13,6 +13,7 @@ import EditRecipePage from './pages/EditRecipePage';
 import SignInPage from './pages/SigninPage';
 import SignUpPage from './pages/SignUpPage';
 import AddRecipePage from './pages/AddRecipePage';
+import LandingPage from './pages/LandingPage';
 import ProfilePage from './pages/ProfilePage';
 
 import { ThemeProvider } from './contexts/ThemeProvider';
@@ -32,6 +33,8 @@ function App() {
                 <Route path="/edit-recipe/:id" element={<EditRecipePage />} />
                 <Route path="/signin" element={<SignInPage />} />
                 <Route path="/signup" element={<SignUpPage />} />
+                <Route path="/add" element={<AddRecipePage />} />
+                <Route path="/home" element={<LandingPage />} />
                 <Route path="/add" element={<AddRecipePage />} />
                 <Route path="/profile" element={<ProfilePage />} />
               </Routes>
