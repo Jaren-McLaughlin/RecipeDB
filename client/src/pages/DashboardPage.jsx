@@ -38,14 +38,14 @@ function DashboardPage() {
       try {
         setLoading(true);
         const userId = 1; // Hardcoded for testing
-        const response = await fetch(`http://localhost:5001/api/recipes/dashboard/${userId}`);
+        const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/recipes/dashboard/${userId}`);
         if (!response.ok) throw new Error('Failed to fetch recipes');
         
         const data = await response.json();
         const formattedRecipes = data.recipeList.map(recipe => ({
           id: recipe.recipeId,
           title: recipe.title,
-          description: `Created by ${recipe.userName}`
+          notes: `Created by ${recipe.userName}`
         }));
 
         setRecipes(formattedRecipes);
@@ -122,7 +122,7 @@ function DashboardPage() {
     if (!recipeToDelete) return;
     
     try {
-      const response = await fetch(`http://localhost:5001/api/recipes/${recipeToDelete.id}`, {
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/recipes/${recipeToDelete.id}`, {
         method: 'DELETE'
       });
       

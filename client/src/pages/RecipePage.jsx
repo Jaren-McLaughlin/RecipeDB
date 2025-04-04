@@ -17,7 +17,7 @@ function RecipePage() {
   useEffect(() => {
     const fetchRecipeData = async () => {
       try {
-        const response = await fetch(`http://localhost:5001/api/recipes/${id}`);
+        const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/recipes/${id}`);
         if (!response.ok) throw new Error('Recipe not found');
         
         const data = await response.json();
@@ -49,7 +49,7 @@ function RecipePage() {
 
   const confirmDelete = async () => {
     try {
-      const response = await fetch(`http://localhost:5001/api/recipes/${id}`, {
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/recipes/${id}`, {
         method: 'DELETE'
       });
       

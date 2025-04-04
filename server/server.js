@@ -2,12 +2,19 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
-const recipeRoutes = require(`./controllers/recipes`)
+const recipeRoutes = require(`./controllers/recipes`);
+const authRoutes = require(`./controllers/auth`);
+const userRoutes = require(`./controllers/users`)
 const app = express();
+const cookieParser = require('cookie-parser');
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: process.env.FRONTENDURI || 'http://localhost:3000',
+  credentials: true
+}));
 app.use(express.json());
+app.use(cookieParser());
 
 // Simple test route
 app.get('/api/test', (req, res) => {
@@ -16,9 +23,9 @@ app.get('/api/test', (req, res) => {
 });
 
 // Routes will be added here later
-// app.use('/api/auth', authRoutes);
+app.use('/api/auth', authRoutes);
 app.use('/api/recipes', recipeRoutes);
-// app.use('/api/users', userRoutes);
+app.use('/api/users', userRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

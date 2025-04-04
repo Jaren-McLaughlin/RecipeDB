@@ -1,6 +1,10 @@
 const pool = require('../config/db');
 
 /**
+ * @module getRecipeList
+ */
+
+/**
  * @typedef {Object} getRecipeListParams
  * @property {number} userId - The userId
  */
@@ -20,7 +24,7 @@ const pool = require('../config/db');
 /**
  * Gets a list of all recipes for a user
  * @param {getRecipeListParams} params - The parameters
- * @returns {Promise<getRecipeListResponse>} - The response
+ * @returns {Promise<getRecipeListResponse>} - The response object
  */
 
 async function getRecipeList ({

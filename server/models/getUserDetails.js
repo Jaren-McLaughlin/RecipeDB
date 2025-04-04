@@ -1,6 +1,10 @@
 const pool = require('../config/db');
 
 /**
+ * @module getUserDetails
+ */
+
+/**
  * @typedef {Object} getUserDetailsParams
  * @property {number} userId - The userId
  */
@@ -17,9 +21,9 @@ const pool = require('../config/db');
  */
 
 /**
- * Adds an ingredient
+ * Gets the users details
  * @param {getUserDetailsParams} params - The parameters
- * @returns {Promise<getUserDetailsResponse>} - The response
+ * @returns {Promise<getUserDetailsResponse>} - The response object
  */
 
 async function getUserDetails ({

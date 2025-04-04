@@ -1,6 +1,10 @@
 const pool = require('../config/db');
 
 /**
+ * @module addRecipe
+ */
+
+/**
  * @typedef {Object} addRecipeParams
  * @property {string} instructions - The recipe instructions
  * @property {string} notes - The recipe notes
@@ -16,7 +20,7 @@ const pool = require('../config/db');
 /**
  * Adds a recipe
  * @param {addRecipeParams} params - The parameters
- * @returns {Promise<addRecipeResponse>} - The response
+ * @returns {Promise<addRecipeResponse>} - The response object
  */
 
 async function addRecipe ({
