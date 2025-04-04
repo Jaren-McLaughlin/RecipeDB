@@ -1,113 +1,202 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Typography, Box, CircularProgress, Grid } from '@mui/material';
+import { 
+  Container, 
+  Typography, 
+  Box, 
+  CircularProgress, 
+  Grid,
+  Paper,
+  Divider,
+  Button
+} from '@mui/material';
 import UserInfoCard from '../components/profile/UserInfoCard';
 import UserStatsCard from '../components/profile/UserStatsCard';
 import ProfileEditForm from '../components/profile/ProfileEditForm';
 import PasswordChangeForm from '../components/profile/PasswordChangeForm';
-import PageContainer from '../components/layout/PageContainer';
+import ProfileContainer from '../components/profile/ProfileContainer';
+import Alert from '@mui/material/Alert';
+import Snackbar from '@mui/material/Snackbar';
 
 function ProfilePage() {
-  // State for user data
+  // State management
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [editMode, setEditMode] = useState(false);
-  const [passwordMode, setPasswordMode] = useState(false);
+  const [activeTab, setActiveTab] = useState('view'); // 'view', 'edit', 'password'
+  const [notification, setNotification] = useState({ open: false, message: '', severity: 'info' });
 
-  // Fetch user data (this would be replaced with actual API call)
+  // Fetch user data
   useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
-      setUserData({
-        id: 1,
-        username: 'JohnDoe',
-        email: 'john.doe@example.com',
-        createdAt: '2024-01-15',
-        recipeCount: 12,
-        favoriteCount: 5,
-        sharedCount: 3
-      });
-      setLoading(false);
-    }, 1000);
+    const fetchUserData = async () => {
+      try {
+        // Replace with actual API call
+        const mockData = {
+          id: 1,
+          username: 'ChefMaster',
+          email: 'chef@example.com',
+          avatar: '/default-avatar.jpg',
+          bio: 'Passionate home cook sharing my favorite recipes',
+          joinDate: '2023-05-15',
+          recipeCount: 24,
+          favoriteCount: 18,
+          sharedCount: 7,
+          lastLogin: '2025-04-01T14:30:00Z'
+        };
+        setUserData(mockData);
+      } catch (error) {
+        setNotification({
+          open: true,
+          message: 'Failed to load profile data',
+          severity: 'error'
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserData();
   }, []);
 
-  const handleEditToggle = () => {
-    setEditMode(!editMode);
-    setPasswordMode(false);
+  // Handlers
+  const handleProfileUpdate = async (updatedData) => {
+    try {
+      // API call would go here
+      setUserData({ ...userData, ...updatedData });
+      setActiveTab('view');
+      setNotification({
+        open: true,
+        message: 'Profile updated successfully!',
+        severity: 'success'
+      });
+    } catch (error) {
+      setNotification({
+        open: true,
+        message: 'Failed to update profile',
+        severity: 'error'
+      });
+    }
   };
 
-  const handlePasswordToggle = () => {
-    setPasswordMode(!passwordMode);
-    setEditMode(false);
+  const handlePasswordUpdate = async (passwordData) => {
+    try {
+      // API call would go here
+      setActiveTab('view');
+      setNotification({
+        open: true,
+        message: 'Password changed successfully!',
+        severity: 'success'
+      });
+    } catch (error) {
+      setNotification({
+        open: true,
+        message: 'Failed to change password',
+        severity: 'error'
+      });
+    }
   };
 
-  const handleProfileUpdate = (data) => {
-    // In a real app, you would call an API to update the user data
-    console.log('Updating profile with:', data);
-    setUserData({...userData, ...data});
-    setEditMode(false);
+  const handleNotificationClose = () => {
+    setNotification({ ...notification, open: false });
   };
 
-  const handlePasswordUpdate = (data) => {
-    // In a real app, you would call an API to change the password
-    console.log('Changing password, data:', data);
-    setPasswordMode(false);
-  };
+  if (loading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-      <Typography variant="h4" component="h1" gutterBottom>
-        My Profile
-      </Typography>
-      
-      {loading ? (
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-          <CircularProgress />
-        </Box>
-      ) : (
-        <Grid container spacing={3}>
-          {/* Left column: User info and stats */}
-          <Grid item xs={12} md={4}>
+    <ProfileContainer>
+      <Grid container spacing={3}>
+        {/* Left Column - User Info and Stats */}
+        <Grid item xs={12} md={4}>
+          <Paper elevation={3} sx={{ p: 3, mb: 3 }}>
             <UserInfoCard 
-              userData={userData} 
-              onEditClick={handleEditToggle}
-              onPasswordClick={handlePasswordToggle}
+              user={userData}
+              onEdit={() => setActiveTab('edit')}
+              onChangePassword={() => setActiveTab('password')}
             />
-            <Box sx={{ mt: 3 }}>
-              <UserStatsCard userData={userData} />
-            </Box>
-          </Grid>
+          </Paper>
           
-          {/* Right column: Forms or additional content */}
-          <Grid item xs={12} md={8}>
-            {editMode ? (
-              <ProfileEditForm 
-                userData={userData}
-                onCancel={handleEditToggle}
-                onSave={handleProfileUpdate}
-              />
-            ) : passwordMode ? (
-              <PasswordChangeForm 
-                onCancel={handlePasswordToggle}
-                onSave={handlePasswordUpdate}
-              />
-            ) : (
-              <Box>
-                {/* This space could be used for recent recipes or other profile content */}
-                <Typography variant="h6" gutterBottom>
+          <Paper elevation={3} sx={{ p: 3 }}>
+            <UserStatsCard 
+              stats={{
+                recipes: userData.recipeCount,
+                favorites: userData.favoriteCount,
+                shared: userData.sharedCount
+              }}
+            />
+          </Paper>
+        </Grid>
+
+        {/* Right Column - Content Area */}
+        <Grid item xs={12} md={8}>
+          <Paper elevation={3} sx={{ p: 3 }}>
+            {activeTab === 'view' && (
+              <>
+                <Typography variant="h5" gutterBottom>
                   Welcome back, {userData.username}!
                 </Typography>
-                <Typography variant="body1">
-                  This is your profile page where you can manage your account settings and view your recipe statistics.
+                <Divider sx={{ my: 2 }} />
+                <Typography variant="body1" paragraph>
+                  {userData.bio || 'No bio provided.'}
                 </Typography>
-                <Typography variant="body1" sx={{ mt: 2 }}>
-                  Use the buttons on the left to edit your profile information or change your password.
+                <Typography variant="body2" color="text.secondary">
+                  Member since: {new Date(userData.joinDate).toLocaleDateString()}
                 </Typography>
-              </Box>
+                <Box sx={{ mt: 3 }}>
+                  <Button 
+                    variant="outlined" 
+                    onClick={() => setActiveTab('edit')}
+                    sx={{ mr: 2 }}
+                  >
+                    Edit Profile
+                  </Button>
+                  <Button 
+                    variant="outlined" 
+                    onClick={() => setActiveTab('password')}
+                  >
+                    Change Password
+                  </Button>
+                </Box>
+              </>
             )}
-          </Grid>
+
+            {activeTab === 'edit' && (
+              <ProfileEditForm
+                user={userData}
+                onCancel={() => setActiveTab('view')}
+                onSubmit={handleProfileUpdate}
+              />
+            )}
+
+            {activeTab === 'password' && (
+              <PasswordChangeForm
+                onCancel={() => setActiveTab('view')}
+                onSubmit={handlePasswordUpdate}
+              />
+            )}
+          </Paper>
         </Grid>
-      )}
-    </Container>
+      </Grid>
+
+      {/* Notification Snackbar */}
+      <Snackbar
+        open={notification.open}
+        autoHideDuration={6000}
+        onClose={handleNotificationClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert 
+          onClose={handleNotificationClose} 
+          severity={notification.severity}
+          sx={{ width: '100%' }}
+        >
+          {notification.message}
+        </Alert>
+      </Snackbar>
+    </ProfileContainer>
   );
 }
 

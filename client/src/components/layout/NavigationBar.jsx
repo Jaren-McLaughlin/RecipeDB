@@ -24,11 +24,16 @@ const Navbar = () => {
   const theme = useTheme();
   const navigate = useNavigate(); // navigation hook
 
+  const handleNavigateProfile = () => {
+    navigate('/profile');
+  };
+
   const handleNavigateHome = () => {
     navigate('/');
   };
 
   const handleNavigateAddRecipe = () => {
+    navigate('/add'); // Navigate to login page
   };
 
   const handleNavigateLogin = () => {

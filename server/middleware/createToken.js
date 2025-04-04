@@ -34,7 +34,7 @@ async function createToken ({
   const token = jwt.sign(
     payload,
     secretKey,
-    { expiresIn: '15m' },
+    { expiresIn: '1h' },
   );
 
   return { token };
