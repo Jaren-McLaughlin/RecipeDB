@@ -27,7 +27,8 @@ router.post(`/register`, async (req, res) => {
         res.status(200)
         .cookie('token', createToken({ userId }), {
             httpOnly: true,
-            sameSite: 'Strict',
+            sameSite: 'Lax',
+            secure: false,
             maxAge: 60 * 60 * 1000 // 1 hour
         })
         .send(`User registered successfully`)
@@ -58,7 +59,8 @@ router.post(`/login`, async (req, res) => {
         res.status(200)
         .cookie('token', createToken({userId: loginDetails.userId}), {
             httpOnly: true,
-            sameSite: 'Strict',
+            sameSite: 'Lax',
+            secure: false,
             maxAge: 60 * 60 * 1000 // 1 hour
         })
         .send(`Logged in successfully`)
