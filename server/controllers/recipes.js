@@ -9,6 +9,28 @@ const addUsedIn = require(`../models/addUsedIn`)
 const verifyToken = require("../middleware/verifyToken")
 
 
+// sends the list of recipes for the dashboard
+router.get(`/dashboard`, async (req, res) => {
+    try{
+        const payload = await verifyToken({token: req.cookies.token})
+        if(!payload) return res.status(401).send(`not an authorized user`)
+
+        const userId = payload.jwtData.userId;
+
+        const {recipeList} = await getRecipeList({userId})
+        if(!recipeList) return res.status(404).send(`User does not have recipes`)
+
+        res.status(200).send(recipeList)
+    } catch (error){
+        console.error(error)
+
+        if (error.name === 'JsonWebTokenError' || error.name === 'TokenExpiredError') {
+            return res.status(401).json({ error: 'Invalid or expired token' });
+        }
+
+        res.status(500).send(`Something went wrong`)
+    }
+})
 
 // :id is recipe id
 router.get(`/:id`, async (req, res) => {
@@ -39,28 +61,6 @@ router.get(`/:id`, async (req, res) => {
 
 })
 
-// sends the list of recipes for the dashboard
-router.get(`/dashboard`, async (req, res) => {
-    try{
-        const payload = await verifyToken({token: req.cookies.token})
-        if(!payload) return res.status(401).send(`not an authorized user`)
-
-        const userId = payload.jwtData.userId;
-
-        const {recipeList} = await getRecipeList({userId})
-        if(!recipeList) return res.status(404).send(`User does not have recipes`)
-
-        res.status(200).send(recipeList)
-    } catch (error){
-        console.error(error)
-
-        if (error.name === 'JsonWebTokenError' || error.name === 'TokenExpiredError') {
-            return res.status(401).json({ error: 'Invalid or expired token' });
-        }
-
-        res.status(500).send(`Something went wrong`)
-    }
-})
 
 // creates a recipe
 router.post(`/`, async (req, res) => {
