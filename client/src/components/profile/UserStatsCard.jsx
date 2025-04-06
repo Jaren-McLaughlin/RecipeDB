@@ -11,7 +11,6 @@ import {
   Divider
 } from '@mui/material';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
-import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShareIcon from '@mui/icons-material/Share';
 
 function UserStatsCard({ userData }) {
@@ -40,16 +39,6 @@ function UserStatsCard({ userData }) {
           </ListItem>
           
           <Divider component="li" />
-          
-          <ListItem>
-            <ListItemIcon>
-              <FavoriteIcon />
-            </ListItemIcon>
-            <ListItemText 
-              primary="Favorite Recipes" 
-              secondary={userData.favoriteCount || 0} 
-            />
-          </ListItem>
           
           <Divider component="li" />
           

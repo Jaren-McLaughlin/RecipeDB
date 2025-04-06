@@ -1,8 +1,6 @@
 import React from 'react';
-import { Box, Typography, Button, Container, Stack, Paper } from '@mui/material';
+import { Box, Typography, Button, Container } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-
-import heroBackground from '../../assets/images/hero.jpg'
 
 const HeroSection = () => {
   const navigate = useNavigate();
@@ -10,80 +8,116 @@ const HeroSection = () => {
   return (
     <Box
       sx={{
-        backgroundImage: `url(${heroBackground})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        py: { xs: 10, md: 15 },
         position: 'relative',
-        minHeight: '80vh', // Ensures minimum height for the hero section
+        minHeight: '500px',
         display: 'flex',
-        alignItems: 'center'
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#000000', // Recipe green color
+        color: 'white',
       }}
     >
-      <Container maxWidth="lg">
-        <Paper
-          elevation={0}
-          sx={{
-            backgroundColor: 'rgba(255, 255, 255, 0.85)', // Semi-transparent white
-            backdropFilter: 'blur(10px)', // Creates the cloudy effect
-            borderRadius: 2,
-            py: 5,
-            px: { xs: 3, md: 6 },
-            maxWidth: 'md',
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)'
+      {/* Background Image */}
+      <Box
+        sx={{
+          position: 'absolute',
+          inset: 0,
+          overflow: 'hidden',
+        }}
+      >
+        <img
+          src="https://images.unsplash.com/photo-1547592180-85f173990554?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80"
+          alt="Food background"
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            opacity: 0.2,
+          }}
+        />
+      </Box>
+      
+      {/* Content */}
+      <Container 
+        maxWidth="lg" 
+        sx={{ 
+          position: 'relative', 
+          zIndex: 10,
+          textAlign: 'center',
+          px: 4,
+        }}
+      >
+        <Typography 
+          variant="h1" 
+          component="h1" 
+          sx={{ 
+            mb: 3,
+            fontWeight: 'bold',
+            fontSize: { xs: '2.5rem', md: '3.5rem', lg: '4rem' },
           }}
         >
-          <Typography 
-            variant="h2" 
-            component="h1" 
-            fontWeight="bold"
-            color="#000000"
-            sx={{ mb: 2 }}
+          Recipe Management Suite
+        </Typography>
+        
+        <Typography 
+          variant="h5" 
+          sx={{ 
+            mb: 4,
+            maxWidth: '800px',
+            mx: 'auto',
+          }}
+        >
+          Store, organize, and share your favorite recipes in one beautiful place. 
+          Never lose a recipe again.
+        </Typography>
+        
+        <Box 
+          sx={{ 
+            display: 'flex', 
+            flexDirection: { xs: 'column', sm: 'row' },
+            gap: 2,
+            justifyContent: 'center',
+          }}
+        >
+          <Button 
+            variant="contained" 
+            size="large"
+            onClick={() => navigate('/recipes')}
+            sx={{ 
+              bgcolor: 'white', 
+              color: '#000000',
+              '&:hover': {
+                bgcolor: 'rgba(255, 255, 255, 0.9)',
+              },
+              px: 4,
+              py: 1.5,
+              fontSize: '1.1rem',
+              fontWeight: 'bold',
+            }}
           >
-            Your Personal Recipe Collection
-          </Typography>
+            Browse Recipes
+          </Button>
           
-          <Typography 
-            variant="h5" 
-            color="#0f0f0f"
-            sx={{ mb: 4 }}
+          <Button 
+            variant="outlined" 
+            size="large"
+            onClick={() => navigate('/signin')}
+            sx={{ 
+              borderColor: 'white', 
+              color: 'white',
+              '&:hover': {
+                borderColor: 'white',
+                bgcolor: 'rgba(255, 255, 255, 0.1)',
+              },
+              px: 4,
+              py: 1.5,
+              fontSize: '1.1rem',
+            }}
           >
-            Store, organize, and easily manage your recipes in one place
-          </Typography>
-          
-          <Stack 
-            direction={{ xs: 'column', sm: 'row' }} 
-            spacing={2}
-          >
-            <Button 
-              variant="contained" 
-              size="large"
-              color="primary"
-              onClick={() => navigate('/signup')}
-              sx={{ 
-                py: 1.5, 
-                px: 4,
-                fontSize: '1.1rem',
-                fontWeight: 'bold'
-              }}
-            >
-              Get Started
-            </Button>
-            <Button 
-              variant="outlined" 
-              size="large"
-              color="primary"
-              onClick={() => navigate('/signin')}
-              sx={{ 
-                py: 1.5, 
-                px: 4,
-                fontSize: '1.1rem'
-              }}
-            >
-              Sign In
-            </Button>
-          </Stack>
-        </Paper>
+            Get Started
+          </Button>
+        </Box>
       </Container>
     </Box>
   );
