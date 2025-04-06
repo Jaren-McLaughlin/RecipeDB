@@ -46,7 +46,7 @@ function SignInPage() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     
-    if (!validateInputs()) {
+    if (!validateForm()) {
       return;
     }
     
@@ -82,18 +82,21 @@ function SignInPage() {
   
   const validateForm = () => {
     let isValid = true;
-    const newErrors = { email: false, password: false };
-    const newErrorMessages = { email: '', password: '' };
     
-    if (!formData.email || !/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = true;
-      newErrorMessages.email = 'Please enter a valid email address';
+    // Validate email
+    if (!email || !/\S+@\S+\.\S+/.test(email)) {
+      setEmailError(true);
+      setEmailErrorMessage('Please enter a valid email address');
       isValid = false;
+    } else {
+      setEmailError(false);
+      setEmailErrorMessage('');
     }
     
-    if (!formData.password) {
-      newErrors.password = true;
-      newErrorMessages.password = 'Password is required';
+    // Validate password
+    if (!password) {
+      setPasswordError(true);
+      setPasswordErrorMessage('Password is required');
       isValid = false;
     } else {
       setPasswordError(false);
