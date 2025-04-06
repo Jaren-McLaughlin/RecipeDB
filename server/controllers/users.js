@@ -8,10 +8,10 @@ const verifyToken = require("../middleware/verifyToken")
 
 router.get(`/`, async (req, res) => {
     try{
-        const payload = await verifyToken(req.cookies.token)
+        const payload = await verifyToken({token: req.cookies.token})
         if(!payload) return res.status(401).send(`not an authorized user`)
 
-        const userId = payload.userId;
+        const userId = payload.jwtData.userId;
 
         const { userDetails } = await getUserDetails({userId: userId})
         if(!userDetails) return res.status(404).send(`user not found`)
