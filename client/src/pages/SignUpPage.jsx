@@ -56,14 +56,64 @@ function SignUpPage() {
     }
   };
 
+  // Form validation
   const validateForm = () => {
     let isValid = true;
     const newErrors = { ...errors };
     const newErrorMessages = { ...errorMessages };
     
-    // Validation logic remains the same
-    // ... (keep existing validation code)
+    // Validate username
+    if (!formData.userName.trim()) {
+      newErrors.userName = true;
+      newErrorMessages.userName = 'Username is required';
+      isValid = false;
+    } else if (formData.userName.length < 3) {
+      newErrors.userName = true;
+      newErrorMessages.userName = 'Username must be at least 3 characters';
+      isValid = false;
+    }
     
+    // Validate email
+    if (!formData.email || !/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = true;
+      newErrorMessages.email = 'Please enter a valid email address';
+      isValid = false;
+    }
+    
+    // Validate password
+    if (!formData.password) {
+      newErrors.password = true;
+      newErrorMessages.password = 'Password is required';
+      isValid = false;
+    } else {
+      const minLength = formData.password.length >= 8;
+      const hasUpperCase = /[A-Z]/.test(formData.password);
+      const hasNumber = /\d/.test(formData.password);
+      const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(formData.password);
+      
+      if (!minLength || !hasUpperCase || !hasNumber || !hasSpecial) {
+        newErrors.password = true;
+        newErrorMessages.password = 'Password does not meet requirements';
+        isValid = false;
+      }
+    }
+    
+    // Validate confirm password
+    if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = true;
+      newErrorMessages.confirmPassword = 'Passwords do not match';
+      isValid = false;
+    }
+    
+    // Validate terms agreement
+    if (!formData.agreeToTerms) {
+      newErrors.agreeToTerms = true;
+      newErrorMessages.agreeToTerms = 'You must agree to the terms';
+      isValid = false;
+    }
+    
+    setErrors(newErrors);
+    setErrorMessages(newErrorMessages);
     return isValid;
   };
 
