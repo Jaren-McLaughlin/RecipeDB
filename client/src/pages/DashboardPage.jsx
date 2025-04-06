@@ -1,4 +1,3 @@
-// src/pages/DashboardPage.jsx
 import React, { useState, useEffect } from 'react';
 import { Container, Typography, Box, Snackbar, Alert } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
@@ -8,53 +7,51 @@ import SearchBar from '../components/dashboard/SearchBar';
 import PaginationControls from '../components/dashboard/PaginationControls';
 
 function DashboardPage() {
-  // State for recipes data
   const [recipes, setRecipes] = useState([]);
   const [filteredRecipes, setFilteredRecipes] = useState([]);
   const [paginatedRecipes, setPaginatedRecipes] = useState([]);
-  
-  // State for UI controls
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(12);
-  
-  // State for delete functionality
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [recipeToDelete, setRecipeToDelete] = useState(null);
-  
-  // State for notifications
   const [notification, setNotification] = useState({ 
     open: false, 
     message: '', 
     severity: 'success' 
   });
-  
   const navigate = useNavigate();
 
-  // Fetch recipes from API
   useEffect(() => {
     const fetchRecipes = async () => {
       try {
         setLoading(true);
-        const userId = 1; // Hardcoded for testing
-        const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/recipes/dashboard/${userId}`);
+        const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/recipes/dashboard`, {
+          credentials: 'include'
+        });
+
+        if (response.status === 401) {
+          navigate('/signin');
+          return;
+        }
+
         if (!response.ok) throw new Error('Failed to fetch recipes');
-        
+
         const data = await response.json();
-        const formattedRecipes = data.recipeList.map(recipe => ({
+        const formattedRecipes = data.map(recipe => ({
           id: recipe.recipeId,
           title: recipe.title,
-          notes: `Created by ${recipe.userName}`
+          notes: recipe.notes
         }));
 
         setRecipes(formattedRecipes);
         setFilteredRecipes(formattedRecipes);
       } catch (error) {
-        console.error('Error fetching recipes:', error);
+        console.error('Error:', error);
         setNotification({
           open: true,
-          message: 'Failed to load recipes. Please try again later.',
+          message: 'Failed to load recipes',
           severity: 'error'
         });
       } finally {
@@ -63,7 +60,7 @@ function DashboardPage() {
     };
 
     fetchRecipes();
-  }, []);
+  }, [navigate]);
 
   // Filter recipes when search term changes
   useEffect(() => {
@@ -102,8 +99,7 @@ function DashboardPage() {
     setCurrentPage(1);
   };
 
-  const handleViewRecipe = async (recipeId) => {
-    // Directly navigate to the recipe view page with ID in URL
+  const handleViewRecipe = (recipeId) => {
     navigate(`/recipes/${recipeId}`);
   };
 
@@ -111,7 +107,6 @@ function DashboardPage() {
     navigate(`/edit-recipe/${recipeId}`);
   };
 
-  
   const handleDelete = (id) => {
     const recipe = recipes.find(r => r.id === id);
     setRecipeToDelete(recipe);
@@ -123,11 +118,18 @@ function DashboardPage() {
     
     try {
       const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/recipes/${recipeToDelete.id}`, {
-        method: 'DELETE'
+        method: 'DELETE',
+        credentials: 'include'
       });
-      
-      if (!response.ok) throw new Error('Delete failed');
-      
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          navigate('/signin');
+          return;
+        }
+        throw new Error('Delete failed');
+      }
+
       const updatedRecipes = recipes.filter(recipe => recipe.id !== recipeToDelete.id);
       setRecipes(updatedRecipes);
       

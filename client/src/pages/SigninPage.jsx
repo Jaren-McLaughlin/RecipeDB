@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Box, FormControlLabel, Checkbox, Alert } from '@mui/material';
-
+import { useNavigate } from 'react-router-dom';
 import AuthLayout from '../components/auth/AuthLayout';
 import AuthHeader from '../components/auth/AuthHeader';
 import EmailField from '../components/auth/EmailField';
@@ -10,32 +10,28 @@ import AuthDivider from '../components/auth/AuthDivider';
 import AuthFooter from '../components/auth/AuthFooter';
 
 function SignInPage() {
-  // Form state
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
     rememberMe: false
   });
   
-  // Error states
   const [errors, setErrors] = useState({
     email: false,
     password: false
   });
   
-  // Error messages
   const [errorMessages, setErrorMessages] = useState({
     email: '',
     password: ''
   });
   
-  // Form status
   const [formStatus, setFormStatus] = useState({
     submitting: false,
     error: null
   });
-  
-  // Handle input changes
+
   const handleChange = (e) => {
     const { name, value, checked } = e.target;
     setFormData({
@@ -43,33 +39,23 @@ function SignInPage() {
       [name]: name === 'rememberMe' ? checked : value
     });
     
-    // Clear errors
     if (errors[name]) {
-      setErrors({
-        ...errors,
-        [name]: false
-      });
-      setErrorMessages({
-        ...errorMessages,
-        [name]: ''
-      });
+      setErrors({ ...errors, [name]: false });
+      setErrorMessages({ ...errorMessages, [name]: '' });
     }
   };
   
-  // Form validation
   const validateForm = () => {
     let isValid = true;
-    const newErrors = { ...errors };
-    const newErrorMessages = { ...errorMessages };
+    const newErrors = { email: false, password: false };
+    const newErrorMessages = { email: '', password: '' };
     
-    // Validate email
     if (!formData.email || !/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = true;
       newErrorMessages.email = 'Please enter a valid email address';
       isValid = false;
     }
     
-    // Validate password
     if (!formData.password) {
       newErrors.password = true;
       newErrorMessages.password = 'Password is required';
@@ -81,35 +67,49 @@ function SignInPage() {
     return isValid;
   };
   
-  // Form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if (!validateForm()) {
-      return;
-    }
-    
-    setFormStatus({
-      submitting: true,
-      error: null
-    });
-    
+    if (!validateForm()) return;
+
+    setFormStatus({ submitting: true, error: null });
+
     try {
-      // Simulate API call
-      console.log('Signing in with:', formData);
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/auth/login`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password
+        })
+      });
+
+      const data = await response.text();
+
+      if (!response.ok) {
+        throw new Error(data || 'Login failed');
+      }
+
+      // Successful login - navigate to dashboard
+      navigate('/');
       
-      // For now, just simulate success
-      window.location.href = '/'; // Or use navigate
     } catch (error) {
-      console.error('Sign in error:', error);
+      let errorMessage = 'Login failed';
+      if (error.message.includes('Invalid credentials')) {
+        errorMessage = 'Invalid email or password';
+      } else if (error.message.includes('missing required information')) {
+        errorMessage = 'Please fill in all fields';
+      }
+      
       setFormStatus({
         submitting: false,
-        error: 'Invalid email or password. Please try again.'
+        error: errorMessage
       });
     }
   };
-  
+
   return (
     <AuthLayout>
       <AuthHeader title="Sign In" />
