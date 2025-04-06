@@ -47,10 +47,10 @@ router.get(`/dashboard`, async (req, res) => {
 
         const userId = payload.jwtData.userId;
 
-        const recipes = await getRecipeList({userId: userId})
-        if(!recipes) return res.status(404).send(`User does not have recipes`)
+        const {recipeList} = await getRecipeList({userId})
+        if(!recipeList) return res.status(404).send(`User does not have recipes`)
 
-        res.status(200).send(recipes)
+        res.status(200).send(recipeList)
     } catch (error){
         console.error(error)
 
