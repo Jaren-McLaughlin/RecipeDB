@@ -30,7 +30,7 @@ function AddRecipePage() {
   
   // Handle cancel
   const handleCancel = () => {
-    navigate('/');
+    navigate('/dash');
   };
   
   return (
