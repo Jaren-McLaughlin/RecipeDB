@@ -1,52 +1,47 @@
-
-
-/**
- * Form for creating or editing recipes.
- * @memberof Recipe
- * @function RecipeForm
- * @param {Object} props - Component properties
- * @param {Object} props.recipe - Recipe data object with initial values
- * @param {Function} props.onSubmit - Function called when form is submitted
- * @param {Function} props.onCancel - Function called when cancel button is clicked
- * @returns {JSX.Element} Recipe form component
- * @example
- * const recipe = createBlankRecipe();
- * 
- * <RecipeForm
- *   recipe={recipe}
- *   onSubmit={(formData) => handleSubmit(formData)}
- *   onCancel={() => navigate('/')}
- * />
- */
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Button,
   TextField,
   Typography,
   Paper,
-  IconButton,
   Divider,
   Grid
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import IngredientInput from './IngredientInput';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { validateRecipe } from '../../models/Recipe';
+import IconButton from '@mui/material/IconButton';
 
 function RecipeForm({ recipe, onSubmit, onCancel }) {
   // Initialize form state with recipe data or defaults
   const [formData, setFormData] = useState({
     title: recipe?.title || '',
-    ingredients: recipe?.ingredients || [''],
+    description: recipe?.description || '',
+    ingredients: recipe?.ingredients || [{ name: '', quantity: '', unit: '' }],
     instructions: recipe?.instructions || [''],
     notes: recipe?.notes || '',
   });
   
+  // State for available ingredients (will be fetched from API)
+  const [availableIngredients, setAvailableIngredients] = useState([]);
+  
   // Track form validation errors
   const [errors, setErrors] = useState({});
   
-  // Handle changes to text fields
+  // Fetch available ingredients on component mount
+  useEffect(() => {
+    // This is mocked for simplicity
+    setAvailableIngredients([
+      { id: 1, name: 'Flour', measurement: 'cup' },
+      { id: 2, name: 'Sugar', measurement: 'cup' },
+      { id: 3, name: 'Butter', measurement: 'tbsp' },
+      { id: 4, name: 'Eggs', measurement: 'unit' },
+      { id: 5, name: 'Milk', measurement: 'cup' },
+    ]);
+  }, []);
+
+  // Handle text field changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -62,7 +57,37 @@ function RecipeForm({ recipe, onSubmit, onCancel }) {
     }
   };
   
-  // Handle changes to array fields (ingredients & instructions)
+  // Handle ingredient changes
+  const handleIngredientChange = (index, updatedIngredient) => {
+    const newIngredients = [...formData.ingredients];
+    newIngredients[index] = updatedIngredient;
+    setFormData({
+      ...formData,
+      ingredients: newIngredients,
+    });
+  };
+  
+  // Add a new ingredient input
+  const handleAddIngredient = () => {
+    setFormData({
+      ...formData,
+      ingredients: [...formData.ingredients, { name: '', quantity: '', unit: '' }],
+    });
+  };
+  
+  // Remove an ingredient
+  const handleRemoveIngredient = (index) => {
+    if (formData.ingredients.length === 1) return; // Don't remove the last one
+    
+    const newIngredients = [...formData.ingredients];
+    newIngredients.splice(index, 1);
+    setFormData({
+      ...formData,
+      ingredients: newIngredients,
+    });
+  };
+  
+  // Handle instruction changes 
   const handleArrayChange = (index, field, value) => {
     const newArray = [...formData[field]];
     newArray[index] = value;
@@ -72,16 +97,26 @@ function RecipeForm({ recipe, onSubmit, onCancel }) {
     });
   };
   
-  // Add a new empty item to an array field
+  // Add instruction 
   const handleAddItem = (field) => {
+    if (field === 'ingredients') {
+      handleAddIngredient();
+      return;
+    }
+    
     setFormData({
       ...formData,
       [field]: [...formData[field], ''],
     });
   };
   
-  // Remove an item from an array field
+  // Remove instruction 
   const handleRemoveItem = (field, index) => {
+    if (field === 'ingredients') {
+      handleRemoveIngredient(index);
+      return;
+    }
+    
     const newArray = [...formData[field]];
     newArray.splice(index, 1);
     setFormData({
@@ -90,25 +125,54 @@ function RecipeForm({ recipe, onSubmit, onCancel }) {
     });
   };
   
+  // Validate form before submission
+  const validateForm = () => {
+    const newErrors = {};
+    
+    if (!formData.title.trim()) {
+      newErrors.title = 'Title is required';
+    }
+    
+    const validIngredients = formData.ingredients.filter(
+      ing => ing.name.trim() && ing.quantity.trim()
+    );
+    
+    if (validIngredients.length === 0) {
+      newErrors.ingredients = 'At least one complete ingredient is required';
+    }
+    
+    const validInstructions = formData.instructions.filter(
+      instr => instr.trim() !== ''
+    );
+    
+    if (validInstructions.length === 0) {
+      newErrors.instructions = 'At least one instruction is required';
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+  
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    // Validate the recipe
-    const { isValid, errors: validationErrors } = validateRecipe({
-      ...formData,
-      // Filter out empty strings
-      ingredients: formData.ingredients.filter(item => item.trim() !== ''),
-      instructions: formData.instructions.filter(item => item.trim() !== ''),
-    });
-    
-    if (!isValid) {
-      setErrors(validationErrors);
+    if (!validateForm()) {
       return;
     }
     
-    // Call the onSubmit callback with the form data
-    onSubmit(formData);
+    // Filter out empty ingredients before submitting
+    const cleanedData = {
+      ...formData,
+      ingredients: formData.ingredients.filter(
+        ing => ing.name.trim() !== ''
+      ),
+      instructions: formData.instructions.filter(
+        instr => instr.trim() !== ''
+      ),
+    };
+    
+    onSubmit(cleanedData);
   };
   
   return (
@@ -151,28 +215,20 @@ function RecipeForm({ recipe, onSubmit, onCancel }) {
               </Typography>
               
               {formData.ingredients.map((ingredient, index) => (
-                <Box key={index} sx={{ display: 'flex', mb: 1 }}>
-                  <TextField
-                    fullWidth
-                    value={ingredient}
-                    onChange={(e) => handleArrayChange(index, 'ingredients', e.target.value)}
-                    placeholder={`Ingredient ${index + 1}`}
-                    variant="outlined"
-                    size="small"
-                  />
-                  <IconButton 
-                    color="error" 
-                    onClick={() => handleRemoveItem('ingredients', index)}
-                    disabled={formData.ingredients.length <= 1}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </Box>
+                <IngredientInput
+                  key={index}
+                  ingredient={ingredient}
+                  onChange={(updatedIngredient) => 
+                    handleIngredientChange(index, updatedIngredient)
+                  }
+                  onRemove={() => handleRemoveIngredient(index)}
+                  availableIngredients={availableIngredients}
+                />
               ))}
               
               <Button 
-                startIcon={<AddIcon />} 
-                onClick={() => handleAddItem('ingredients')}
+                startIcon={<AddIcon />}
+                onClick={handleAddIngredient}
                 sx={{ mt: 1 }}
               >
                 Add Ingredient
@@ -186,7 +242,7 @@ function RecipeForm({ recipe, onSubmit, onCancel }) {
             </Box>
           </Grid>
           
-          {/* Instructions */}
+          {/* Instructions (keeping this from your original) */}
           <Grid item xs={12}>
             <Box sx={{ mb: 2 }}>
               <Typography variant="h6" gutterBottom>
@@ -208,6 +264,7 @@ function RecipeForm({ recipe, onSubmit, onCancel }) {
                     color="error" 
                     onClick={() => handleRemoveItem('instructions', index)}
                     disabled={formData.instructions.length <= 1}
+                    sx={{ ml: 1 }}
                   >
                     <DeleteIcon />
                   </IconButton>

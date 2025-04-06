@@ -1,47 +1,82 @@
-import React, { useState } from 'react';
-import { Box, FormControlLabel, Checkbox, Alert } from '@mui/material';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import AuthLayout from '../components/auth/AuthLayout';
-import AuthHeader from '../components/auth/AuthHeader';
-import EmailField from '../components/auth/EmailField';
-import PasswordField from '../components/auth/PasswordField';
-import AuthSubmitButton from '../components/auth/AuthSubmitButton';
-import AuthDivider from '../components/auth/AuthDivider';
-import AuthFooter from '../components/auth/AuthFooter';
+import {
+  Box,
+  Button,
+  Checkbox,
+  Container,
+  FormControlLabel,
+  Divider,
+  FormLabel,
+  FormControl,
+  Link,
+  TextField,
+  Typography,
+  Paper,
+  Alert,
+} from '@mui/material';
+import RestaurantIcon from '@mui/icons-material/Restaurant';
+import { AuthContext } from '../contexts/MockAuthContext'; // Make sure this path is correct
 
 function SignInPage() {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    rememberMe: false
+  
+  // Get auth context safely with fallbacks
+  const authContext = useContext(AuthContext);
+  // Safely access login function with a fallback
+  const login = authContext?.login || ((credentials) => {
+    console.error('Login function not available');
+    return false;
   });
   
-  const [errors, setErrors] = useState({
-    email: false,
-    password: false
-  });
+  // Form state
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
   
-  const [errorMessages, setErrorMessages] = useState({
-    email: '',
-    password: ''
-  });
+  // Validation state
+  const [emailError, setEmailError] = useState(false);
+  const [emailErrorMessage, setEmailErrorMessage] = useState('');
+  const [passwordError, setPasswordError] = useState(false);
+  const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
   
-  const [formStatus, setFormStatus] = useState({
-    submitting: false,
-    error: null
-  });
+  // Status message
+  const [statusMessage, setStatusMessage] = useState({ type: '', message: '' });
 
-  const handleChange = (e) => {
-    const { name, value, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: name === 'rememberMe' ? checked : value
-    });
+  const handleSubmit = async (event) => {
+    event.preventDefault();
     
-    if (errors[name]) {
-      setErrors({ ...errors, [name]: false });
-      setErrorMessages({ ...errorMessages, [name]: '' });
+    if (!validateInputs()) {
+      return;
+    }
+    
+    try {
+      // Show loading status
+      setStatusMessage({ type: 'info', message: 'Logging in...' });
+      
+      // Call login function from AuthContext
+      const success = await login({ 
+        email, 
+        password,
+        rememberMe
+      });
+      
+      if (success) {
+        // Redirect to dashboard on successful login
+        navigate('/dash');
+      } else {
+        // Show error message
+        setStatusMessage({ 
+          type: 'error', 
+          message: 'Invalid email or password. Please try again.' 
+        });
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      setStatusMessage({ 
+        type: 'error', 
+        message: 'Login failed. Please try again later.' 
+      });
     }
   };
   
@@ -60,118 +95,126 @@ function SignInPage() {
       newErrors.password = true;
       newErrorMessages.password = 'Password is required';
       isValid = false;
+    } else {
+      setPasswordError(false);
+      setPasswordErrorMessage('');
     }
-    
-    setErrors(newErrors);
-    setErrorMessages(newErrorMessages);
+
     return isValid;
-  };
-  
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!validateForm()) return;
-
-    setFormStatus({ submitting: true, error: null });
-
-    try {
-      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/auth/login`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password
-        })
-      });
-
-      const data = await response.text();
-
-      if (!response.ok) {
-        throw new Error(data || 'Login failed');
-      }
-
-      // Successful login - navigate to dashboard
-      navigate('/');
-      
-    } catch (error) {
-      let errorMessage = 'Login failed';
-      if (error.message.includes('Invalid credentials')) {
-        errorMessage = 'Invalid email or password';
-      } else if (error.message.includes('missing required information')) {
-        errorMessage = 'Please fill in all fields';
-      }
-      
-      setFormStatus({
-        submitting: false,
-        error: errorMessage
-      });
-    }
   };
 
   return (
-    <AuthLayout>
-      <AuthHeader title="Sign In" />
-      
-      {formStatus.error && (
-        <Alert severity="error" sx={{ width: '100%' }}>
-          {formStatus.error}
-        </Alert>
-      )}
-      
-      <Box
-        component="form"
-        onSubmit={handleSubmit}
-        noValidate
+    <Container maxWidth="sm" sx={{ mt: 8, mb: 4 }}>
+      <Paper
+        elevation={3}
         sx={{
-          width: '100%',
+          p: 4,
           display: 'flex',
           flexDirection: 'column',
-          gap: 2,
+          alignItems: 'center',
+          gap: 2
         }}
       >
-        <EmailField
-          value={formData.email}
-          onChange={handleChange}
-          error={errors.email}
-          helperText={errorMessages.email}
-          autoFocus={true}
-        />
+        <RestaurantIcon color="primary" sx={{ fontSize: 40 }} />
+        <Typography component="h1" variant="h4">
+          Sign in
+        </Typography>
         
-        <PasswordField
-          value={formData.password}
-          onChange={handleChange}
-          error={errors.password}
-          helperText={errorMessages.password}
-        />
+        {/* Show status message if any */}
+        {statusMessage.message && (
+          <Alert severity={statusMessage.type} sx={{ width: '100%' }}>
+            {statusMessage.message}
+          </Alert>
+        )}
         
-        <FormControlLabel
-          control={
-            <Checkbox
-              name="rememberMe"
-              checked={formData.rememberMe}
-              onChange={handleChange}
-              color="primary"
+        <Box
+          component="form"
+          onSubmit={handleSubmit}
+          noValidate
+          sx={{
+            width: '100%',
+            mt: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 2,
+          }}
+        >
+          <FormControl>
+            <FormLabel htmlFor="email">Email</FormLabel>
+            <TextField
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              error={emailError}
+              helperText={emailErrorMessage}
+              id="email"
+              type="email"
+              name="email"
+              placeholder="your@email.com"
+              autoComplete="email"
+              autoFocus
+              required
+              fullWidth
+              variant="outlined"
+              color={emailError ? 'error' : 'primary'}
             />
-          }
-          label="Remember me"
-        />
+          </FormControl>
+          
+          <FormControl>
+            <FormLabel htmlFor="password">Password</FormLabel>
+            <TextField
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              error={passwordError}
+              helperText={passwordErrorMessage}
+              name="password"
+              placeholder="••••••"
+              type="password"
+              id="password"
+              autoComplete="current-password"
+              required
+              fullWidth
+              variant="outlined"
+              color={passwordError ? 'error' : 'primary'}
+            />
+          </FormControl>
+          
+          <FormControlLabel
+            control={
+              <Checkbox 
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+                value="remember" 
+                color="primary" 
+              />
+            }
+            label="Remember me"
+          />
+          
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            size="large"
+            sx={{ mt: 1 }}
+          >
+            Sign in
+          </Button>
+        </Box>
         
-        <AuthSubmitButton
-          label="Sign In"
-          isSubmitting={formStatus.submitting}
-        />
-      </Box>
-      
-      <AuthDivider />
-      
-      <AuthFooter
-        message="Don't have an account?"
-        linkText="Sign Up"
-        linkPath="/signup"
-      />
-    </AuthLayout>
+        <Divider sx={{ width: '100%', my: 2 }}>or</Divider>
+        
+        <Typography sx={{ textAlign: 'center' }}>
+          Don't have an account?{' '}
+          <Link
+            component="button"
+            variant="body2"
+            onClick={() => navigate('/signup')}
+          >
+            Sign up
+          </Link>
+        </Typography>
+      </Paper>
+    </Container>
   );
 }
 
