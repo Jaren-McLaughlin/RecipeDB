@@ -86,12 +86,12 @@ describe('getRecipeDetails', () => {
         ingredients: expect.arrayContaining([
           expect.objectContaining({
             name: 'flour',
-            quantity: '1',
+            quantity: 1,
             measurement: 'cup',
           }),
           expect.objectContaining({
             name: 'water',
-            quantity: '1.5',
+            quantity: 1.5,
             measurement: 'cup',
           }),
         ]),
