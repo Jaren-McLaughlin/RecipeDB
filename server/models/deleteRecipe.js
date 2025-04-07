@@ -21,7 +21,7 @@ async function deleteRecipe ({
   const connection = await pool.getConnection();
 
   await connection.execute(
-    `DELETE FROM recipe where recipeId = ?`,
+    `DELETE FROM recipe WHERE recipeId = ?`,
     [
       recipeId,
     ],
