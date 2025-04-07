@@ -114,27 +114,6 @@ const UserMenu = ({ user, logout, login, isMockAuth }) => {
           <ListItemText>Profile</ListItemText>
         </MenuItem>
         
-        <MenuItem onClick={() => { navigate('/favorites'); handleMenuClose(); }}>
-          <ListItemIcon>
-            <BookmarkIcon fontSize="small" color="primary" />
-          </ListItemIcon>
-          <ListItemText>Favorites</ListItemText>
-        </MenuItem>
-        
-        {isMockAuth && (
-          <MenuItem onClick={() => {
-            login({ email: user?.isAdmin ? 'regular@example.com' : 'admin@example.com' });
-            handleMenuClose();
-          }}>
-            <ListItemIcon>
-              <BugReportIcon fontSize="small" color="warning" />
-            </ListItemIcon>
-            <ListItemText>
-              Switch to {user?.isAdmin ? 'Regular User' : 'Admin User'}
-            </ListItemText>
-          </MenuItem>
-        )}
-        
         <Divider sx={{ my: 1 }} />
         
         <MenuItem onClick={handleLogout}>
