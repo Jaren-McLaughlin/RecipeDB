@@ -1,4 +1,3 @@
-// components/layout/UserMenu.jsx
 import React, { useState } from 'react';
 import { 
   IconButton, 
@@ -12,11 +11,9 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import PersonIcon from '@mui/icons-material/Person';
-import BookmarkIcon from '@mui/icons-material/Bookmark';
 import LogoutIcon from '@mui/icons-material/Logout';
-import BugReportIcon from '@mui/icons-material/BugReport';
 
-const UserMenu = ({ user, logout, login, isMockAuth }) => {
+const UserMenu = ({ user, logout }) => {
   const theme = useTheme();
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -113,27 +110,6 @@ const UserMenu = ({ user, logout, login, isMockAuth }) => {
           </ListItemIcon>
           <ListItemText>Profile</ListItemText>
         </MenuItem>
-        
-        <MenuItem onClick={() => { navigate('/favorites'); handleMenuClose(); }}>
-          <ListItemIcon>
-            <BookmarkIcon fontSize="small" color="primary" />
-          </ListItemIcon>
-          <ListItemText>Favorites</ListItemText>
-        </MenuItem>
-        
-        {isMockAuth && (
-          <MenuItem onClick={() => {
-            login({ email: user?.isAdmin ? 'regular@example.com' : 'admin@example.com' });
-            handleMenuClose();
-          }}>
-            <ListItemIcon>
-              <BugReportIcon fontSize="small" color="warning" />
-            </ListItemIcon>
-            <ListItemText>
-              Switch to {user?.isAdmin ? 'Regular User' : 'Admin User'}
-            </ListItemText>
-          </MenuItem>
-        )}
         
         <Divider sx={{ my: 1 }} />
         
