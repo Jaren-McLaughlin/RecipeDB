@@ -17,6 +17,7 @@ import SignUpPage from './pages/SignUpPage';
 import AddRecipePage from './pages/AddRecipePage';
 import LandingPage from './pages/LandingPage';
 import ProfilePage from './pages/ProfilePage';
+import OnboardingTour from './components/common/OnBoardingTour';
 
 import { ThemeProvider } from './contexts/ThemeProvider';
 
@@ -28,6 +29,7 @@ function App() {
           <Router>
             <div className="App">
               <PageContainer>
+                <OnboardingTour />
                 <Routes>
                   {/* Public Routes */}
                   <Route path="/signin" element={<SignInPage />} />

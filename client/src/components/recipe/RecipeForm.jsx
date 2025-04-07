@@ -193,20 +193,6 @@ function RecipeForm({ recipe, onSubmit, onCancel }) {
             />
           </Grid>
           
-          {/* Description */}
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="Description"
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              multiline
-              rows={2}
-              variant="outlined"
-            />
-          </Grid>
-          
           {/* Ingredients */}
           <Grid item xs={12}>
             <Box sx={{ mb: 2 }}>
