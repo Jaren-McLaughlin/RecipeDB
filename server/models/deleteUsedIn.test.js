@@ -1,11 +1,12 @@
 const pool = require('../config/db');
-const deleteRecipe = require('./deleteRecipe');
+const deleteUsedIn = require('./deleteUsedIn');
 
 let connection;
+let ingredientId;
 let recipeId;
 let userId;
 
-describe('deleteRecipe', () => {
+describe('deleteUsedIn', () => {
   beforeAll(async () => {
     connection = await pool.getConnection();
     ([{ insertId: userId }] = await connection.execute(
@@ -15,8 +16,8 @@ describe('deleteRecipe', () => {
         \`password\`
       ) VALUES (?, ?, ?)`,
       [
-        'deleteRecipeTest',
-        'deleteRecipeTest@FakeEmail.com',
+        'deleteUsedInTest',
+        'deleteUsedInTest@FakeEmail.com',
         'password',
       ],
     ));
@@ -32,6 +33,30 @@ describe('deleteRecipe', () => {
         userId,
       ],
     ));
+    ([{ insertId: ingredientId }] = await connection.execute(
+      `INSERT INTO ingredient (
+        name,
+        measurement,
+        userId
+      ) VALUES (?, ?, ?)`,
+      [
+        'flour',
+        'cup',
+        userId,
+      ],
+    ));
+    await connection.execute(
+      `INSERT INTO usedIn (
+        recipeId,
+        ingredientId,
+        quantity
+      ) VALUES (?, ?, ?)`,
+      [
+        recipeId,
+        ingredientId,
+        1,
+      ],
+    );
   });
   afterAll(async () => {
     await connection.execute(
@@ -40,17 +65,19 @@ describe('deleteRecipe', () => {
     );
     await pool.end();
   });
-  it('should work and delete a recipe', async () => {
+  it('should work and delete from usedIn', async () => {
     expect.assertions(2);
-    const response = await deleteRecipe({
+    const response = await deleteUsedIn({
+      ingredientId,
       recipeId,
     });
     expect(response).toBe(true);
 
     const [[selectResult]] = await connection.execute(
-      `SELECT * FROM recipe WHERE recipeId = ?`,
+      `SELECT * FROM usedIn WHERE ingredientId = ? AND recipeId = ?`,
       [
-        recipeId
+        ingredientId,
+        recipeId,
       ],
     );
     expect(selectResult).toStrictEqual(undefined);
