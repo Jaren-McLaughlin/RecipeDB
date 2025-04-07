@@ -2,6 +2,7 @@ const pool = require('../config/db');
 const updateRecipe = require('./updateRecipe');
 
 let connection;
+let recipeId;
 let userId;
 
 describe('updateRecipe', () => {
