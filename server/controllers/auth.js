@@ -23,9 +23,11 @@ router.post(`/register`, async (req, res) => {
         const userId = await addUser({ userName: userName, email: email, password: hashedPassword })
 
         if(!userId) return res.status(404).send(`could not create user with provided data`)
+        
+        const {token} = await createToken({userId})
 
         res.status(200)
-        .cookie('token', createToken({ userId }), {
+        .cookie('token', token, {
             httpOnly: true,
             sameSite: 'Lax',
             secure: false,
@@ -56,8 +58,10 @@ router.post(`/login`, async (req, res) => {
 
         if(!passwordMatch) return res.status(401).send('Invalid credentials')
 
+        const {token} = await createToken({userId: loginDetails.userId})
+
         res.status(200)
-        .cookie('token', createToken({userId: loginDetails.userId}), {
+        .cookie('token', token, {
             httpOnly: true,
             sameSite: 'Lax',
             secure: false,
