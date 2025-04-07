@@ -72,7 +72,7 @@ describe('addUsedIn', () => {
     expect(selectResult).toStrictEqual({
       recipeId,
       ingredientId,
-      quantity: "1",
+      quantity: 1,
     });
   });
 });
