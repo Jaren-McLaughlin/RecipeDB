@@ -25,7 +25,6 @@ function DashboardPage() {
   const { isAuthenticated, isLoading } = useAuth();
   const navigate = useNavigate();
   
-  // Add this useEffect
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
       navigate('/signin', { replace: true });
@@ -36,7 +35,8 @@ function DashboardPage() {
     const fetchRecipes = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/recipes/dashboard`, {
+        const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/recipes`, {
+          method: 'GET',
           credentials: 'include'
         });
 
@@ -49,9 +49,10 @@ function DashboardPage() {
 
         const data = await response.json();
         const formattedRecipes = data.map(recipe => ({
-          id: recipe.recipeId,
+          id: recipe.id,
           title: recipe.title,
-          notes: recipe.notes
+          notes: recipe.description,
+          createdAt: recipe.createdAt
         }));
 
         setRecipes(formattedRecipes);
@@ -60,7 +61,7 @@ function DashboardPage() {
         console.error('Error:', error);
         setNotification({
           open: true,
-          message: 'Failed to load recipes',
+          message: error.message || 'Failed to load recipes',
           severity: 'error'
         });
       } finally {
@@ -72,6 +73,7 @@ function DashboardPage() {
       fetchRecipes();
     }
   }, [isAuthenticated, navigate]);
+
 
   // Filter recipes when search term changes
   useEffect(() => {
@@ -111,7 +113,7 @@ function DashboardPage() {
   };
 
   const handleViewRecipe = (recipeId) => {
-    navigate(`/recipes/${recipeId}`);
+    navigate(`/ingredients/${recipeId}`);
   };
 
   const handleEdit = (recipeId) => {
@@ -138,7 +140,8 @@ function DashboardPage() {
           navigate('/signin');
           return;
         }
-        throw new Error('Delete failed');
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Delete failed');
       }
 
       const updatedRecipes = recipes.filter(recipe => recipe.id !== recipeToDelete.id);
@@ -152,7 +155,7 @@ function DashboardPage() {
     } catch (error) {
       setNotification({
         open: true,
-        message: 'Failed to delete recipe. Please try again.',
+        message: error.message || 'Failed to delete recipe',
         severity: 'error'
       });
     }
@@ -160,7 +163,7 @@ function DashboardPage() {
     setDeleteDialogOpen(false);
     setRecipeToDelete(null);
   };
-  
+
   const handleCloseNotification = () => {
     setNotification({ ...notification, open: false });
   };
