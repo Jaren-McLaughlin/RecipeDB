@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Container, Typography, Box, Paper, Grid, CircularProgress } from '@mui/material';
 import UserInfoCard from './UserInfoCard';
 import UserStatsCard from './UserStatsCard';
@@ -6,7 +6,7 @@ import ProfileEditForm from './ProfileEditForm';
 import PasswordChangeForm from './PasswordChangeForm';
 
 function ProfileContainer({ 
-  userData = {}, // Default to empty object
+  userData = {}, 
   loading,
   activeTab,
   handleEditToggle,
@@ -14,7 +14,15 @@ function ProfileContainer({
   handleProfileUpdate,
   handlePasswordUpdate 
 }) {
-  // Safe default values
+  const [recipeCount, setRecipeCount] = useState(0)
+
+  useEffect(()=>{
+    fetch("/api/recipes/dashboard",{credentials:"include"})
+    .then(r=>r.json())
+    .then(data=>setRecipeCount(data.length))
+    .catch(e=>console.error("Failed to fetch recipes",e))
+  },[])
+
   const safeUserData = {
     userName: '',
     email: '',
@@ -23,7 +31,7 @@ function ProfileContainer({
     recipeCount: 0,
     favoriteCount: 0,
     sharedCount: 0,
-    ...userData // Spread actual userData over defaults
+    ...userData
   };
 
   return (
@@ -38,7 +46,6 @@ function ProfileContainer({
         </Box>
       ) : (
         <Grid container spacing={3}>
-          {/* Left column: User info and stats */}
           <Grid item xs={12} md={4}>
             <UserInfoCard 
               user={safeUserData} 
@@ -46,35 +53,34 @@ function ProfileContainer({
               onChangePassword={handlePasswordToggle}
             />
             <Box sx={{ mt: 3 }}>
-            <UserStatsCard 
-            stats={{
-              recipeCount: userData.recipeCount,
-              favoriteCount: userData.favoriteCount,
-              sharedCount: userData.sharedCount
-            }}
-          />
+              <UserStatsCard 
+                stats={{
+                  recipeCount: recipeCount, //use fetched count
+                  favoriteCount: userData.favoriteCount,
+                  sharedCount: userData.sharedCount
+                }}
+              />
             </Box>
           </Grid>
           
-          {/* Right column: Forms or additional content */}
           <Grid item xs={12} md={8}>
             <Paper sx={{ p: 3 }}>
               {activeTab === 'view' ? (
                 <>
                   <Typography variant="h6">Recent Activity</Typography>
                   <Typography variant="body1" sx={{ mt: 2 }}>
-                    You've created {safeUserData.recipeCount} recipes.
+                    You've created {recipeCount} recipes.
                   </Typography>
                 </>
               ) : activeTab === 'edit' ? (
                 <ProfileEditForm
-  userData={{
-    userName: userData.userName,
-    email: userData.email
-  }}
-  onCancel={handleEditToggle}
-  onSubmit={handleProfileUpdate}
-/>
+                  userData={{
+                    userName: userData.userName,
+                    email: userData.email
+                  }}
+                  onCancel={handleEditToggle}
+                  onSubmit={handleProfileUpdate}
+                />
               ) : (
                 <PasswordChangeForm
                   onCancel={handlePasswordToggle}

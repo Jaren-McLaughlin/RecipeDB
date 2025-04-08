@@ -35,7 +35,7 @@ function DashboardPage() {
     const fetchRecipes = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/recipes`, {
+        const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/recipes/dashboard`, {
           method: 'GET',
           credentials: 'include'
         });
@@ -49,9 +49,9 @@ function DashboardPage() {
 
         const data = await response.json();
         const formattedRecipes = data.map(recipe => ({
-          id: recipe.id,
+          id: recipe.recipeId,  // Change from recipe.id to recipe.recipeId
           title: recipe.title,
-          notes: recipe.description,
+          notes: recipe.notes,  // Changed from description to notes
           createdAt: recipe.createdAt
         }));
 
@@ -113,7 +113,7 @@ function DashboardPage() {
   };
 
   const handleViewRecipe = (recipeId) => {
-    navigate(`/ingredients/${recipeId}`);
+    navigate(`/recipe/${recipeId}`);  // Changed from /ingredients/ to /recipe/
   };
 
   const handleEdit = (recipeId) => {

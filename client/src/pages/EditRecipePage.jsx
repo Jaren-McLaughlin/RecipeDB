@@ -14,7 +14,10 @@ function EditRecipePage() {
   useEffect(() => {
     const fetchRecipeData = async () => {
       try {
-        const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/recipes/${id}`);
+        const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/recipes/${id}`, {
+          credentials: 'include'
+        });
+        
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         
         const data = await response.json();
