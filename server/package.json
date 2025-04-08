@@ -5,6 +5,7 @@
   "main": "server.js",
   "scripts": {
     "createData": "node ./database/createData.js",
+    "createIngredientList": "node ./database/createStandardUser.js",
     "deleteData": "node ./database/deleteData.js",
     "dev": "nodemon server.js",
     "genDocs": "jsdoc -c jsdoc.config.json",
