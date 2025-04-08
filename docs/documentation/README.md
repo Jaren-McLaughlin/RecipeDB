@@ -5,7 +5,7 @@ Winter 2025
 Tate McCauley
 Jaren McLaughlin
 Nathan Seneca
-Ben Gutierrez
+Ben G
 
 ## Table of Contents  
 - [Project Overview](#project-overview)  

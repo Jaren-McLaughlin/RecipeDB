@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Paper, 
   Typography, 
@@ -9,10 +9,14 @@ import {
   Alert,
   Snackbar
 } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
-function ProfileEditForm({ userData, onCancel, onSave }) {
+function ProfileEditForm({ userData = {}, onCancel, onSave }) {
+  const navigate = useNavigate();
+
+  // Initialize state with proper field names and fallbacks
   const [formData, setFormData] = useState({
-    username: userData.username || '',
+    userName: userData.userName || '',
     email: userData.email || ''
   });
   
@@ -22,7 +26,15 @@ function ProfileEditForm({ userData, onCancel, onSave }) {
     message: '',
     severity: 'info'
   });
-  
+
+  // Update form data when userData changes
+  useEffect(() => {
+    setFormData({
+      userName: userData.userName || '',
+      email: userData.email || ''
+    });
+  }, [userData]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -30,7 +42,6 @@ function ProfileEditForm({ userData, onCancel, onSave }) {
       [name]: value
     }));
     
-    // Clear error when field is edited
     if (errors[name]) {
       setErrors(prev => ({
         ...prev,
@@ -42,10 +53,10 @@ function ProfileEditForm({ userData, onCancel, onSave }) {
   const validateForm = () => {
     const newErrors = {};
     
-    if (!formData.username || formData.username.trim() === '') {
-      newErrors.username = 'Username is required';
-    } else if (formData.username.length < 3) {
-      newErrors.username = 'Username must be at least 3 characters';
+    if (!formData.userName || formData.userName.trim() === '') {
+      newErrors.userName = 'Username is required';
+    } else if (formData.userName.length < 3) {
+      newErrors.userName = 'Username must be at least 3 characters';
     }
     
     if (!formData.email || formData.email.trim() === '') {
@@ -60,24 +71,14 @@ function ProfileEditForm({ userData, onCancel, onSave }) {
   
   const handleSubmit = (e) => {
     e.preventDefault();
-    
     if (validateForm()) {
-      try {
-        // This would be an API call in a real application
-        onSave(formData);
-        setNotification({
-          open: true,
-          message: 'Profile updated successfully!',
-          severity: 'success'
-        });
-      } catch (error) {
-        setNotification({
-          open: true,
-          message: 'Error updating profile',
-          severity: 'error'
-        });
-      }
+      onSave(formData); // Parent component handles success/error
     }
+  };
+
+
+  const handleCloseNotification = () => {
+    setNotification(prev => ({ ...prev, open: false }));
   };
   
   return (
@@ -92,12 +93,13 @@ function ProfileEditForm({ userData, onCancel, onSave }) {
             <TextField
               fullWidth
               label="Username"
-              name="username"
-              value={formData.username}
+              name="userName"
+              value={formData.userName}
               onChange={handleChange}
-              error={Boolean(errors.username)}
-              helperText={errors.username}
+              error={Boolean(errors.userName)}
+              helperText={errors.userName}
               variant="outlined"
+              inputProps={{ maxLength: 30 }}
             />
           </Grid>
           
@@ -119,7 +121,7 @@ function ProfileEditForm({ userData, onCancel, onSave }) {
             <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, mt: 2 }}>
               <Button 
                 variant="outlined" 
-                onClick={onCancel}
+                onClick={() => navigate('/profile')}
               >
                 Cancel
               </Button>
@@ -137,10 +139,10 @@ function ProfileEditForm({ userData, onCancel, onSave }) {
       <Snackbar
         open={notification.open}
         autoHideDuration={6000}
-        onClose={() => setNotification(prev => ({ ...prev, open: false }))}
+        onClose={handleCloseNotification}
       >
         <Alert 
-          onClose={() => setNotification(prev => ({ ...prev, open: false }))} 
+          onClose={handleCloseNotification} 
           severity={notification.severity}
         >
           {notification.message}
