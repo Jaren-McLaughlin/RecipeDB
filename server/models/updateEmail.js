@@ -1,33 +1,33 @@
 const pool = require('../config/db');
 
 /**
- * @module updatePassword
+ * @module updateEmail
  */
 
 /**
- * @typedef {Object} updatePasswordParams
+ * @typedef {Object} updateEmailParams
  * @property {string} userId - The userId
- * @property {string} password - The new password
+ * @property {string} email - The new email
  */
 
 /**
- * Updates a users password
- * @param {updatePasswordParams} params - The parameters
+ * Updates a users email
+ * @param {updateEmailParams} params - The parameters
  * @returns {Promise<boolean>} - The response, returns true if updated fine
  */
 
-async function updatePassword ({
+async function updateEmail ({
   userId,
-  password,
+  email,
 }) {
   const connection = await pool.getConnection();
 
   await connection.execute(
     `UPDATE user
-    SET \`password\` = ?
+    SET email = ?
     WHERE userId = ?`,
     [
-      password,
+      email,
       userId,
     ],
   );
@@ -36,4 +36,4 @@ async function updatePassword ({
   return true;
 }
 
-module.exports = updatePassword;
+module.exports = updateEmail;
