@@ -11,6 +11,9 @@ const getIngredients = require(`../models/getIngredients`)
 const updateRecipe = require("../models/updateRecipe")
 const updateUsedIn = require(`../models/updateUsedIn`)
 const updateIngredient = require("../models/updateIngredient")
+const deleteUsedIn = require("../models/deleteUsedIn")
+const deleteIngredient = require("../models/deleteIngredient")
+const deleteRecipe = require("../models/deleteRecipe")
 
 
 // sends the list of recipes for the dashboard
@@ -268,6 +271,100 @@ router.put(`/ingredient`, async (req, res) => {
         if(!success) return res.status(404).send(`User could not update ingredient`)
 
         res.status(200).send(`Successful Update!`)
+        
+    } catch (error){
+        console.error(error)
+
+        if (error.name === 'JsonWebTokenError' || error.name === 'TokenExpiredError') {
+            return res.status(401).json({ error: 'Invalid or expired token' });
+        }
+
+        res.status(500).send(`Something went wrong`)
+    }
+})
+
+// delete a whole recipe
+router.delete(`/`, async (req, res) => {
+    try{
+        const payload = await verifyToken({token: req.cookies.token})
+        if(!payload) return res.status(401).send(`not an authorized user`)
+
+        const userId = payload.jwtData.userId;
+
+        const { recipeId } = req.body
+
+        if(!recipeId) return res.status(400).send(`missing required information`)
+
+        const { recipeDetails: recipe, userId: recUserId } = await getRecipeDetails({recipeId})
+
+        if(userId !== recUserId) return res.status(403).send(`not authorized to access recipe`)
+
+        const success = deleteRecipe({recipeId})
+
+        if(!success) return res.status(404).send(`User could not delete Recipe`)
+
+        res.status(200).send(`Successful Deletion!`)
+        
+    } catch (error){
+        console.error(error)
+
+        if (error.name === 'JsonWebTokenError' || error.name === 'TokenExpiredError') {
+            return res.status(401).json({ error: 'Invalid or expired token' });
+        }
+
+        res.status(500).send(`Something went wrong`)
+    }
+})
+
+// delete an ingredient from a recipe
+router.delete(`/usedIn`, async (req, res) => {
+    try{
+        const payload = await verifyToken({token: req.cookies.token})
+        if(!payload) return res.status(401).send(`not an authorized user`)
+
+        const userId = payload.jwtData.userId;
+
+        const { ingredientId , recipeId } = req.body
+
+        if(!ingredientId || !recipeId) return res.status(400).send(`missing required information`)
+
+        const { recipeDetails: recipe, userId: recUserId } = await getRecipeDetails({recipeId})
+
+        if(userId !== recUserId) return res.status(403).send(`not authorized to access recipe`)
+
+        const success = deleteUsedIn({ingredientId: ingredientId, recipeId: recipeId})
+
+        if(!success) return res.status(404).send(`User could not delete ingredient from Recipe`)
+
+        res.status(200).send(`Successful Deletion!`)
+        
+    } catch (error){
+        console.error(error)
+
+        if (error.name === 'JsonWebTokenError' || error.name === 'TokenExpiredError') {
+            return res.status(401).json({ error: 'Invalid or expired token' });
+        }
+
+        res.status(500).send(`Something went wrong`)
+    }
+})
+
+router.delete(`/ingredient`, async (req, res) => {
+    try{
+        const payload = await verifyToken({token: req.cookies.token})
+        if(!payload) return res.status(401).send(`not an authorized user`)
+
+        const userId = payload.jwtData.userId;
+
+        const { ingredientId } = req.body
+
+        if(!ingredientId) return res.status(400).send(`missing required information`)
+
+        const success = deleteIngredient({ingredientId})
+
+        if(!success) return res.status(404).send(`User could not delete ingredient`)
+
+        res.status(200).send(`Successful Deletion!`)
         
     } catch (error){
         console.error(error)
