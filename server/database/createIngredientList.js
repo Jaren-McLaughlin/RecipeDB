@@ -8,7 +8,7 @@ const mysql = require('mysql2/promise');
  * @param {boolean} logging - toggles whether failed inserts should be logged
  */
 
-const createData = async ({ logging }) => {
+const createIngredientList = async ({ logging }) => {
   const connection = await mysql.createConnection({
     host: process.env.DB_HOST || 'localhost',
     user: process.env.DB_USER || 'root',
@@ -29,7 +29,7 @@ const createData = async ({ logging }) => {
   await connection.end();
 };
 
-createData(
+createIngredientList(
   process.argv[2] === 'true'
   ? { logging: process.argv[2] }
   : { logging: false }
