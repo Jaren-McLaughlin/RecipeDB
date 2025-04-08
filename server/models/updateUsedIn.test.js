@@ -68,7 +68,7 @@ describe('updateUsedIn', () => {
     );
     await pool.end();
   });
-  it('should work and update a recipe', async () => {
+  it('should work and update a usedIn entry', async () => {
     expect.assertions(2);
     const response = await updateUsedIn({
       currentIngredientId: ingredientId,

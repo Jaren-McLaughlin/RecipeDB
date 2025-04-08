@@ -27,7 +27,7 @@ describe('updateEmail', () => {
     );
     await pool.end();
   });
-  it('should work and update a users password', async () => {
+  it('should work and update a users email', async () => {
     expect.assertions(2);
     const response = await updateEmail({
       userId,
