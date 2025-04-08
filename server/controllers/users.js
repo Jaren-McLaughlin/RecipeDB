@@ -8,6 +8,7 @@ const updateEmail = require(`../models/updateEmail`)
 const verifyToken = require("../middleware/verifyToken")
 const updateUserName = require("../models/updateUserName")
 const updatePassword = require("../models/updatePassword")
+const deleteUser = require('../models/deleteUser')
 
 const saltRounds = 10;
 
@@ -108,6 +109,30 @@ router.put(`/password`, async (req, res) => {
         if(!success) return res.status(404).send(`user not found`)
 
         res.status(200).send(`Successful Update!`)
+
+    } catch (error){
+        console.error(error)
+
+        if (error.name === 'JsonWebTokenError' || error.name === 'TokenExpiredError') {
+            return res.status(401).json({ error: 'Invalid or expired token' });
+        }
+
+        res.status(500).send(`Something went wrong`)
+    }
+})
+
+// delete a user
+router.delete(`/`, async (req, res) => {
+    try{
+        const payload = await verifyToken({token: req.cookies.token})
+        if(!payload) return res.status(401).send(`not an authorized user`)
+
+        const userId = payload.jwtData.userId;
+
+        const { success } = await deleteUser({userId: userId})
+        if(!success) return res.status(404).send(`Could not delete user`)
+
+        res.status(200).send(`Successful Deletion!`)
 
     } catch (error){
         console.error(error)
