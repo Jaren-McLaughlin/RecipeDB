@@ -5,6 +5,7 @@ import RecipeGrid from '../components/dashboard/RecipeGrid';
 import DeleteConfirmationDialog from '../components/common/DeleteConfirmationDialog';
 import SearchBar from '../components/dashboard/SearchBar';
 import PaginationControls from '../components/dashboard/PaginationControls';
+import { useAuth } from '../contexts/AuthContext';
 
 function DashboardPage() {
   const [recipes, setRecipes] = useState([]);
@@ -21,7 +22,15 @@ function DashboardPage() {
     message: '', 
     severity: 'success' 
   });
+  const { isAuthenticated, isLoading } = useAuth();
   const navigate = useNavigate();
+  
+  // Add this useEffect
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      navigate('/signin', { replace: true });
+    }
+  }, [isAuthenticated, isLoading, navigate]);
 
   useEffect(() => {
     const fetchRecipes = async () => {
@@ -59,8 +68,10 @@ function DashboardPage() {
       }
     };
 
-    fetchRecipes();
-  }, [navigate]);
+    if (isAuthenticated) {
+      fetchRecipes();
+    }
+  }, [isAuthenticated, navigate]);
 
   // Filter recipes when search term changes
   useEffect(() => {
