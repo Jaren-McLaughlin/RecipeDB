@@ -1,4 +1,3 @@
-// components/layout/UserMenu.jsx
 import React, { useState } from 'react';
 import { 
   IconButton, 
@@ -12,17 +11,16 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import PersonIcon from '@mui/icons-material/Person';
-import BookmarkIcon from '@mui/icons-material/Bookmark';
 import LogoutIcon from '@mui/icons-material/Logout';
-import BugReportIcon from '@mui/icons-material/BugReport';
+import { useAuth } from '../../contexts/AuthContext'; // Update path
 
-const UserMenu = ({ user, logout, login, isMockAuth }) => {
+const UserMenu = () => {
   const theme = useTheme();
   const navigate = useNavigate();
+  const { user, logout } = useAuth(); // Get auth state from context
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   
-  // Use primary or secondary color based on theme mode
   const avatarBgColor = theme.palette.primary.main;
   const avatarTextColor = theme.palette.primary.contrastText;
   
@@ -34,13 +32,16 @@ const UserMenu = ({ user, logout, login, isMockAuth }) => {
     setAnchorEl(null);
   };
   
-  const handleLogout = () => {
-    logout();
-    handleMenuClose();
-    navigate('/');
+  const handleLogout = async () => {
+    try {
+      await logout(); // Use context logout function
+      handleMenuClose();
+      navigate('/');
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
   };
-  
-  // Get display name for avatar - either first letter of username or first letter of email
+
   const getAvatarText = () => {
     if (user?.userName) {
       return user.userName.charAt(0).toUpperCase();
@@ -63,7 +64,7 @@ const UserMenu = ({ user, logout, login, isMockAuth }) => {
           border: `2px solid ${avatarBgColor}`, 
           transition: 'all 0.2s ease-in-out',
           '&:hover': {
-            backgroundColor: `${avatarBgColor}22`, // 22 is hex for 13% opacity
+            backgroundColor: `${avatarBgColor}22`,
           },
         }}
       >

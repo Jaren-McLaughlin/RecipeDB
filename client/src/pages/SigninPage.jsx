@@ -1,5 +1,6 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext'; // Correct import
 import {
   Box,
   Button,
@@ -16,23 +17,16 @@ import {
   Alert,
 } from '@mui/material';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
-import { AuthContext } from '../contexts/MockAuthContext'; // Make sure this path is correct
 
 function SignInPage() {
   const navigate = useNavigate();
-  
-  // Get auth context safely with fallbacks
-  const authContext = useContext(AuthContext);
-  // Safely access login function with a fallback
-  const login = authContext?.login || ((credentials) => {
-    console.error('Login function not available');
-    return false;
-  });
+  const { login, isLoading, isAuthenticated } = useAuth(); // Use the custom hook
+
   
   // Form state
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState(localStorage.getItem('rememberedEmail') || '');
   const [password, setPassword] = useState('');
-  const [rememberMe, setRememberMe] = useState(false);
+  const [rememberMe, setRememberMe] = useState(!!localStorage.getItem('rememberedEmail'));
   
   // Validation state
   const [emailError, setEmailError] = useState(false);
@@ -51,31 +45,22 @@ function SignInPage() {
     }
     
     try {
-      // Show loading status
+      await login({ email, password, rememberMe });
       setStatusMessage({ type: 'info', message: 'Logging in...' });
       
-      // Call login function from AuthContext
-      const success = await login({ 
+      await login({ 
         email, 
         password,
         rememberMe
       });
       
-      if (success) {
-        // Redirect to dashboard on successful login
-        navigate('/dash');
-      } else {
-        // Show error message
-        setStatusMessage({ 
-          type: 'error', 
-          message: 'Invalid email or password. Please try again.' 
-        });
-      }
+      // Redirect to dashboard on successful login
+      navigate('/dash');
     } catch (error) {
       console.error('Login error:', error);
       setStatusMessage({ 
         type: 'error', 
-        message: 'Login failed. Please try again later.' 
+        message: error.message || 'Login failed. Please check your credentials and try again.' 
       });
     }
   };
@@ -199,8 +184,9 @@ function SignInPage() {
             variant="contained"
             size="large"
             sx={{ mt: 1 }}
+            disabled={isLoading}
           >
-            Sign in
+            {isLoading ? 'Signing In...' : 'Sign in'}
           </Button>
         </Box>
         
@@ -212,6 +198,7 @@ function SignInPage() {
             component="button"
             variant="body2"
             onClick={() => navigate('/signup')}
+            sx={{ fontWeight: 'bold' }}
           >
             Sign up
           </Link>
