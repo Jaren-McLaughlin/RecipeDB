@@ -11,7 +11,7 @@ const pool = require('../config/db');
  */
 
 /**
- * Deletes a recipe
+ * Deletes an ingredienct recipe link
  * @param {deleteUsedInParams} params - The parameters
  * @returns {Promise<boolean>} - The response, returns true if deleted fine
  */

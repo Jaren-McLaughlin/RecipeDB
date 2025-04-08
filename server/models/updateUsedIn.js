@@ -13,7 +13,7 @@ const pool = require('../config/db');
  */
 
 /**
- * Deletes a recipe
+ * Updates an ingredienct recipe link
  * @param {updateUsedInParams} params - The parameters
  * @returns {Promise<boolean>} - The response, returns true if updated fine
  */
