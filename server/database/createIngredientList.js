@@ -17,7 +17,7 @@ const createData = async ({ logging }) => {
     multipleStatements: true,
   });
   
-  const createDataPath = path.join(__dirname, 'seeds/createStandardAccount.sql');
+  const createDataPath = path.join(__dirname, 'seeds/insertIngredientList.sql');
   const sqlCommands = fs.readFileSync(createDataPath, 'utf8');
   try {
     await connection.query(sqlCommands)
