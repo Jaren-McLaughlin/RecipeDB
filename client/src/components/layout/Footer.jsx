@@ -80,7 +80,7 @@ const Footer = () => {
               Project Team
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ textAlign: { md: 'right' } }}>
-              Tate McCauley, Jaren McLaughlin, Nathan Seneca, Ben Gutierrez
+              Tate McCauley, Jaren McLaughlin, Nathan Seneca, Ben G
             </Typography>
             <Link 
               href="https://github.com/Jaren-McLaughlin/RecipeDB" 
