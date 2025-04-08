@@ -4,8 +4,8 @@ import { CssBaseline } from '@mui/material';
 import theme from './theme/theme';
 import './App.css';
 import ProtectedRoute from './components/ProtectedRoutes';
-// import { AuthProvider } from './contexts/AuthContext';
-import { AuthProvider } from './contexts/MockAuthContext';
+import { AuthProvider } from './contexts/AuthContext';
+// import { AuthProvider } from './contexts/MockAuthContext';
 //Pages Imports
 import PageContainer from './components/layout/PageContainer';
 import DashboardPage from './pages/DashboardPage';
