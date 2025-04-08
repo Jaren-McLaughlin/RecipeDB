@@ -1,3 +1,11 @@
+/**
+ * Main navigation bar for the application.
+ * @memberof Layout
+ * @function NavigationBar
+ * @returns {JSX.Element} Navigation bar component
+ * @example
+ * <NavigationBar />
+ */
 import React, { useState, useContext } from 'react';
 import { 
   AppBar, 
