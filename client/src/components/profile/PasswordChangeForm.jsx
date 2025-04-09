@@ -8,10 +8,10 @@ import {
   Grid,
   Alert,
   Snackbar,
-  FormHelperText
+  CircularProgress
 } from '@mui/material';
 
-function PasswordChangeForm({ onCancel, onSave }) {
+function PasswordChangeForm({ onCancel }) {
   const [formData, setFormData] = useState({
     currentPassword: '',
     newPassword: '',
@@ -24,6 +24,7 @@ function PasswordChangeForm({ onCancel, onSave }) {
     message: '',
     severity: 'info'
   });
+  const [isLoading, setIsLoading] = useState(false);
   
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -68,31 +69,57 @@ function PasswordChangeForm({ onCancel, onSave }) {
     return Object.keys(newErrors).length === 0;
   };
   
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (validateForm()) {
-      try {
-        // This would be an API call in a real application
-        onSave(formData);
-        setNotification({
-          open: true,
-          message: 'Password updated successfully!',
-          severity: 'success'
-        });
-        // Reset form
-        setFormData({
-          currentPassword: '',
-          newPassword: '',
-          confirmPassword: ''
-        });
-      } catch (error) {
-        setNotification({
-          open: true,
-          message: 'Error updating password',
-          severity: 'error'
-        });
+    if (!validateForm()) return;
+    
+    setIsLoading(true);
+    
+    try {
+      const response = await fetch('/api/users/password', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          password: formData.newPassword,
+          currentPassword: formData.currentPassword
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Password update failed');
       }
+
+      setNotification({
+        open: true,
+        message: 'Password updated successfully!',
+        severity: 'success'
+      });
+      
+      // Reset form
+      setFormData({
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: ''
+      });
+      
+      // Optionally call onSave if provided
+      if (onCancel) {
+        setTimeout(onCancel, 2000); // Close after success message
+      }
+    } catch (error) {
+      console.error('Password change error:', error);
+      setNotification({
+        open: true,
+        message: error.message || 'Error updating password',
+        severity: 'error'
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
   
@@ -122,6 +149,7 @@ function PasswordChangeForm({ onCancel, onSave }) {
               error={Boolean(errors.currentPassword)}
               helperText={errors.currentPassword}
               variant="outlined"
+              required
             />
           </Grid>
           
@@ -136,6 +164,7 @@ function PasswordChangeForm({ onCancel, onSave }) {
               error={Boolean(errors.newPassword)}
               helperText={errors.newPassword}
               variant="outlined"
+              required
             />
           </Grid>
           
@@ -150,6 +179,7 @@ function PasswordChangeForm({ onCancel, onSave }) {
               error={Boolean(errors.confirmPassword)}
               helperText={errors.confirmPassword}
               variant="outlined"
+              required
             />
           </Grid>
           
@@ -157,7 +187,8 @@ function PasswordChangeForm({ onCancel, onSave }) {
             <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, mt: 2 }}>
               <Button 
                 variant="outlined" 
-                onClick={onCancel}
+                onClick={() => window.location.reload()}
+                disabled={isLoading}
               >
                 Cancel
               </Button>
@@ -165,8 +196,10 @@ function PasswordChangeForm({ onCancel, onSave }) {
                 variant="contained" 
                 type="submit"
                 color="primary"
+                disabled={isLoading}
+                startIcon={isLoading ? <CircularProgress size={20} /> : null}
               >
-                Update Password
+                {isLoading ? 'Updating...' : 'Update Password'}
               </Button>
             </Box>
           </Grid>
@@ -181,6 +214,7 @@ function PasswordChangeForm({ onCancel, onSave }) {
         <Alert 
           onClose={() => setNotification(prev => ({ ...prev, open: false }))} 
           severity={notification.severity}
+          sx={{ width: '100%' }}
         >
           {notification.message}
         </Alert>

@@ -69,14 +69,37 @@ function ProfileEditForm({ userData = {}, onCancel, onSave }) {
     return Object.keys(newErrors).length === 0;
   };
   
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validateForm()) {
-      onSave(formData); // Parent component handles success/error
+    if (!validateForm()) return;
+  
+    try {
+      const res1 = await fetch('/api/users/username', {
+        method: 'PUT',
+        headers: {'Content-Type': 'application/json'},
+        credentials: 'include',
+        body: JSON.stringify({userName: formData.userName})
+      });
+  
+      if (!res1.ok) throw new Error('Username update failed');
+  
+      const res2 = await fetch('/api/users/email', {
+        method: 'PUT',
+        headers: {'Content-Type': 'application/json'},
+        credentials: 'include',
+        body: JSON.stringify({email: formData.email})
+      });
+  
+      if (!res2.ok) throw new Error('Email update failed');
+  
+      setNotification({open: true, message: 'Profile updated successfully', severity: 'success'});
+      navigate('/profile');
+  
+    } catch (err) {
+      setNotification({open: true, message: err.message, severity: 'error'});
     }
   };
-
-
+  
   const handleCloseNotification = () => {
     setNotification(prev => ({ ...prev, open: false }));
   };
@@ -121,7 +144,7 @@ function ProfileEditForm({ userData = {}, onCancel, onSave }) {
             <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, mt: 2 }}>
               <Button 
                 variant="outlined" 
-                onClick={() => navigate('/profile')}
+                onClick={() => window.location.reload()}
               >
                 Cancel
               </Button>
