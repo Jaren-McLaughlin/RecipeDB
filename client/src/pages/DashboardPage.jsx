@@ -24,7 +24,7 @@ function DashboardPage() {
   });
   const { isAuthenticated, isLoading } = useAuth();
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
       navigate('/signin', { replace: true });
@@ -49,14 +49,14 @@ function DashboardPage() {
 
         const data = await response.json();
         const formattedRecipes = data.map(recipe => ({
-          id: recipe.recipeId,  // Change from recipe.id to recipe.recipeId
+          id: recipe.recipeId,
           title: recipe.title,
-          notes: recipe.notes,  // Changed from description to notes
+          notes: recipe.notes,
           createdAt: recipe.createdAt
         }));
 
         setRecipes(formattedRecipes);
-        setFilteredRecipes(formattedRecipes);
+        setFilteredRecipes(formattedRecipes); // Set filtered recipes initially to all
       } catch (error) {
         console.error('Error:', error);
         setNotification({
@@ -72,23 +72,14 @@ function DashboardPage() {
     if (isAuthenticated) {
       fetchRecipes();
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, isLoading, navigate]);
 
-
-  // Filter recipes when search term changes
+  // Filter recipes based on the search term
   useEffect(() => {
-    const filterRecipes = () => {
-      if (searchTerm.trim() === '') {
-        return recipes;
-      }
-      return recipes.filter(recipe => 
-        recipe.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        recipe.notes.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    };
-
-    setFilteredRecipes(filterRecipes());
-    setCurrentPage(1);
+    const filtered = recipes.filter(recipe =>
+      recipe.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredRecipes(filtered);
   }, [searchTerm, recipes]);
 
   // Update paginated recipes
@@ -113,7 +104,7 @@ function DashboardPage() {
   };
 
   const handleViewRecipe = (recipeId) => {
-    navigate(`/recipe/${recipeId}`);  // Changed from /ingredients/ to /recipe/
+    navigate(`/recipe/${recipeId}`);
   };
 
   const handleEdit = (recipeId) => {
@@ -125,14 +116,20 @@ function DashboardPage() {
     setRecipeToDelete(recipe);
     setDeleteDialogOpen(true);
   };
-  
+
   const confirmDelete = async () => {
     if (!recipeToDelete) return;
-    
+
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/recipes/${recipeToDelete.id}`, {
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/recipes`, {
         method: 'DELETE',
-        credentials: 'include'
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          recipeId: recipeToDelete.id,
+        }),
       });
 
       if (!response.ok) {
@@ -144,22 +141,23 @@ function DashboardPage() {
         throw new Error(errorData.message || 'Delete failed');
       }
 
+      // Remove the deleted recipe from the state
       const updatedRecipes = recipes.filter(recipe => recipe.id !== recipeToDelete.id);
       setRecipes(updatedRecipes);
-      
+
       setNotification({
         open: true,
         message: `Recipe "${recipeToDelete.title}" deleted successfully`,
-        severity: 'success'
+        severity: 'success',
       });
     } catch (error) {
       setNotification({
         open: true,
         message: error.message || 'Failed to delete recipe',
-        severity: 'error'
+        severity: 'error',
       });
     }
-    
+
     setDeleteDialogOpen(false);
     setRecipeToDelete(null);
   };

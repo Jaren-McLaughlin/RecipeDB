@@ -34,7 +34,7 @@ function AddRecipePage() {
           }
 
           // Create new ingredient
-          const ingredientResponse = await fetch('/api/recipes/ingredient', {
+          const ingredientResponse = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/recipes/ingredient`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
@@ -58,7 +58,7 @@ function AddRecipePage() {
       );
 
       // Create the recipe
-      const recipeResponse = await fetch('/api/recipes', {
+      const recipeResponse = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/recipes`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

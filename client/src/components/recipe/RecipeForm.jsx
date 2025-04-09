@@ -14,7 +14,6 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
 
 function RecipeForm({ recipe, onSubmit, onCancel }) {
-  // Initialize form state with recipe data or defaults
   const [formData, setFormData] = useState({
     title: recipe?.title || '',
     description: recipe?.description || '',
@@ -23,15 +22,10 @@ function RecipeForm({ recipe, onSubmit, onCancel }) {
     notes: recipe?.notes || '',
   });
   
-  // State for available ingredients (will be fetched from API)
   const [availableIngredients, setAvailableIngredients] = useState([]);
-  
-  // Track form validation errors
   const [errors, setErrors] = useState({});
   
-  // Fetch available ingredients on component mount
   useEffect(() => {
-    // This is mocked for simplicity
     setAvailableIngredients([
       { id: 1, name: 'Flour', measurement: 'cup' },
       { id: 2, name: 'Sugar', measurement: 'cup' },
@@ -41,53 +35,41 @@ function RecipeForm({ recipe, onSubmit, onCancel }) {
     ]);
   }, []);
 
-  // Handle text field changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
       [name]: value,
     });
-    // Clear error when field is edited
     if (errors[name]) {
-      setErrors({
-        ...errors,
-        [name]: null,
-      });
+      setErrors({ ...errors, [name]: null });
     }
   };
-  
-  // Handle ingredient changes
+
   const handleIngredientChange = (index, updatedIngredient) => {
     const newIngredients = [...formData.ingredients];
     newIngredients[index] = updatedIngredient;
-    setFormData({
-      ...formData,
-      ingredients: newIngredients,
-    });
+    setFormData({ ...formData, ingredients: newIngredients });
   };
-  
-  // Add a new ingredient input
+
   const handleAddIngredient = () => {
     setFormData({
       ...formData,
       ingredients: [...formData.ingredients, { name: '', quantity: '', unit: '' }],
     });
   };
-  
-  // Remove an ingredient
-  const handleRemoveIngredient = (index) => {
+
+  // Remove ingredient by id, not index
+  const handleRemoveIngredient = (ingredientId) => {
     if (formData.ingredients.length === 1) return; // Don't remove the last one
     
-    const newIngredients = [...formData.ingredients];
-    newIngredients.splice(index, 1);
+    const newIngredients = formData.ingredients.filter(ingredient => ingredient.id !== ingredientId);
     setFormData({
       ...formData,
       ingredients: newIngredients,
     });
   };
-  
-  // Handle instruction changes 
+
   const handleArrayChange = (index, field, value) => {
     const newArray = [...formData[field]];
     newArray[index] = value;
@@ -96,27 +78,23 @@ function RecipeForm({ recipe, onSubmit, onCancel }) {
       [field]: newArray,
     });
   };
-  
-  // Add instruction 
+
   const handleAddItem = (field) => {
     if (field === 'ingredients') {
       handleAddIngredient();
       return;
     }
-    
     setFormData({
       ...formData,
       [field]: [...formData[field], ''],
     });
   };
-  
-  // Remove instruction 
+
   const handleRemoveItem = (field, index) => {
     if (field === 'ingredients') {
       handleRemoveIngredient(index);
       return;
     }
-    
     const newArray = [...formData[field]];
     newArray.splice(index, 1);
     setFormData({
@@ -124,44 +102,33 @@ function RecipeForm({ recipe, onSubmit, onCancel }) {
       [field]: newArray,
     });
   };
-  
-  // Validate form before submission
+
   const validateForm = () => {
     const newErrors = {};
-    
     if (!formData.title.trim()) {
       newErrors.title = 'Title is required';
     }
-    
     const validIngredients = formData.ingredients.filter(
       ing => ing.name.trim() && ing.quantity.trim()
     );
-    
     if (validIngredients.length === 0) {
       newErrors.ingredients = 'At least one complete ingredient is required';
     }
-    
     const validInstructions = formData.instructions.filter(
       instr => instr.trim() !== ''
     );
-    
     if (validInstructions.length === 0) {
       newErrors.instructions = 'At least one instruction is required';
     }
-    
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-  
-  // Handle form submission
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    
     if (!validateForm()) {
       return;
     }
-    
-    // Filter out empty ingredients before submitting
     const cleanedData = {
       ...formData,
       ingredients: formData.ingredients.filter(
@@ -171,10 +138,9 @@ function RecipeForm({ recipe, onSubmit, onCancel }) {
         instr => instr.trim() !== ''
       ),
     };
-    
     onSubmit(cleanedData);
   };
-  
+
   return (
     <Paper elevation={3} sx={{ p: 3 }}>
       <form onSubmit={handleSubmit}>
@@ -192,34 +158,31 @@ function RecipeForm({ recipe, onSubmit, onCancel }) {
               variant="outlined"
             />
           </Grid>
-          
+
           {/* Ingredients */}
           <Grid item xs={12}>
             <Box sx={{ mb: 2 }}>
               <Typography variant="h6" gutterBottom>
                 Ingredients
               </Typography>
-              
               {formData.ingredients.map((ingredient, index) => (
                 <IngredientInput
-                  key={index}
+                  key={ingredient.id || index}
                   ingredient={ingredient}
                   onChange={(updatedIngredient) => 
                     handleIngredientChange(index, updatedIngredient)
                   }
-                  onRemove={() => handleRemoveIngredient(index)}
+                  onRemove={() => handleRemoveIngredient(ingredient.id)}
                   availableIngredients={availableIngredients}
                 />
               ))}
-              
-              <Button 
+              <Button
                 startIcon={<AddIcon />}
                 onClick={handleAddIngredient}
                 sx={{ mt: 1 }}
               >
                 Add Ingredient
               </Button>
-              
               {errors.ingredients && (
                 <Typography color="error" variant="caption" display="block" sx={{ mt: 1 }}>
                   {errors.ingredients}
@@ -227,14 +190,13 @@ function RecipeForm({ recipe, onSubmit, onCancel }) {
               )}
             </Box>
           </Grid>
-          
-          {/* Instructions (keeping this from your original) */}
+
+          {/* Instructions */}
           <Grid item xs={12}>
             <Box sx={{ mb: 2 }}>
               <Typography variant="h6" gutterBottom>
                 Instructions
               </Typography>
-              
               {formData.instructions.map((instruction, index) => (
                 <Box key={index} sx={{ display: 'flex', mb: 1 }}>
                   <TextField
@@ -246,8 +208,8 @@ function RecipeForm({ recipe, onSubmit, onCancel }) {
                     rows={2}
                     variant="outlined"
                   />
-                  <IconButton 
-                    color="error" 
+                  <IconButton
+                    color="error"
                     onClick={() => handleRemoveItem('instructions', index)}
                     disabled={formData.instructions.length <= 1}
                     sx={{ ml: 1 }}
@@ -256,15 +218,13 @@ function RecipeForm({ recipe, onSubmit, onCancel }) {
                   </IconButton>
                 </Box>
               ))}
-              
-              <Button 
-                startIcon={<AddIcon />} 
+              <Button
+                startIcon={<AddIcon />}
                 onClick={() => handleAddItem('instructions')}
                 sx={{ mt: 1 }}
               >
                 Add Step
               </Button>
-              
               {errors.instructions && (
                 <Typography color="error" variant="caption" display="block" sx={{ mt: 1 }}>
                   {errors.instructions}
@@ -272,7 +232,7 @@ function RecipeForm({ recipe, onSubmit, onCancel }) {
               )}
             </Box>
           </Grid>
-          
+
           {/* Notes */}
           <Grid item xs={12}>
             <TextField
@@ -286,22 +246,15 @@ function RecipeForm({ recipe, onSubmit, onCancel }) {
               variant="outlined"
             />
           </Grid>
-          
+
           {/* Form Actions */}
           <Grid item xs={12}>
             <Divider sx={{ mb: 2 }} />
             <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-              <Button 
-                variant="outlined" 
-                onClick={onCancel}
-              >
+              <Button variant="outlined" onClick={onCancel}>
                 Cancel
               </Button>
-              <Button 
-                variant="contained" 
-                type="submit"
-                color="primary"
-              >
+              <Button variant="contained" type="submit" color="primary">
                 Save Recipe
               </Button>
             </Box>
