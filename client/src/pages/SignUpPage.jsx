@@ -141,7 +141,8 @@ function SignUpPage() {
         });
 
         // Redirect after 2 seconds
-        setTimeout(() => navigate('/signin'), 2000);
+        navigate('/dash')
+        // setTimeout(() => navigate('/dash'), 2000);
       } else {
         throw new Error('Registration failed');
       }
