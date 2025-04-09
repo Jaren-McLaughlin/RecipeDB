@@ -74,12 +74,29 @@ function SignUpPage() {
       isValid = false;
     }
     
-    // Validate email
-    if (!formData.email || !/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = true;
-      newErrorMessages.email = 'Please enter a valid email address';
-      isValid = false;
-    }
+// Validate email
+const validateEmail = (email) => {
+  // Basic email check with improved regex
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  if (!email || !emailRegex.test(email)) {
+    return 'Please enter a valid email address';
+  }
+  
+  // Check for multiple consecutive dots
+  if (email.includes('..')) {
+    return 'Email address cannot contain consecutive dots';
+  }
+
+  return '';
+};
+
+// Inside your validateForm function, replace email validation with:
+if (!formData.email || validateEmail(formData.email)) {
+  newErrors.email = true;
+  newErrorMessages.email = validateEmail(formData.email) || 'Please enter a valid email address';
+  isValid = false;
+}
+
     
     // Validate password
     if (!formData.password) {

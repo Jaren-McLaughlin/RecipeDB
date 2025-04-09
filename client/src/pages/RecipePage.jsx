@@ -51,19 +51,24 @@ function RecipePage() {
 
   const confirmDelete = async () => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/recipes/${id}`, {
-          credentials: 'include',
-          method: 'DELETE'
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/recipes`, { // Notice change here from /:id to /api/recipes
+        credentials: 'include',
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ recipeId: id }) // Send the recipeId in the body
       });
       
       if (!response.ok) throw new Error('Delete failed');
-      navigate('/');
+      navigate('/'); // Redirect to the homepage/dashboard after successful deletion
     } catch (error) {
       console.error('Delete error:', error);
       setError('Failed to delete recipe');
     }
     setDeleteDialogOpen(false);
   };
+  
 
   const goBack = () => {
     navigate('/dash');

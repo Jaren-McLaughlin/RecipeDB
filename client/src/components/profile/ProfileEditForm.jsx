@@ -151,6 +151,8 @@ function ProfileEditForm({ userData = {}, onCancel, onSave }) {
               <Button 
                 variant="contained" 
                 type="submit"
+                onClick={() => setTimeout(() => window.location.reload(), 1500)} //Go back and show changes
+
               >
                 Save Changes
               </Button>
