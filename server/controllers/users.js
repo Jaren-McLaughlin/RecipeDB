@@ -129,14 +129,14 @@ router.delete(`/`, async (req, res) => {
 
         const userId = payload.jwtData.userId;
 
-        const { success } = await deleteUser({userId: userId})
+        const success = await deleteUser(userId)
         if(!success) return res.status(404).send(`Could not delete user`)
 
         res.clearCookie('token', {
             httpOnly: true,
             sameSite: 'Lax'
         })
-        res.status(200).send(`Successful Deletion!`)
+        return res.status(200).send(`Successful Deletion!`)
 
     } catch (error){
         console.error(error)
