@@ -98,7 +98,7 @@ function EditRecipePage() {
       // Process ingredients updates
       await handleIngredientChanges(formData);
       
-      navigate(`/recipes/${id}`);
+      navigate(`/recipe/${id}`);
     } catch (error) {
       console.error("Save error:", error);
       setSaveStatus({ saving: false, error: error.message });
@@ -188,7 +188,7 @@ function EditRecipePage() {
     }
   };
 
-  const handleCancel = () => navigate(`/recipes/${id}`);
+  const handleCancel = () => navigate(`/recipe/${id}`);
 
   if (loading) return <Container sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}><CircularProgress /></Container>;
   if (error) return <Container sx={{ mt: 4 }}><Alert severity="error">{error}</Alert></Container>;

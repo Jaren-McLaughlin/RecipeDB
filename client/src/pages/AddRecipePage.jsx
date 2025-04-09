@@ -77,7 +77,7 @@ function AddRecipePage() {
 
       const recipeData = await recipeResponse.json();
       setSuccess(true);
-      setTimeout(() => navigate(`/recipes/${recipeData.recipeId}`), 1500);
+      setTimeout(() => navigate(`/recipe/${recipeData.recipeId}`), 1500);
     } catch (error) {
       console.error('Error creating recipe:', error);
       setError(error.message);
