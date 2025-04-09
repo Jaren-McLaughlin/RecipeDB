@@ -45,7 +45,7 @@ function ProfilePage() {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await fetch('/api/users', {
+        const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/users`, {
           credentials: 'include'
         });
 
@@ -83,7 +83,7 @@ function ProfilePage() {
 
   const handleProfileUpdate = async (updatedData) => {
     try {
-      const response = await fetch('/api/users', {
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/users`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedData),
@@ -117,7 +117,7 @@ function ProfilePage() {
 
   const handlePasswordUpdate = async (passwordData) => {
     try {
-      const response = await fetch('/api/auth/change-password', {
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/auth/change-password`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(passwordData),

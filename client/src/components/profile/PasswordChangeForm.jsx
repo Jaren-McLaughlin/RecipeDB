@@ -77,7 +77,7 @@ function PasswordChangeForm({ onCancel }) {
     setIsLoading(true);
     
     try {
-      const response = await fetch('/api/users/password', {
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/users/password`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

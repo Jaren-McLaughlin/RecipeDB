@@ -17,7 +17,7 @@ function ProfileContainer({
   const [recipeCount, setRecipeCount] = useState(0)
 
   useEffect(()=>{
-    fetch("/api/recipes/dashboard",{credentials:"include"})
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/api/recipes/dashboard`,{credentials:"include"})
     .then(r=>r.json())
     .then(data=>setRecipeCount(data.length))
     .catch(e=>console.error("Failed to fetch recipes",e))
