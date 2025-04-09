@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext'; // Correct import
 import {
   Box,
   Button,
@@ -17,16 +16,16 @@ import {
   Alert,
 } from '@mui/material';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
+import { useAuth } from '../contexts/AuthContext';
 
 function SignInPage() {
   const navigate = useNavigate();
-  const { login, isLoading, isAuthenticated } = useAuth(); // Use the custom hook
-
+  const { login } = useAuth();
   
   // Form state
-  const [email, setEmail] = useState(localStorage.getItem('rememberedEmail') || '');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [rememberMe, setRememberMe] = useState(!!localStorage.getItem('rememberedEmail'));
+  const [rememberMe, setRememberMe] = useState(false);
   
   // Validation state
   const [emailError, setEmailError] = useState(false);
@@ -36,6 +35,41 @@ function SignInPage() {
   
   // Status message
   const [statusMessage, setStatusMessage] = useState({ type: '', message: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const validateEmail = () => {
+    if (!email) {
+      setEmailError(true);
+      setEmailErrorMessage('Email is required');
+      return false;
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      setEmailError(true);
+      setEmailErrorMessage('Please enter a valid email address');
+      return false;
+    }
+    
+    setEmailError(false);
+    setEmailErrorMessage('');
+    return true;
+  };
+  
+  const validatePassword = () => {
+    if (!password) {
+      setPasswordError(true);
+      setPasswordErrorMessage('Password is required');
+      return false;
+    }
+    
+    setPasswordError(false);
+    setPasswordErrorMessage('');
+    return true;
+  };
+  
+  const validateForm = () => {
+    const emailValid = validateEmail();
+    const passwordValid = validatePassword();
+    return emailValid && passwordValid;
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -45,50 +79,36 @@ function SignInPage() {
     }
     
     try {
-      await login({ email, password, rememberMe });
+      // Show loading status
+      setIsSubmitting(true);
       setStatusMessage({ type: 'info', message: 'Logging in...' });
       
-      await login({ 
+      // Call login function from AuthContext
+      const success = await login({ 
         email, 
         password,
         rememberMe
       });
       
-      // Redirect to dashboard on successful login
-      navigate('/dash');
+      if (success) {
+        // Redirect to dashboard on successful login
+        navigate('/dash');
+      } else {
+        // Show error message
+        setStatusMessage({ 
+          type: 'error', 
+          message: 'Invalid email or password. Please try again.' 
+        });
+      }
     } catch (error) {
       console.error('Login error:', error);
       setStatusMessage({ 
         type: 'error', 
-        message: error.message || 'Login failed. Please check your credentials and try again.' 
+        message: 'Login failed. Please try again later.' 
       });
+    } finally {
+      setIsSubmitting(false);
     }
-  };
-  
-  const validateForm = () => {
-    let isValid = true;
-    
-    // Validate email
-    if (!email || !/\S+@\S+\.\S+/.test(email)) {
-      setEmailError(true);
-      setEmailErrorMessage('Please enter a valid email address');
-      isValid = false;
-    } else {
-      setEmailError(false);
-      setEmailErrorMessage('');
-    }
-    
-    // Validate password
-    if (!password) {
-      setPasswordError(true);
-      setPasswordErrorMessage('Password is required');
-      isValid = false;
-    } else {
-      setPasswordError(false);
-      setPasswordErrorMessage('');
-    }
-
-    return isValid;
   };
 
   return (
@@ -183,10 +203,10 @@ function SignInPage() {
             fullWidth
             variant="contained"
             size="large"
+            disabled={isSubmitting}
             sx={{ mt: 1 }}
-            disabled={isLoading}
           >
-            {isLoading ? 'Signing In...' : 'Sign in'}
+            {isSubmitting ? 'Signing in...' : 'Sign in'}
           </Button>
         </Box>
         
@@ -198,7 +218,6 @@ function SignInPage() {
             component="button"
             variant="body2"
             onClick={() => navigate('/signup')}
-            sx={{ fontWeight: 'bold' }}
           >
             Sign up
           </Link>
