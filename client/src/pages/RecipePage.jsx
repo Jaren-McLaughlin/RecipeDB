@@ -66,7 +66,7 @@ function RecipePage() {
   };
 
   const goBack = () => {
-    navigate('/');
+    navigate('/dash');
   };
 
   if (loading) {
@@ -88,8 +88,8 @@ function RecipePage() {
   return (
     <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
       <RecipeActionBar 
-        onBack={() => navigate('/')}
-        onEdit={() => navigate(`/edit-recipe/${id}`)}
+        onBack={goBack}
+        onEdit={handleEdit}
         onDelete={handleDelete}
       />
       
