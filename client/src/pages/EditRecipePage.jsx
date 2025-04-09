@@ -14,60 +14,67 @@ function EditRecipePage() {
   const [saveStatus, setSaveStatus] = useState({ saving: false, error: null });
 
   useEffect(() => {
-// Fetch ingredients and store their IDs properly
-const fetchData = async () => {
-  try {
-    // Fetch recipe details
-    const recipeResponse = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/recipes/${id}`, {
-      credentials: 'include'
-    });
+    // Fetch recipe details and ingredients
+    const fetchData = async () => {
+      try {
+        const recipeResponse = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/recipes/${id}`, {
+          credentials: 'include'
+        });
 
-    if (!recipeResponse.ok) throw new Error(`HTTP error! status: ${recipeResponse.status}`);
-    const recipeData = await recipeResponse.json();
+        if (!recipeResponse.ok) throw new Error(`HTTP error! status: ${recipeResponse.status}`);
+        const recipeData = await recipeResponse.json();
 
-    // Fetch available ingredients
-    const ingredientsResponse = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/recipes/ingredients`, {
-      credentials: 'include'
-    });
+        const ingredientsResponse = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/recipes/ingredients`, {
+          credentials: 'include'
+        });
 
-    if (!ingredientsResponse.ok) throw new Error(`HTTP error! status: ${ingredientsResponse.status}`);
-    const ingredientsData = await ingredientsResponse.json();
+        if (!ingredientsResponse.ok) throw new Error(`HTTP error! status: ${ingredientsResponse.status}`);
+        const allIngredients = await ingredientsResponse.json();
 
-    setIngredients(ingredientsData);
-        
+        // Create a map of ingredient names to their IDs
+        const ingredientMap = {};
+        allIngredients.forEach(ing => {
+          ingredientMap[ing.name] = ing.ingredientId;
+        });
+
+        // Enhance recipe ingredients with IDs
+        const enhancedIngredients = recipeData.ingredients.map(ing => ({
+          ...ing,
+          ingredientId: ingredientMap[ing.name] // Add the ingredientId
+        }));
+
         // Store ingredient IDs in localStorage
-        const ingredientIds = ingredientsData.map(ingredient => ingredient.ingredientId);
+        const ingredientIds = enhancedIngredients.map(ingredient => ingredient.ingredientId);
         localStorage.setItem('ingredientIds', JSON.stringify(ingredientIds));
 
         // Format instructions as array for RecipeForm
-        const instructionsArray = recipeData.instructions 
+        const instructionsArray = recipeData.instructions
           ? recipeData.instructions.split(/\r?\n/).filter(line => line.trim() !== '')
           : [''];
 
-    setOriginalIngredients(recipeData.ingredients);
+        setOriginalIngredients(recipeData.ingredients);
 
-    const formattedIngredients = recipeData.ingredients.map(ing => ({
-      id: ing.ingredientId,
-      name: ing.name,
-      quantity: ing.quantity.toString(),
-      unit: ing.measurement
-    }));
+        const formattedIngredients = enhancedIngredients.map(ing => ({
+          id: ing.ingredientId,
+          name: ing.name,
+          quantity: ing.quantity.toString(),
+          unit: ing.measurement
+        }));
 
-    setRecipe({
-      id: parseInt(id),
-      title: recipeData.title,
-      ingredients: formattedIngredients.length > 0 ? formattedIngredients : [{ name: '', quantity: '', unit: '' }],
-      instructions: instructionsArray,
-      notes: recipeData.notes || ""
-    });
-  } catch (error) {
-    console.error('Error loading data:', error);
-    setError(error.message);
-  } finally {
-    setLoading(false);
-  }
-};
-
+        setRecipe({
+          id: parseInt(id),
+          title: recipeData.title,
+          ingredients: formattedIngredients.length > 0 ? formattedIngredients : [{ name: '', quantity: '', unit: '' }],
+          instructions: instructionsArray,
+          notes: recipeData.notes || ""
+        });
+      } catch (error) {
+        console.error('Error loading data:', error);
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
 
     fetchData();
   }, [id]);
@@ -107,8 +114,96 @@ const fetchData = async () => {
   };
 
   const handleIngredientChanges = async (formData) => {
-    // Handling ingredient updates, additions, and deletions...
-    // Same as before
+    try {
+      const originalIds = originalIngredients.map(ing => ing.ingredientId);
+      const currentIds = formData.ingredients
+        .filter(ing => ing.id)
+        .map(ing => parseInt(ing.id));
+
+      const ingredientsToDelete = originalIds.filter(id => !currentIds.includes(id));
+      for (const ingredientId of ingredientsToDelete) {
+        await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/recipes/usedIn`, {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            recipeId: parseInt(id),
+            ingredientId: ingredientId
+          })
+        });
+      }
+
+      const ingredientsToUpdate = [];
+      for (const formIng of formData.ingredients) {
+        if (!formIng.id) continue;
+
+        const originalIng = originalIngredients.find(ing => ing.ingredientId === parseInt(formIng.id));
+
+        // Update ingredient if name, unit, or quantity is different
+        if (originalIng && (formIng.name !== originalIng.name || formIng.unit !== originalIng.measurement || parseFloat(formIng.quantity) !== originalIng.quantity)) {
+          await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/recipes/ingredient`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({
+              ingredientId: parseInt(formIng.id),
+              name: formIng.name,
+              measurement: formIng.unit
+            })
+          });
+
+          ingredientsToUpdate.push({
+            currentIngredientId: parseInt(formIng.id),
+            newIngredientId: parseInt(formIng.id),
+            quantity: parseFloat(formIng.quantity)
+          });
+        }
+      }
+
+      if (ingredientsToUpdate.length > 0) {
+        await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/recipes/usedIn`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            recipeId: parseInt(id),
+            ingredients: ingredientsToUpdate
+          })
+        });
+      }
+
+      const newIngredients = formData.ingredients.filter(ing => !ing.id);
+      for (const newIng of newIngredients) {
+        const ingredientResponse = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/recipes/ingredient`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            name: newIng.name,
+            measurement: newIng.unit
+          })
+        });
+
+        const newIngredient = await ingredientResponse.json();
+
+        await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/recipes/usedIn`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            recipeId: parseInt(id),
+            ingredients: [{
+              ingredientId: newIngredient.ingredientId,
+              quantity: parseFloat(newIng.quantity)
+            }]
+          })
+        });
+      }
+
+    } catch (error) {
+      console.error('Error updating ingredients:', error);
+      throw error;
+    }
   };
 
   const handleCancel = () => navigate(`/recipes/${id}`);
@@ -117,7 +212,6 @@ const fetchData = async () => {
     if (saveStatus.saving) return;
 
     try {
-      // Delete the ingredient using the ingredientId
       await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/recipes/usedIn`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
@@ -128,7 +222,6 @@ const fetchData = async () => {
         })
       });
 
-      // Remove ingredient from state
       setRecipe(prevState => ({
         ...prevState,
         ingredients: prevState.ingredients.filter(ingredient => ingredient.id !== ingredientId)
@@ -139,7 +232,6 @@ const fetchData = async () => {
   };
 
   useEffect(() => {
-    // Adding click listener to all delete buttons
     const deleteButtons = document.querySelectorAll('.MuiIconButton-colorError');
     deleteButtons.forEach((button, index) => {
       const ingredientId = JSON.parse(localStorage.getItem('ingredientIds'))[index];
@@ -148,7 +240,7 @@ const fetchData = async () => {
         handleDeleteIngredient(ingredientId);
       });
     });
-
+  
     return () => {
       deleteButtons.forEach(button => {
         button.removeEventListener('click', () => {});
