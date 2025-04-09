@@ -1,99 +1,115 @@
-import React, { createContext, useContext, useCallback, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect, useContext } from 'react';
 
-// Create context but don't export it directly
-const AuthContext = createContext(null);
+export const AuthContext = createContext();
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};
 
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
 
-  // Fetch user data and verify authentication status
-  const verifyAuth = useCallback(async () => {
+  // Check authentication status on mount
+  useEffect(() => {
+    checkAuthStatus();
+  }, []);
+
+  // Function to check if user is authenticated by making a request to the backend
+  const checkAuthStatus = async () => {
+    setLoading(true);
     try {
+      // Call endpoint that requires authentication
       const response = await fetch('/api/users', {
-        credentials: 'include'
+        credentials: 'include' // Important to include cookies
       });
-      
+
       if (response.ok) {
         const userData = await response.json();
         setUser(userData);
         setIsAuthenticated(true);
-        
-        // Store email if remembered
-        const rememberedEmail = localStorage.getItem('rememberedEmail');
-        if (rememberedEmail && rememberedEmail !== userData.email) {
-          localStorage.setItem('rememberedEmail', userData.email);
-        }
       } else {
-        setIsAuthenticated(false);
+        // If request fails, user is not authenticated
         setUser(null);
+        setIsAuthenticated(false);
       }
     } catch (error) {
-      console.error('Auth verification failed:', error);
+      console.error('Auth check failed:', error);
       setIsAuthenticated(false);
       setUser(null);
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
-  }, []);
+  };
 
-  // Check auth status on initial load
-  useEffect(() => {
-    verifyAuth();
-  }, [verifyAuth]);
-
+  // Login function that calls your backend
   const login = async (credentials) => {
     try {
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(credentials),
-        credentials: 'include'
+        credentials: 'include' // Important to include cookies
       });
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(errorText || 'Login failed');
-      }
-
-      // Handle remember me functionality
-      if (credentials.rememberMe) {
-        localStorage.setItem('rememberedEmail', credentials.email);
-      } else {
-        localStorage.removeItem('rememberedEmail');
-      }
-
-      // Get user details after successful login
-      const userResponse = await fetch('/api/users', {
-        credentials: 'include'
-      });
-      
-      if (userResponse.ok) {
-        const userData = await userResponse.json();
-        setUser(userData);
-        setIsAuthenticated(true);
+      if (response.ok) {
+        // Successful login - fetch user data
+        await checkAuthStatus();
         return true;
       }
       return false;
     } catch (error) {
       console.error('Login failed:', error);
-      throw error;
+      return false;
     }
   };
 
+  // Register function
+  const register = async (userData) => {
+    try {
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(userData),
+        credentials: 'include'
+      });
+
+      if (response.ok) {
+        // Registration typically logs in the user as well
+        await checkAuthStatus();
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('Registration failed:', error);
+      return false;
+    }
+  };
+
+  // Logout function
   const logout = async () => {
     try {
-      await fetch('/api/auth/logout', {
+      const response = await fetch('/api/auth/logout', {
         method: 'POST',
         credentials: 'include'
       });
+
+      // Whether successful or not, clear the state
+      setUser(null);
+      setIsAuthenticated(false);
+
+      return response.ok;
     } catch (error) {
       console.error('Logout failed:', error);
-    } finally {
-      setIsAuthenticated(false);
+      // Still clear state even if request fails
       setUser(null);
-      localStorage.removeItem('rememberedEmail');
+      setIsAuthenticated(false);
+      return false;
     }
   };
 
@@ -101,21 +117,13 @@ export const AuthProvider = ({ children }) => {
     <AuthContext.Provider value={{ 
       isAuthenticated, 
       user, 
-      isLoading,
+      loading,
       login, 
       logout,
-      verifyAuth 
+      register,
+      checkAuthStatus
     }}>
       {children}
     </AuthContext.Provider>
   );
-};
-
-// Export the custom hook instead of the raw context
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
 };

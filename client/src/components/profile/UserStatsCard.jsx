@@ -1,19 +1,11 @@
 
 import React from 'react';
 import { 
-  Card, 
-  CardContent, 
   Typography, 
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
   Paper,
   Box,
   Divider
 } from '@mui/material';
-import RestaurantIcon from '@mui/icons-material/Restaurant';
-import ShareIcon from '@mui/icons-material/Share';
 
 function UserStatsCard({ stats }) {
   return (
@@ -26,14 +18,6 @@ function UserStatsCard({ stats }) {
         <div>
           <Typography variant="body1">{stats.recipeCount}</Typography>
           <Typography variant="caption">Recipes</Typography>
-        </div>
-        <div>
-          <Typography variant="body1">{stats.favoriteCount}</Typography>
-          <Typography variant="caption">Favorites</Typography>
-        </div>
-        <div>
-          <Typography variant="body1">{stats.sharedCount}</Typography>
-          <Typography variant="caption">Shared</Typography>
         </div>
       </Box>
     </Paper>

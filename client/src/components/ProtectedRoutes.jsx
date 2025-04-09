@@ -1,14 +1,21 @@
 import React, { useContext } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
-import { AuthContext } from '../contexts/MockAuthContext'; // Make sure this path is correct
+import { AuthContext } from '../contexts/AuthContext';
+import { Box, CircularProgress } from '@mui/material';
 
 const ProtectedRoute = () => {
-  // Get auth context safely with fallbacks
-  const authContext = useContext(AuthContext);
-  // Safely access authentication state with a fallback
-  const isAuthenticated = authContext?.isAuthenticated || false;
+  const { isAuthenticated, loading } = useContext(AuthContext);
   
-  // If not authenticated, redirect to login
+  // Show loading indicator while checking auth status
+  if (loading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+  
+  // Redirect to login if not authenticated
   if (!isAuthenticated) {
     return <Navigate to="/signin" replace />;
   }

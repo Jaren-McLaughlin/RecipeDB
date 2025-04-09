@@ -1,190 +1,189 @@
-import React, { useState, useContext } from 'react';
+/**
+ * Main navigation bar for the application.
+ * @memberof Layout
+ * @function NavigationBar
+ * @returns {JSX.Element} Navigation bar component
+ * @example
+ * <NavigationBar />
+ */
+import React, { useState } from 'react';
 import { 
   AppBar, 
   Toolbar, 
   Typography, 
-  Box, 
-  IconButton, 
-  Button,
-  useMediaQuery,
+  Button, 
+  Box,
   useTheme,
-  alpha
+  Menu,
+  MenuItem,
+  IconButton,
+  Avatar
 } from '@mui/material';
-import { Link, useNavigate } from 'react-router-dom';
-import MenuIcon from '@mui/icons-material/Menu';
-import BugReportIcon from '@mui/icons-material/BugReport';
-import LoginIcon from '@mui/icons-material/Login';
-import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import RestaurantIcon from '@mui/icons-material/Restaurant';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 import ThemeToggle from './ThemeToggle';
-import SearchBox from './SearchBox';
-import NavLinks from './NavLinks';
-import UserMenu from './UserMenu';
-import MobileDrawer from './MobileDrawer';
-import MockIndicator from './MockIndicator';
-import { AuthContext } from '../../contexts/MockAuthContext';
 
-const NavigationBar = () => {
+const Navbar = () => {
   const theme = useTheme();
   const navigate = useNavigate();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   
-  // Auth context
-  const { isAuthenticated, user, login, logout, isMockAuth = true } = useContext(AuthContext) || {};
+  // Get auth context using the custom hook
+  const { isAuthenticated, user, logout } = useAuth();
   
-  // State
-  const [searchValue, setSearchValue] = useState("");
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  // For user menu dropdown
+  const [anchorEl, setAnchorEl] = useState(null);
+  const menuOpen = Boolean(anchorEl);
   
-  // Event handlers
-  const handleSearch = (e) => {
-    e.preventDefault();
-    if (searchValue.trim()) {
-      navigate(`/search?q=${encodeURIComponent(searchValue)}`);
-      setSearchValue("");
-    }
+  const handleUserMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
   };
   
-  const handleMockLogin = () => {
-    login?.({ email: 'test@example.com', password: 'password123' });
+  const handleUserMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleNavigateProfile = () => {
+    navigate('/profile');
+    handleUserMenuClose();
+  };
+
+  const handleNavigateHome = () => {
     navigate('/dash');
   };
 
+  const handleNavigateAddRecipe = () => {
+    navigate('/add');
+  };
+
+  const handleNavigateLogin = () => {
+    navigate('/signin');
+  };
+
+  const handleNavigateSignUp = () => {
+    navigate('/signup');
+  };
+  
+  const handleLogout = async () => {
+    await logout();
+    navigate('/signin');
+    handleUserMenuClose();
+  };
+
   return (
-    <>
-      <AppBar 
-        position="sticky" 
-        sx={{ 
-          bgcolor: alpha(theme.palette.background.default, 0.95),
-          backdropFilter: 'blur(10px)',
-          borderBottom: `1px solid ${theme.palette.divider}`,
-          color: theme.palette.text.primary,
-          boxShadow: 'none'
-        }}
-      >
-        <Toolbar sx={{ height: 64 }}>
-          {/* Left side: Menu (mobile only) and Brand */}
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            {isMobile && (
-              <IconButton
-                edge="start"
-                color="inherit"
-                onClick={() => setDrawerOpen(true)}
-                sx={{ mr: 1 }}
-              >
-                <MenuIcon />
-              </IconButton>
-            )}
-            
-            <Typography
-              variant="h6"
-              component={Link}
-              to="/"
-              sx={{
-                fontWeight: 'bold',
-                color: '#2ecc71',
-                textDecoration: 'none',
-                display: 'flex',
-                alignItems: 'center'
-              }}
-            >
-              Recipe Suite
-            </Typography>
-            
-            <MockIndicator isMockAuth={isMockAuth} />
-            
-            {/* Mock Login Button (Only show if not authenticated and isMockAuth is true) */}
-            {isMockAuth && !isAuthenticated && !isMobile && (
-              <Button 
-                color="warning"
-                variant="outlined"
-                size="small"
-                startIcon={<BugReportIcon />}
-                onClick={handleMockLogin}
-                sx={{ ml: 2 }}
-              >
-                Mock Login
-              </Button>
-            )}
-          </Box>
-          
-          {/* Center: Nav links (desktop only) */}
-          {!isMobile && (
-            <Box sx={{ ml: 4, flexGrow: 1 }}>
-              <NavLinks isAuthenticated={isAuthenticated} />
-            </Box>
+    <AppBar 
+      position="static"
+      sx={{
+        background: theme.palette.primary.main
+      }}
+    >
+      <Toolbar sx={{ 
+        display: 'flex', 
+        justifyContent: 'space-between',
+        padding: theme.spacing(0, 2)
+      }}>
+        {/* Left section: App branding - always visible */}
+        <Box sx={{ 
+          display: 'flex', 
+          alignItems: 'center' 
+        }}>
+          <RestaurantIcon sx={{ mr: 1 }} />
+          <Typography variant="h6" component="div" sx={{ fontWeight: 600 }}>
+            Recipe Suite
+          </Typography>
+        </Box>
+        
+        {/* Center/Main section: Navigation links */}
+        <Box sx={{ 
+          display: { xs: 'none', sm: 'flex' },
+          justifyContent: 'center',
+          flexGrow: 1,
+          mx: 2
+        }}>
+          {/* Show different navigation options based on authentication status */}
+          {isAuthenticated ? (
+            <>
+              <Button color="inherit" sx={{ mx: 1 }} onClick={handleNavigateHome}>My Recipes</Button>
+              <Button color="inherit" sx={{ mx: 1 }} onClick={handleNavigateAddRecipe}>Add Recipe</Button>
+            </>
+          ) : (
+            <Button color="inherit" sx={{ mx: 1 }} onClick={() => navigate('/')}>Home</Button>
           )}
+        </Box>
+        
+        {/* Right section: Auth buttons or user menu, and theme toggle */}
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <ThemeToggle />
           
-          {/* Right side: Search, Auth Buttons, Theme Toggle, User Menu */}
-          <Box sx={{ 
-            display: 'flex', 
-            gap: 2,
-            alignItems: 'center',
-            ml: 'auto'
-          }}>
-            {!isMobile && 
-              <SearchBox 
-                searchValue={searchValue}
-                setSearchValue={setSearchValue}
-                handleSearch={handleSearch}
-                isMobile={false}
-              />
-            }
-            
-            <ThemeToggle />
-            
-            {isAuthenticated ? (
-              <UserMenu 
-                user={user} 
-                logout={logout} 
-                login={login}
-                isMockAuth={isMockAuth}
-              />
-            ) : (
-              // Only show these buttons when not authenticated and not in mock mode
-              !isMobile && !isMockAuth && (
-                <Box sx={{ display: 'flex', gap: 1 }}>
-                  <Button
-                    variant="outlined"
-                    size="small"
-                    startIcon={<LoginIcon />}
-                    onClick={() => navigate('/signin')}
-                  >
-                    Sign In
-                  </Button>
-                  <Button
-                    variant="contained"
-                    size="small"
-                    startIcon={<PersonAddIcon />}
-                    onClick={() => navigate('/signup')}
-                    sx={{ 
-                      bgcolor: '#2ecc71', 
-                      '&:hover': { bgcolor: '#27ae60' } 
-                    }}
-                  >
-                    Sign Up
-                  </Button>
-                </Box>
-              )
-            )}
-          </Box>
-        </Toolbar>
-      </AppBar>
-      
-      {/* Mobile drawer */}
-      <MobileDrawer 
-        open={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
-        isAuthenticated={isAuthenticated}
-        user={user}
-        login={login}
-        logout={logout}
-        isMockAuth={isMockAuth}
-        searchValue={searchValue}
-        setSearchValue={setSearchValue}
-        handleSearch={handleSearch}
-      />
-    </>
+          {/* Conditional rendering based on authentication state */}
+          {isAuthenticated ? (
+            <>
+              {/* User profile button/menu when logged in */}
+              <IconButton
+                onClick={handleUserMenuOpen}
+                size="small"
+                sx={{ ml: 2 }}
+                aria-controls={menuOpen ? 'user-menu' : undefined}
+                aria-haspopup="true"
+                aria-expanded={menuOpen ? 'true' : undefined}
+                color="inherit"
+              >
+                {user?.profileImage ? (
+                  <Avatar 
+                    src={user.profileImage} 
+                    alt={user.userName || 'User'} 
+                    sx={{ width: 32, height: 32 }}
+                  />
+                ) : (
+                  <AccountCircleIcon />
+                )}
+              </IconButton>
+              <Menu
+                id="user-menu"
+                anchorEl={anchorEl}
+                open={menuOpen}
+                onClose={handleUserMenuClose}
+                MenuListProps={{
+                  'aria-labelledby': 'user-menu-button',
+                }}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'right',
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+              >
+                <MenuItem onClick={handleNavigateProfile}>Profile</MenuItem>
+                <MenuItem onClick={handleLogout}>Logout</MenuItem>
+              </Menu>
+            </>
+          ) : (
+            <>
+              {/* Login/Register buttons when logged out */}
+              <Button color="inherit" onClick={handleNavigateLogin}>Sign In</Button>
+              <Button 
+                color="inherit"
+                variant="outlined" 
+                sx={{ 
+                  ml: 1,
+                  border: '1px solid white',
+                  '&:hover': {
+                    backgroundColor: 'rgba(255, 255, 255, 0.1)'
+                  }
+                }}
+                onClick={handleNavigateSignUp}
+              >
+                Sign Up
+              </Button>
+            </>
+          )}
+        </Box>
+      </Toolbar>
+    </AppBar>
   );
 };
 
-export default NavigationBar;
+export default Navbar;

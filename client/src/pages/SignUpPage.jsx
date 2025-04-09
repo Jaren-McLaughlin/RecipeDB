@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Box, FormControlLabel, Checkbox, Alert, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext'
 import AuthLayout from '../components/auth/AuthLayout';
 import AuthHeader from '../components/auth/AuthHeader';
 import UsernameField from '../components/auth/UsernameField';
@@ -117,6 +118,8 @@ function SignUpPage() {
     return isValid;
   };
 
+  const { register } = useAuth();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
@@ -124,34 +127,24 @@ function SignUpPage() {
     setFormStatus({ submitting: true, success: false, error: null });
 
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/auth/register`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userName: formData.userName,
-          email: formData.email,
-          password: formData.password
-        })
+      const success = await register({
+        userName: formData.userName,
+        email: formData.email,
+        password: formData.password
       });
 
-      const data = await response.text();
+      if (success) {
+        setFormStatus({
+          submitting: false,
+          success: true,
+          error: null
+        });
 
-      if (!response.ok) {
-        throw new Error(data || 'Registration failed');
+        // Redirect after 2 seconds
+        setTimeout(() => navigate('/signin'), 2000);
+      } else {
+        throw new Error('Registration failed');
       }
-
-      setFormStatus({
-        submitting: false,
-        success: true,
-        error: null
-      });
-
-      // Redirect after 2 seconds
-      setTimeout(() => navigate('/signin'), 2000);
-
     } catch (error) {
       let errorMessage = 'Registration failed';
       
