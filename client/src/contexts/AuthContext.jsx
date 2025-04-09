@@ -25,7 +25,7 @@ export const AuthProvider = ({ children }) => {
     setLoading(true);
     try {
       // Call endpoint that requires authentication
-      const response = await fetch('/api/users', {
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/users`, {
         credentials: 'include' // Important to include cookies
       });
 
@@ -50,7 +50,7 @@ export const AuthProvider = ({ children }) => {
   // Login function that calls your backend
   const login = async (credentials) => {
     try {
-      const response = await fetch('/api/auth/login', {
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(credentials),
@@ -72,7 +72,7 @@ export const AuthProvider = ({ children }) => {
   // Register function
   const register = async (userData) => {
     try {
-      const response = await fetch('/api/auth/register', {
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(userData),
@@ -94,7 +94,7 @@ export const AuthProvider = ({ children }) => {
   // Logout function
   const logout = async () => {
     try {
-      const response = await fetch('/api/auth/logout', {
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/auth/logout`, {
         method: 'POST',
         credentials: 'include'
       });

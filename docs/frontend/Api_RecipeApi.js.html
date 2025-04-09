@@ -9,7 +9,7 @@ import { createRecipe } from '../models/Recipe';
  */
 export async function fetchRecipes() {
   try {
-    const response = await fetch('/api/recipes');
+    const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/recipes`);
     const data = await response.json();
     
     // Transform API data to match your frontend model

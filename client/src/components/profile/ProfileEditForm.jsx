@@ -74,7 +74,7 @@ function ProfileEditForm({ userData = {}, onCancel, onSave }) {
     if (!validateForm()) return;
   
     try {
-      const res1 = await fetch('/api/users/username', {
+      const res1 = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/users/username`, {
         method: 'PUT',
         headers: {'Content-Type': 'application/json'},
         credentials: 'include',
@@ -83,7 +83,7 @@ function ProfileEditForm({ userData = {}, onCancel, onSave }) {
   
       if (!res1.ok) throw new Error('Username update failed');
   
-      const res2 = await fetch('/api/users/email', {
+      const res2 = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/users/email`, {
         method: 'PUT',
         headers: {'Content-Type': 'application/json'},
         credentials: 'include',

@@ -16,7 +16,7 @@ function ApiTestPage() {
 
   useEffect(() => {
     // Test connection to backend
-    fetch('/api/test')
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/api/test`)
       .then(response => response.json())
       .then(data => {
         setMessage(data.message);
