@@ -14,7 +14,7 @@ const HeroSection = () => {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#000000', // Recipe green color
+        backgroundColor: '#000000', 
         color: 'white',
       }}
     >
@@ -83,7 +83,7 @@ const HeroSection = () => {
           <Button 
             variant="contained" 
             size="large"
-            onClick={() => navigate('/recipes')}
+            onClick={() => navigate('/dash')}
             sx={{ 
               bgcolor: 'white', 
               color: '#000000',
