@@ -5,10 +5,11 @@
   "main": "server.js",
   "scripts": {
     "createData": "node ./database/createData.js",
-    "createIngredientList": "node ./database/createStandardUser.js",
+    "createIngredientList": "node ./database/createIngredientList.js",
     "deleteData": "node ./database/deleteData.js",
     "dev": "nodemon server.js",
     "genDocs": "jsdoc -c jsdoc.config.json",
+    "genSchema": "node ./database/.js",
     "lint": "eslint . --ext *.js",
     "start": "node server.js",
     "test": "node ./node_modules/jest/bin/jest.js --verbose",
