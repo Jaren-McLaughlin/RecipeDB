@@ -26,13 +26,25 @@ function RecipeForm({ recipe, onSubmit, onCancel }) {
   const [errors, setErrors] = useState({});
   
   useEffect(() => {
-    setAvailableIngredients([
-      { id: 1, name: 'Flour', measurement: 'cup' },
-      { id: 2, name: 'Sugar', measurement: 'cup' },
-      { id: 3, name: 'Butter', measurement: 'tbsp' },
-      { id: 4, name: 'Eggs', measurement: 'unit' },
-      { id: 5, name: 'Milk', measurement: 'cup' },
-    ]);
+    const fetchAvailableIngredients = async () => {
+      try {
+        const ingredientsResponse = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/recipes/ingredients`, {
+          credentials: 'include'
+        });
+        
+        if (!ingredientsResponse.ok) {
+          throw new Error('Failed to fetch ingredients');
+        }
+        
+        const ingredientsData = await ingredientsResponse.json();
+        setAvailableIngredients(ingredientsData);
+      } catch (error) {
+        console.error('Error fetching ingredients:', error);
+        // Optionally handle error state here
+      }
+    };
+
+    fetchAvailableIngredients();
   }, []);
 
   const handleChange = (e) => {
@@ -59,9 +71,8 @@ function RecipeForm({ recipe, onSubmit, onCancel }) {
     });
   };
 
-  // Remove ingredient by id, not index
   const handleRemoveIngredient = (ingredientId) => {
-    if (formData.ingredients.length === 1) return; // Don't remove the last one
+    if (formData.ingredients.length === 1) return;
     
     const newIngredients = formData.ingredients.filter(ingredient => ingredient.id !== ingredientId);
     setFormData({
@@ -145,7 +156,6 @@ function RecipeForm({ recipe, onSubmit, onCancel }) {
     <Paper elevation={3} sx={{ p: 3 }}>
       <form onSubmit={handleSubmit}>
         <Grid container spacing={3}>
-          {/* Title */}
           <Grid item xs={12}>
             <TextField
               fullWidth
@@ -159,7 +169,6 @@ function RecipeForm({ recipe, onSubmit, onCancel }) {
             />
           </Grid>
 
-          {/* Ingredients */}
           <Grid item xs={12}>
             <Box sx={{ mb: 2 }}>
               <Typography variant="h6" gutterBottom>
@@ -191,7 +200,6 @@ function RecipeForm({ recipe, onSubmit, onCancel }) {
             </Box>
           </Grid>
 
-          {/* Instructions */}
           <Grid item xs={12}>
             <Box sx={{ mb: 2 }}>
               <Typography variant="h6" gutterBottom>
@@ -233,7 +241,6 @@ function RecipeForm({ recipe, onSubmit, onCancel }) {
             </Box>
           </Grid>
 
-          {/* Notes */}
           <Grid item xs={12}>
             <TextField
               fullWidth
@@ -247,7 +254,6 @@ function RecipeForm({ recipe, onSubmit, onCancel }) {
             />
           </Grid>
 
-          {/* Form Actions */}
           <Grid item xs={12}>
             <Divider sx={{ mb: 2 }} />
             <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
