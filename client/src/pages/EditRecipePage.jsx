@@ -14,7 +14,6 @@ function EditRecipePage() {
   const [saveStatus, setSaveStatus] = useState({ saving: false, error: null });
 
   useEffect(() => {
-    // Fetch recipe details and ingredients
     const fetchData = async () => {
       try {
         const recipeResponse = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/recipes/${id}`, {
@@ -30,29 +29,20 @@ function EditRecipePage() {
 
         if (!ingredientsResponse.ok) throw new Error(`HTTP error! status: ${ingredientsResponse.status}`);
         const allIngredients = await ingredientsResponse.json();
+        setIngredients(allIngredients);
 
-        // Create a map of ingredient names to their IDs
         const ingredientMap = {};
         allIngredients.forEach(ing => {
           ingredientMap[ing.name] = ing.ingredientId;
         });
 
-        // Enhance recipe ingredients with IDs
         const enhancedIngredients = recipeData.ingredients.map(ing => ({
           ...ing,
-          ingredientId: ingredientMap[ing.name] // Add the ingredientId
+          ingredientId: ingredientMap[ing.name]
         }));
 
-        // Store ingredient IDs in localStorage
-        const ingredientIds = enhancedIngredients.map(ingredient => ingredient.ingredientId);
-        localStorage.setItem('ingredientIds', JSON.stringify(ingredientIds));
-
-        // Format instructions as array for RecipeForm
-        const instructionsArray = recipeData.instructions
-          ? recipeData.instructions.split(/\r?\n/).filter(line => line.trim() !== '')
-          : [''];
-
-        setOriginalIngredients(recipeData.ingredients);
+        localStorage.setItem('ingredientIds', JSON.stringify(enhancedIngredients.map(i => i.ingredientId)));
+        setOriginalIngredients(enhancedIngredients);
 
         const formattedIngredients = enhancedIngredients.map(ing => ({
           id: ing.ingredientId,
@@ -64,8 +54,8 @@ function EditRecipePage() {
         setRecipe({
           id: parseInt(id),
           title: recipeData.title,
-          ingredients: formattedIngredients.length > 0 ? formattedIngredients : [{ name: '', quantity: '', unit: '' }],
-          instructions: instructionsArray,
+          ingredients: formattedIngredients,
+          instructions: recipeData.instructions?.split(/\r?\n/).filter(Boolean) || [''],
           notes: recipeData.notes || ""
         });
       } catch (error) {
@@ -83,10 +73,7 @@ function EditRecipePage() {
     setSaveStatus({ saving: true, error: null });
 
     try {
-      const instructionsText = Array.isArray(formData.instructions)
-        ? formData.instructions.join('\n')
-        : formData.instructions || "";
-
+      // Update recipe metadata
       const recipeResponse = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/recipes`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -94,18 +81,15 @@ function EditRecipePage() {
         body: JSON.stringify({
           recipeId: parseInt(id),
           title: formData.title,
-          instructions: instructionsText,
+          instructions: formData.instructions.join('\n'),
           notes: formData.notes
         })
       });
 
-      if (!recipeResponse.ok) {
-        const errorText = await recipeResponse.text();
-        throw new Error(`Recipe update failed: ${errorText}`);
-      }
+      if (!recipeResponse.ok) throw new Error(`Recipe update failed: ${await recipeResponse.text()}`);
 
+      // Handle ingredient updates
       await handleIngredientChanges(formData);
-
       navigate(`/recipes/${id}`);
     } catch (error) {
       console.error("Save error:", error);
@@ -115,87 +99,94 @@ function EditRecipePage() {
 
   const handleIngredientChanges = async (formData) => {
     try {
+      const currentIngredients = formData.ingredients.filter(ing => ing.name.trim() && ing.quantity.trim());
+      
+      // Handle deletions
       const originalIds = originalIngredients.map(ing => ing.ingredientId);
-      const currentIds = formData.ingredients
-        .filter(ing => ing.id)
-        .map(ing => parseInt(ing.id));
-
+      const currentIds = currentIngredients.filter(ing => ing.id).map(ing => parseInt(ing.id));
       const ingredientsToDelete = originalIds.filter(id => !currentIds.includes(id));
+
       for (const ingredientId of ingredientsToDelete) {
         await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/recipes/usedIn`, {
           method: 'DELETE',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
-          body: JSON.stringify({
-            recipeId: parseInt(id),
-            ingredientId: ingredientId
-          })
+          body: JSON.stringify({ recipeId: id, ingredientId })
         });
       }
 
-      const ingredientsToUpdate = [];
-      for (const formIng of formData.ingredients) {
-        if (!formIng.id) continue;
+      // Handle updates and creations
+      const updatePayload = [];
+      for (const formIng of currentIngredients) {
+        // Existing ingredient
+        if (formIng.id) {
+          const originalIng = originalIngredients.find(ing => ing.ingredientId === parseInt(formIng.id));
+          
+          // Check if ingredient details changed
+          if (originalIng && (
+            formIng.name !== originalIng.name ||
+            formIng.unit !== originalIng.measurement
+          )) {
+            await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/recipes/ingredient`, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              credentials: 'include',
+              body: JSON.stringify({
+                ingredientId: formIng.id,
+                name: formIng.name,
+                measurement: formIng.unit
+              })
+            });
+          }
 
-        const originalIng = originalIngredients.find(ing => ing.ingredientId === parseInt(formIng.id));
-
-        // Update ingredient if name, unit, or quantity is different
-        if (originalIng && (formIng.name !== originalIng.name || formIng.unit !== originalIng.measurement || parseFloat(formIng.quantity) !== originalIng.quantity)) {
-          await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/recipes/ingredient`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify({
-              ingredientId: parseInt(formIng.id),
-              name: formIng.name,
-              measurement: formIng.unit
-            })
-          });
-
-          ingredientsToUpdate.push({
+          // Always update quantity
+          updatePayload.push({
             currentIngredientId: parseInt(formIng.id),
             newIngredientId: parseInt(formIng.id),
             quantity: parseFloat(formIng.quantity)
           });
         }
+        // New ingredient
+        else {
+          const existingIng = ingredients.find(ing => 
+            ing.name.toLowerCase() === formIng.name.trim().toLowerCase()
+          );
+
+          if (existingIng) {
+            updatePayload.push({
+              currentIngredientId: existingIng.ingredientId,
+              newIngredientId: existingIng.ingredientId,
+              quantity: parseFloat(formIng.quantity)
+            });
+          } else {
+            const newIngResponse = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/recipes/ingredient`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              credentials: 'include',
+              body: JSON.stringify({
+                name: formIng.name.trim(),
+                measurement: formIng.unit
+              })
+            });
+            const newIng = await newIngResponse.json();
+            updatePayload.push({
+              currentIngredientId: newIng.ingredientId,
+              newIngredientId: newIng.ingredientId,
+              quantity: parseFloat(formIng.quantity)
+            });
+          }
+        }
       }
 
-      if (ingredientsToUpdate.length > 0) {
+      // Bulk update usedIn relationships
+      if (updatePayload.length > 0) {
         await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/recipes/usedIn`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
           body: JSON.stringify({
-            recipeId: parseInt(id),
-            ingredients: ingredientsToUpdate
-          })
-        });
-      }
-
-      const newIngredients = formData.ingredients.filter(ing => !ing.id);
-      for (const newIng of newIngredients) {
-        const ingredientResponse = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/recipes/ingredient`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-          body: JSON.stringify({
-            name: newIng.name,
-            measurement: newIng.unit
-          })
-        });
-
-        const newIngredient = await ingredientResponse.json();
-
-        await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/recipes/usedIn`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-          body: JSON.stringify({
-            recipeId: parseInt(id),
-            ingredients: [{
-              ingredientId: newIngredient.ingredientId,
-              quantity: parseFloat(newIng.quantity)
-            }]
+            recipeId: id,
+            ingredients: updatePayload
           })
         });
       }
@@ -206,47 +197,7 @@ function EditRecipePage() {
     }
   };
 
-  const handleCancel = () => navigate(`/recipes/${id}`);
-
-  const handleDeleteIngredient = async (ingredientId) => {
-    if (saveStatus.saving) return;
-
-    try {
-      await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/recipes/usedIn`, {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({
-          recipeId: parseInt(id),
-          ingredientId: ingredientId
-        })
-      });
-
-      setRecipe(prevState => ({
-        ...prevState,
-        ingredients: prevState.ingredients.filter(ingredient => ingredient.id !== ingredientId)
-      }));
-    } catch (error) {
-      console.error('Error deleting ingredient:', error);
-    }
-  };
-
-  useEffect(() => {
-    const deleteButtons = document.querySelectorAll('.MuiIconButton-colorError');
-    deleteButtons.forEach((button, index) => {
-      const ingredientId = JSON.parse(localStorage.getItem('ingredientIds'))[index];
-      button.setAttribute('data-ingredient-id', ingredientId);
-      button.addEventListener('click', () => {
-        handleDeleteIngredient(ingredientId);
-      });
-    });
-  
-    return () => {
-      deleteButtons.forEach(button => {
-        button.removeEventListener('click', () => {});
-      });
-    };
-  }, [recipe]);
+  const handleCancel = () => navigate('/dash');
 
   if (loading) return <Container sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}><CircularProgress /></Container>;
   if (error) return <Container sx={{ mt: 4 }}><Alert severity="error">{error}</Alert></Container>;
@@ -256,17 +207,8 @@ function EditRecipePage() {
       <Typography variant="h4" component="h1" gutterBottom>
         Edit Recipe
       </Typography>
-
       {saveStatus.error && <Alert severity="error" sx={{ mb: 3 }}>{saveStatus.error}</Alert>}
-
-      {recipe && (
-        <RecipeForm
-          recipe={recipe}
-          onSubmit={handleSubmit}
-          onCancel={handleCancel}
-          saveStatus={saveStatus}
-        />
-      )}
+      {recipe && <RecipeForm recipe={recipe} onSubmit={handleSubmit} onCancel={handleCancel} />}
     </Container>
   );
 }
