@@ -48,7 +48,7 @@ const IngredientInput = ({
         onChange={(e) => handleChange('quantity', e.target.value)}
         sx={{ width: '20%', mr: 1 }}
         type="number"
-        inputProps={{ min: 0, step: 0.01 }}
+        inputProps={{ min: 1, step: 1.00 }}
       />
       
       {/* Unit input */}

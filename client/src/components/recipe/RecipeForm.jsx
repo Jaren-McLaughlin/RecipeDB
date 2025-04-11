@@ -37,10 +37,14 @@ function RecipeForm({ recipe, onSubmit, onCancel }) {
         }
         
         const ingredientsData = await ingredientsResponse.json();
-        setAvailableIngredients(ingredientsData);
+        // Deduplicate ingredients case-insensitively
+        const uniqueIngredients = ingredientsData.reduce((acc, current) => {
+          const exists = acc.some(ing => ing.name.toLowerCase() === current.name.toLowerCase());
+          return exists ? acc : [...acc, current];
+        }, []);
+        setAvailableIngredients(uniqueIngredients);
       } catch (error) {
         console.error('Error fetching ingredients:', error);
-        // Optionally handle error state here
       }
     };
 
@@ -150,6 +154,7 @@ function RecipeForm({ recipe, onSubmit, onCancel }) {
       ),
     };
     onSubmit(cleanedData);
+    window.location.href = '/dash/';
   };
 
   return (
