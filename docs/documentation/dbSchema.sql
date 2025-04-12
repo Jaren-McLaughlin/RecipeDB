@@ -56,17 +56,6 @@ CREATE TABLE `recipe` (
   CONSTRAINT `recipe_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `user` (`userId`) ON DELETE CASCADE
 )
 
-CREATE VIEW recipedashboard AS select r.recipeId AS recipeID,
-r.title AS title,
-u.userName AS userName,
-(select count(0) from usedin where (usedin.recipeId = r.recipeId)) AS ingredientCount from (recipe r join user u on((r.userId = u.userId)))
-
-CREATE VIEW recipesearch AS select recipe.recipeId AS recipeID,
-recipe.title AS title,
-recipe.instructions AS instructions,
-recipe.notes AS notes,
-user.userName AS userName from (recipe join user on((recipe.userId = user.userId)))
-
 CREATE TABLE `usedin` (
   `recipeId` bigint unsigned NOT NULL,
   `ingredientId` bigint unsigned NOT NULL,

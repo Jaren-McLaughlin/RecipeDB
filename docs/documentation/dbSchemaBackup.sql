@@ -70,7 +70,7 @@ user.userName AS userName from (recipe join user on((recipe.userId = user.userId
 CREATE TABLE `usedin` (
   `recipeId` bigint unsigned NOT NULL,
   `ingredientId` bigint unsigned NOT NULL,
-  `quantity` float DEFAULT NULL,
+  `quantity` float NOT NULL,
   PRIMARY KEY (`recipeId`,`ingredientId`),
   KEY `ingredientID` (`ingredientId`),
   CONSTRAINT `usedin_ibfk_1` FOREIGN KEY (`recipeId`) REFERENCES `recipe` (`recipeId`) ON DELETE CASCADE,
