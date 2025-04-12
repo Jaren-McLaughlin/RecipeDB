@@ -61,7 +61,7 @@ function RecipePage() {
       });
       
       if (!response.ok) throw new Error('Delete failed');
-      navigate('/'); // Redirect to the homepage/dashboard after successful deletion
+      navigate('/dash'); // Redirect to the homepage/dashboard after successful deletion
     } catch (error) {
       console.error('Delete error:', error);
       setError('Failed to delete recipe');
