@@ -97,36 +97,46 @@ function EditRecipePage() {
     }
   };
 
-  const handleIngredientChanges = async (formData) => {
-    try {
-      const currentIngredients = formData.ingredients.filter(ing => ing.name.trim() && ing.quantity.trim());
+// In handleIngredientChanges function
+const handleIngredientChanges = async (formData) => {
+  try {
+    const currentIngredients = formData.ingredients.filter(ing => ing.name.trim() && ing.quantity.trim());
+
+    // Delete all original ingredients with error handling
+    const originalIds = originalIngredients.map(ing => ing.ingredientId);
+    for (const ingredientId of originalIds) {
+      const deleteResponse = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/recipes/usedIn`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ recipeId: id, ingredientId })
+      });
       
-      // Delete all original ingredients relationships
-      const originalIds = originalIngredients.map(ing => ing.ingredientId);
-      for (const ingredientId of originalIds) {
-        await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/recipes/usedIn`, {
-          method: 'DELETE',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-          body: JSON.stringify({ recipeId: id, ingredientId })
-        });
+      if (!deleteResponse.ok) {
+        throw new Error(`Failed to delete ingredient ${ingredientId}: ${await deleteResponse.text()}`);
       }
+    }
 
-      // Prepare new ingredients to add
-      const ingredientsToAdd = [];
-      for (const formIng of currentIngredients) {
-        let ingredientId;
+    // Process updates and creations with transactional approach
+    const ingredientsToAdd = [];
+    for (const formIng of currentIngredients) {
+      let ingredientId;
+      let needsUpdate = false;
 
-        // Existing ingredient (has ID)
-        if (formIng.id) {
-          const originalIng = originalIngredients.find(ing => ing.ingredientId === parseInt(formIng.id));
-          
-          // Update ingredient details if changed
-          if (originalIng && (
-            formIng.name !== originalIng.name ||
-            formIng.unit !== originalIng.measurement
-          )) {
-            await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/recipes/ingredient`, {
+      // Existing ingredient
+      if (formIng.id) {
+        const originalIng = originalIngredients.find(ing => 
+          ing.ingredientId === parseInt(formIng.id)
+        );
+
+        // Verify existence before attempting update
+        if (!originalIng) {
+          console.warn(`Original ingredient ${formIng.id} not found, treating as new`);
+          formIng.id = null; // Force creation of new ingredient
+        } else {
+          // Check if metadata changed
+          if (formIng.name !== originalIng.name || formIng.unit !== originalIng.measurement) {
+            const updateResponse = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/recipes/ingredient`, {
               method: 'PUT',
               headers: { 'Content-Type': 'application/json' },
               credentials: 'include',
@@ -136,48 +146,66 @@ function EditRecipePage() {
                 measurement: formIng.unit
               })
             });
+            
+            if (!updateResponse.ok) {
+              throw new Error(`Failed to update ingredient ${formIng.id}: ${await updateResponse.text()}`);
+            }
+            needsUpdate = true;
           }
           ingredientId = formIng.id;
         }
-        // New ingredient (no ID)
-        else {
-          const newIngResponse = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/recipes/ingredient`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify({
-              name: formIng.name.trim(),
-              measurement: formIng.unit
-            })
-          });
-          const newIng = await newIngResponse.json();
-          ingredientId = newIng.ingredientId;
-        }
-
-        ingredientsToAdd.push({
-          ingredientId: ingredientId,
-          quantity: parseFloat(formIng.quantity)
-        });
       }
 
-      // Add new relationships
-      if (ingredientsToAdd.length > 0) {
-        await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/recipes/usedIn`, {
+      // New ingredient or failed lookup
+      if (!formIng.id) {
+        const createResponse = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/recipes/ingredient`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
           body: JSON.stringify({
-            recipeId: id,
-            ingredients: ingredientsToAdd
+            name: formIng.name.trim(),
+            measurement: formIng.unit
           })
         });
+        
+        if (!createResponse.ok) {
+          throw new Error(`Failed to create ingredient: ${await createResponse.text()}`);
+        }
+        
+        const newIng = await createResponse.json();
+        ingredientId = newIng.ingredientId;
+        needsUpdate = true;
       }
 
-    } catch (error) {
-      console.error('Error updating ingredients:', error);
-      throw error;
+      // Always update quantity in UsedIn relationship
+      ingredientsToAdd.push({
+        ingredientId,
+        quantity: parseFloat(formIng.quantity) || 0
+      });
     }
-  };
+
+    // Batch add relationships with verification
+    if (ingredientsToAdd.length > 0) {
+      const addResponse = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/recipes/usedIn`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          recipeId: id,
+          ingredients: ingredientsToAdd
+        })
+      });
+
+      if (!addResponse.ok) {
+        throw new Error(`Failed to add ingredients: ${await addResponse.text()}`);
+      }
+    }
+
+  } catch (error) {
+    console.error('Error updating ingredients:', error);
+    throw error;
+  }
+};
 
   const handleCancel = () => navigate('/dash');
 
