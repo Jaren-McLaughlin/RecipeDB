@@ -39,7 +39,7 @@ async function genSchema () {
     }
     if (Object.hasOwn(response, 'Create Table')) {
       const raw = response['Create Table'];
-      const clean = raw.replace(/\).+/g, ')');
+      const clean = raw.replace(/\) ENGINE.+/g, ')');
       return clean;
     }
   })

@@ -34,26 +34,26 @@ user.email AS email from user
 
 CREATE TABLE `ingredient` (
   `ingredientId` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(50)
-  `measurement` varchar(50)
+  `name` varchar(50) NOT NULL,
+  `measurement` varchar(50) DEFAULT NULL,
   `userId` bigint unsigned DEFAULT NULL,
-  PRIMARY KEY (`ingredientId`)
-  UNIQUE KEY `ingredientID` (`ingredientId`)
-  UNIQUE KEY `uniqueUserIngredient` (`name`,`measurement`,`userId`)
-  KEY `fk_ingredient_user` (`userId`)
-  CONSTRAINT `fk_ingredient_user` FOREIGN KEY (`userId`)
+  PRIMARY KEY (`ingredientId`),
+  UNIQUE KEY `ingredientID` (`ingredientId`),
+  UNIQUE KEY `uniqueUserIngredient` (`name`,`measurement`,`userId`),
+  KEY `fk_ingredient_user` (`userId`),
+  CONSTRAINT `fk_ingredient_user` FOREIGN KEY (`userId`) REFERENCES `user` (`userId`) ON DELETE CASCADE
 )
 
 CREATE TABLE `recipe` (
   `recipeId` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `title` varchar(100)
-  `instructions` varchar(5000)
-  `notes` varchar(1000)
+  `title` varchar(100) NOT NULL,
+  `instructions` varchar(5000) NOT NULL,
+  `notes` varchar(1000) DEFAULT NULL,
   `userId` bigint unsigned NOT NULL,
-  PRIMARY KEY (`recipeId`)
-  UNIQUE KEY `recipeID` (`recipeId`)
-  KEY `userID` (`userId`)
-  CONSTRAINT `recipe_ibfk_1` FOREIGN KEY (`userId`)
+  PRIMARY KEY (`recipeId`),
+  UNIQUE KEY `recipeID` (`recipeId`),
+  KEY `userID` (`userId`),
+  CONSTRAINT `recipe_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `user` (`userId`) ON DELETE CASCADE
 )
 
 CREATE VIEW recipedashboard AS select r.recipeId AS recipeID,
@@ -71,19 +71,19 @@ CREATE TABLE `usedin` (
   `recipeId` bigint unsigned NOT NULL,
   `ingredientId` bigint unsigned NOT NULL,
   `quantity` float DEFAULT NULL,
-  PRIMARY KEY (`recipeId`,`ingredientId`)
-  KEY `ingredientID` (`ingredientId`)
-  CONSTRAINT `usedin_ibfk_1` FOREIGN KEY (`recipeId`)
-  CONSTRAINT `usedin_ibfk_2` FOREIGN KEY (`ingredientId`)
+  PRIMARY KEY (`recipeId`,`ingredientId`),
+  KEY `ingredientID` (`ingredientId`),
+  CONSTRAINT `usedin_ibfk_1` FOREIGN KEY (`recipeId`) REFERENCES `recipe` (`recipeId`) ON DELETE CASCADE,
+  CONSTRAINT `usedin_ibfk_2` FOREIGN KEY (`ingredientId`) REFERENCES `ingredient` (`ingredientId`) ON DELETE CASCADE
 )
 
 CREATE TABLE `user` (
   `userId` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `userName` varchar(30)
-  `email` varchar(255)
-  `password` varchar(64)
-  PRIMARY KEY (`userId`)
-  UNIQUE KEY `userID` (`userId`)
+  `userName` varchar(30) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `password` varchar(64) NOT NULL,
+  PRIMARY KEY (`userId`),
+  UNIQUE KEY `userID` (`userId`),
   UNIQUE KEY `email` (`email`)
 )
 
