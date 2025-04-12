@@ -101,12 +101,9 @@ function EditRecipePage() {
     try {
       const currentIngredients = formData.ingredients.filter(ing => ing.name.trim() && ing.quantity.trim());
       
-      // Handle deletions
+      // Delete all original ingredients relationships
       const originalIds = originalIngredients.map(ing => ing.ingredientId);
-      const currentIds = currentIngredients.filter(ing => ing.id).map(ing => parseInt(ing.id));
-      const ingredientsToDelete = originalIds.filter(id => !currentIds.includes(id));
-
-      for (const ingredientId of ingredientsToDelete) {
+      for (const ingredientId of originalIds) {
         await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/recipes/usedIn`, {
           method: 'DELETE',
           headers: { 'Content-Type': 'application/json' },
@@ -115,14 +112,16 @@ function EditRecipePage() {
         });
       }
 
-      // Handle updates and creations
-      const updatePayload = [];
+      // Prepare new ingredients to add
+      const ingredientsToAdd = [];
       for (const formIng of currentIngredients) {
-        // Existing ingredient
+        let ingredientId;
+
+        // Existing ingredient (has ID)
         if (formIng.id) {
           const originalIng = originalIngredients.find(ing => ing.ingredientId === parseInt(formIng.id));
           
-          // Check if ingredient details changed
+          // Update ingredient details if changed
           if (originalIng && (
             formIng.name !== originalIng.name ||
             formIng.unit !== originalIng.measurement
@@ -138,55 +137,38 @@ function EditRecipePage() {
               })
             });
           }
-
-          // Always update quantity
-          updatePayload.push({
-            currentIngredientId: parseInt(formIng.id),
-            newIngredientId: parseInt(formIng.id),
-            quantity: parseFloat(formIng.quantity)
-          });
+          ingredientId = formIng.id;
         }
-        // New ingredient
+        // New ingredient (no ID)
         else {
-          const existingIng = ingredients.find(ing => 
-            ing.name.toLowerCase() === formIng.name.trim().toLowerCase()
-          );
-
-          if (existingIng) {
-            updatePayload.push({
-              currentIngredientId: existingIng.ingredientId,
-              newIngredientId: existingIng.ingredientId,
-              quantity: parseFloat(formIng.quantity)
-            });
-          } else {
-            const newIngResponse = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/recipes/ingredient`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              credentials: 'include',
-              body: JSON.stringify({
-                name: formIng.name.trim(),
-                measurement: formIng.unit
-              })
-            });
-            const newIng = await newIngResponse.json();
-            updatePayload.push({
-              currentIngredientId: newIng.ingredientId,
-              newIngredientId: newIng.ingredientId,
-              quantity: parseFloat(formIng.quantity)
-            });
-          }
+          const newIngResponse = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/recipes/ingredient`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({
+              name: formIng.name.trim(),
+              measurement: formIng.unit
+            })
+          });
+          const newIng = await newIngResponse.json();
+          ingredientId = newIng.ingredientId;
         }
+
+        ingredientsToAdd.push({
+          ingredientId: ingredientId,
+          quantity: parseFloat(formIng.quantity)
+        });
       }
 
-      // Bulk update usedIn relationships
-      if (updatePayload.length > 0) {
+      // Add new relationships
+      if (ingredientsToAdd.length > 0) {
         await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/recipes/usedIn`, {
-          method: 'PUT',
+          method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
           body: JSON.stringify({
             recipeId: id,
-            ingredients: updatePayload
+            ingredients: ingredientsToAdd
           })
         });
       }
