@@ -9,7 +9,7 @@
     "deleteData": "node ./database/deleteData.js",
     "dev": "nodemon server.js",
     "genDocs": "jsdoc -c jsdoc.config.json",
-    "genSchema": "node ./database/.js",
+    "genSchema": "node ./database/genSchema.js",
     "lint": "eslint . --ext *.js",
     "start": "node server.js",
     "test": "node ./node_modules/jest/bin/jest.js --verbose",
