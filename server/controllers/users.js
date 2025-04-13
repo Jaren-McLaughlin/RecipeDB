@@ -1,7 +1,4 @@
-const express = require(`express`)
-const router = express.Router()
 const bcrypt = require('bcrypt')
-
 
 const getUserDetails = require(`../models/getUserDetails`)
 const updateEmail = require(`../models/updateEmail`)
@@ -12,7 +9,7 @@ const deleteUser = require('../models/deleteUser')
 
 const saltRounds = 10;
 
-router.get(`/`, async (req, res) => {
+const getUserInfo = async (req, res) => {
     try{
         const payload = await verifyToken({token: req.cookies.token})
         if(!payload) return res.status(401).send(`not an authorized user`)
@@ -33,10 +30,10 @@ router.get(`/`, async (req, res) => {
 
         res.status(500).send(`Something went wrong`)
     }
-})
+}
 
 // updates an email
-router.put(`/email`, async (req, res) => {
+const updEmail = async (req, res) => {
     try{
         const payload = await verifyToken({token: req.cookies.token})
         if(!payload) return res.status(401).send(`not an authorized user`)
@@ -61,10 +58,10 @@ router.put(`/email`, async (req, res) => {
 
         res.status(500).send(`Something went wrong`)
     }
-})
+}
 
 // updates a username
-router.put(`/username`, async (req, res) => {
+const updUserName = async (req, res) => {
     try{
         const payload = await verifyToken({token: req.cookies.token})
         if(!payload) return res.status(401).send(`not an authorized user`)
@@ -89,10 +86,10 @@ router.put(`/username`, async (req, res) => {
 
         res.status(500).send(`Something went wrong`)
     }
-})
+}
 
 // updates a password
-router.put(`/password`, async (req, res) => {
+const updPass = async (req, res) => {
     try{
         const payload = await verifyToken({token: req.cookies.token})
         if(!payload) return res.status(401).send(`not an authorized user`)
@@ -119,10 +116,10 @@ router.put(`/password`, async (req, res) => {
 
         res.status(500).send(`Something went wrong`)
     }
-})
+}
 
 // delete a user
-router.delete(`/`, async (req, res) => {
+const delUser = async (req, res) => {
     try{
         const payload = await verifyToken({token: req.cookies.token})
         if(!payload) return res.status(401).send(`not an authorized user`)
@@ -147,7 +144,7 @@ router.delete(`/`, async (req, res) => {
 
         res.status(500).send(`Something went wrong`)
     }
-})
+}
 
 
-module.exports = router
+module.exports = {delUser, getUserInfo, updEmail, updPass, updUserName}
