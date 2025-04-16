@@ -1,3 +1,7 @@
+/**
+ * @module recipeController
+ */
+
 const getRecipeDetails = require(`../models/getRecipeDetails`)
 const getRecipeList = require(`../models/getRecipeList`)
 const addRecipe = require(`../models/addRecipe`)
@@ -13,7 +17,14 @@ const deleteIngredient = require("../models/deleteIngredient")
 const deleteRecipe = require("../models/deleteRecipe")
 
 
-// sends the list of recipes for the dashboard
+/**
+ * Get list of recipes for the authenticated user
+ * 
+ * @async
+ * @function getRecList
+ * @param {import('express').Request} req - Express request (expects token in cookies)
+ * @param {import('express').Response} res - Express response
+ */
 const getRecList = async (req, res) => {
     try{
         const payload = await verifyToken({token: req.cookies.token})
@@ -36,7 +47,14 @@ const getRecList = async (req, res) => {
     }
 }
 
-// gets your list of ingredients with their information
+/**
+ * Get list of ingredients for the authenticated user
+ * 
+ * @async
+ * @function getIng
+ * @param {import('express').Request} req - Express request (expects token in cookies)
+ * @param {import('express').Response} res - Express response
+ */
 const getIng = async (req, res) => {
     try{
         const payload = await verifyToken({token: req.cookies.token})
@@ -58,7 +76,14 @@ const getIng = async (req, res) => {
     }
 }
 
-// :id is recipe id
+/**
+ * Get a specific recipe by ID, only if the user owns it
+ * 
+ * @async
+ * @function getRec
+ * @param {import('express').Request} req - Express request (expects token in cookies, recipe ID in URL param)
+ * @param {import('express').Response} res - Express response
+ */
 const getRec = async (req, res) => {
     try{
 
@@ -87,7 +112,14 @@ const getRec = async (req, res) => {
 
 }
 
-// adds new ingredient to ingredient table
+/**
+ * Add a new ingredient for the authenticated user
+ * 
+ * @async
+ * @function postIng
+ * @param {import('express').Request} req - Express request (expects name and measurement in body)
+ * @param {import('express').Response} res - Express response
+ */
 const postIng = async (req, res) => {
     try{
         const payload = await verifyToken({token: req.cookies.token})
@@ -114,7 +146,14 @@ const postIng = async (req, res) => {
     
 }
 
-// creates a recipe, ties your existing ingredients to the recipe you want to make
+/**
+ * Add a new recipe and its ingredients for the authenticated user
+ * 
+ * @async
+ * @function postRec
+ * @param {import('express').Request} req - Express request (expects instructions, notes, title, and ingredients array in body)
+ * @param {import('express').Response} res - Express response
+ */
 const postRec = async (req, res) => {
     try{
         const payload = await verifyToken({token: req.cookies.token})
@@ -148,6 +187,14 @@ const postRec = async (req, res) => {
     }
 }
 
+/**
+ * Add ingredients to an existing recipe
+ * 
+ * @async
+ * @function postUsedIn
+ * @param {import('express').Request} req - Express request (expects recipeId and ingredients array in body)
+ * @param {import('express').Response} res - Express response
+ */
 const postUsedIn = async (req, res) => {
     try{
         const payload = await verifyToken({token: req.cookies.token})
@@ -181,7 +228,14 @@ const postUsedIn = async (req, res) => {
     }
 }
 
-//update an existing recipe
+/**
+ * Update an existing recipe (title, instructions, notes)
+ * 
+ * @async
+ * @function updRec
+ * @param {import('express').Request} req - Express request (expects recipeId, title, notes, and instructions in body)
+ * @param {import('express').Response} res - Express response
+ */
 const updRec = async (req, res) => {
     try{
         const payload = await verifyToken({token: req.cookies.token})
@@ -215,7 +269,14 @@ const updRec = async (req, res) => {
 }
 
 
-//update the usedIn Table
+/**
+ * Update the used ingredients in a recipe
+ * 
+ * @async
+ * @function updUsedIn
+ * @param {import('express').Request} req - Express request (expects recipeId and updated ingredient mapping in body)
+ * @param {import('express').Response} res - Express response
+ */
 const updUsedIn = async (req, res) => {
     try{
         const payload = await verifyToken({token: req.cookies.token})
@@ -251,7 +312,14 @@ const updUsedIn = async (req, res) => {
 }
 
 
-//update a specific ingredient
+/**
+ * Update a specific ingredient
+ * 
+ * @async
+ * @function updIng
+ * @param {import('express').Request} req - Express request (expects ingredientId, name, and measurement in body)
+ * @param {import('express').Response} res - Express response
+ */
 const updIng = async (req, res) => {
     try{
         const payload = await verifyToken({token: req.cookies.token})
@@ -280,7 +348,14 @@ const updIng = async (req, res) => {
     }
 }
 
-// delete a whole recipe
+/**
+ * Delete a recipe if the user owns it
+ * 
+ * @async
+ * @function delRec
+ * @param {import('express').Request} req - Express request (expects recipeId in body)
+ * @param {import('express').Response} res - Express response
+ */
 const delRec = async (req, res) => {
     try{
         const payload = await verifyToken({token: req.cookies.token})
@@ -313,7 +388,14 @@ const delRec = async (req, res) => {
     }
 }
 
-// delete an ingredient from a recipe
+/**
+ * Delete an ingredient from a recipe
+ * 
+ * @async
+ * @function delUsedIn
+ * @param {import('express').Request} req - Express request (expects recipeId and ingredientId in body)
+ * @param {import('express').Response} res - Express response
+ */
 const delUsedIn = async (req, res) => {
     try{
         const payload = await verifyToken({token: req.cookies.token})
@@ -346,6 +428,14 @@ const delUsedIn = async (req, res) => {
     }
 }
 
+/**
+ * Delete an ingredient from the user's list
+ * 
+ * @async
+ * @function delIng
+ * @param {import('express').Request} req - Express request (expects ingredientId in body)
+ * @param {import('express').Response} res - Express response
+ */
 const delIng = async (req, res) => {
     try{
         const payload = await verifyToken({token: req.cookies.token})

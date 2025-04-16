@@ -1,3 +1,7 @@
+/**
+ * @module userController
+ */
+
 const bcrypt = require('bcrypt')
 
 const getUserDetails = require(`../models/getUserDetails`)
@@ -9,6 +13,15 @@ const deleteUser = require('../models/deleteUser')
 
 const saltRounds = 10;
 
+/**
+ * Gets user info (userName and email) for the authenticated user.
+ * 
+ * @async
+ * @function getUserInfo
+ * @param {import('express').Request} req - Express request (expects token in cookies)
+ * @param {import('express').Response} res - Express response
+ * @returns {Promise<void>}
+ */
 const getUserInfo = async (req, res) => {
     try{
         const payload = await verifyToken({token: req.cookies.token})
@@ -32,7 +45,15 @@ const getUserInfo = async (req, res) => {
     }
 }
 
-// updates an email
+/**
+ * Updates the authenticated user's email.
+ * 
+ * @async
+ * @function updEmail
+ * @param {import('express').Request} req - Express request (expects email in body)
+ * @param {import('express').Response} res - Express response
+ * @returns {Promise<void>}
+ */
 const updEmail = async (req, res) => {
     try{
         const payload = await verifyToken({token: req.cookies.token})
@@ -60,7 +81,15 @@ const updEmail = async (req, res) => {
     }
 }
 
-// updates a username
+/**
+ * Updates the authenticated user's username.
+ * 
+ * @async
+ * @function updUserName
+ * @param {import('express').Request} req - Express request (expects userName in body)
+ * @param {import('express').Response} res - Express response
+ * @returns {Promise<void>}
+ */
 const updUserName = async (req, res) => {
     try{
         const payload = await verifyToken({token: req.cookies.token})
@@ -88,7 +117,15 @@ const updUserName = async (req, res) => {
     }
 }
 
-// updates a password
+/**
+ * Updates the authenticated user's password.
+ * 
+ * @async
+ * @function updPass
+ * @param {import('express').Request} req - Express request (expects password in body)
+ * @param {import('express').Response} res - Express response
+ * @returns {Promise<void>}
+ */
 const updPass = async (req, res) => {
     try{
         const payload = await verifyToken({token: req.cookies.token})
@@ -118,7 +155,15 @@ const updPass = async (req, res) => {
     }
 }
 
-// delete a user
+/**
+ * Deletes the authenticated user's account and clears their auth token.
+ * 
+ * @async
+ * @function delUser
+ * @param {import('express').Request} req - Express request (expects token in cookies)
+ * @param {import('express').Response} res - Express response
+ * @returns {Promise<void>}
+ */
 const delUser = async (req, res) => {
     try{
         const payload = await verifyToken({token: req.cookies.token})

@@ -8,7 +8,19 @@ const createToken = require(`../middleware/createToken`)
 const saltRounds = 10;
 
 
-// creating a user
+/**
+ * @module userController
+ */
+
+/**
+ * Registers a new user
+ * 
+ * @async
+ * @function register
+ * @param {import('express').Request} req - Express request object containing userName, email, and password in body
+ * @param {import('express').Response} res - Express response object
+ * @returns {Promise<void>}
+ */
 const register = async (req, res) => {
     try{
 
@@ -39,7 +51,15 @@ const register = async (req, res) => {
 
 }
 
-// logging in a user
+/**
+ * Logs in an existing user
+ * 
+ * @async
+ * @function login
+ * @param {import('express').Request} req - Express request object containing email and password in body
+ * @param {import('express').Response} res - Express response object
+ * @returns {Promise<void>}
+ */
 const login = async (req, res) => {
     try{
 
@@ -72,7 +92,15 @@ const login = async (req, res) => {
     }
 }
 
-// logout the user
+/**
+ * Logs out the current user by clearing the auth token
+ * 
+ * @async
+ * @function logout
+ * @param {import('express').Request} req - Express request object
+ * @param {import('express').Response} res - Express response object
+ * @returns {Promise<void>}
+ */
 const logout = async (req, res) => {
     try{
         res.clearCookie('token', {
