@@ -24,7 +24,7 @@ const saltRounds = 10;
  */
 
 /**
- * @module userController
+ * @fileoverview Controller functions for handling registration operations
  */
 
 /**

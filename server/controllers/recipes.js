@@ -1,5 +1,5 @@
 /**
- * @module recipeController
+ * @fileoverview Controller functions for handling recipe operations
  */
 
 /**
