@@ -33,6 +33,7 @@ const saltRounds = 10;
  * 
  * @async
  * @function register
+ * @memberof module:controllers/auth
  * @param {authRequest} req - Express-like authRequest object containing userName, email, and password in body
  * @param {authResponse} res - Express-like authResponse object
  * @returns {Promise<void>}
@@ -72,6 +73,7 @@ const register = async (req, res) => {
  * 
  * @async
  * @function login
+ * @memberof module:controllers/auth
  * @param {authRequest} req - Express-like authRequest object containing email and password in body
  * @param {authResponse} res - Express-like authResponse object
  * @returns {Promise<void>}
@@ -113,6 +115,7 @@ const login = async (req, res) => {
  * 
  * @async
  * @function logout
+ * @memberof module:controllers/auth
  * @param {authRequest} req - Express-like authRequest object
  * @param {authResponse} res - Express-like authResponse object
  * @returns {Promise<void>}

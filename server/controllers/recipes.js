@@ -37,6 +37,7 @@ const deleteRecipe = require("../models/deleteRecipe")
  * 
  * @async
  * @function getRecList
+ * @memberof module:controllers/recipes
  * @param {recipeRequest} req - Express recipeRequest (expects token in cookies)
  * @param {recipeResponse} res - Express recipeResponse
  */
@@ -67,6 +68,7 @@ const getRecList = async (req, res) => {
  * 
  * @async
  * @function getIng
+ * @memberof module:controllers/recipes
  * @param {recipeRequest} req - Express recipeRequest (expects token in cookies)
  * @param {recipeResponse} res - Express recipeResponse
  */
@@ -96,6 +98,7 @@ const getIng = async (req, res) => {
  * 
  * @async
  * @function getRec
+ * @memberof module:controllers/recipes
  * @param {recipeRequest} req - Express recipeRequest (expects token in cookies, recipe ID in URL param)
  * @param {recipeResponse} res - Express recipeResponse
  */
@@ -132,6 +135,7 @@ const getRec = async (req, res) => {
  * 
  * @async
  * @function postIng
+ * @memberof module:controllers/recipes
  * @param {recipeRequest} req - Express recipeRequest (expects name and measurement in body)
  * @param {recipeResponse} res - Express recipeResponse
  */
@@ -166,6 +170,7 @@ const postIng = async (req, res) => {
  * 
  * @async
  * @function postRec
+ * @memberof module:controllers/recipes
  * @param {recipeRequest} req - Express recipeRequest (expects instructions, notes, title, and ingredients array in body)
  * @param {recipeResponse} res - Express recipeResponse
  */
@@ -207,6 +212,7 @@ const postRec = async (req, res) => {
  * 
  * @async
  * @function postUsedIn
+ * @memberof module:controllers/recipes
  * @param {recipeRequest} req - Express recipeRequest (expects recipeId and ingredients array in body)
  * @param {recipeResponse} res - Express recipeResponse
  */
@@ -248,6 +254,7 @@ const postUsedIn = async (req, res) => {
  * 
  * @async
  * @function updRec
+ * @memberof module:controllers/recipes
  * @param {recipeRequest} req - Express recipeRequest (expects recipeId, title, notes, and instructions in body)
  * @param {recipeResponse} res - Express recipeResponse
  */
@@ -289,6 +296,7 @@ const updRec = async (req, res) => {
  * 
  * @async
  * @function updUsedIn
+ * @memberof module:controllers/recipes
  * @param {recipeRequest} req - Express recipeRequest (expects recipeId and updated ingredient mapping in body)
  * @param {recipeResponse} res - Express recipeResponse
  */
@@ -332,6 +340,7 @@ const updUsedIn = async (req, res) => {
  * 
  * @async
  * @function updIng
+ * @memberof module:controllers/recipes
  * @param {recipeRequest} req - Express recipeRequest (expects ingredientId, name, and measurement in body)
  * @param {recipeResponse} res - Express recipeResponse
  */
@@ -368,6 +377,7 @@ const updIng = async (req, res) => {
  * 
  * @async
  * @function delRec
+ * @memberof module:controllers/recipes
  * @param {recipeRequest} req - Express recipeRequest (expects recipeId in body)
  * @param {recipeResponse} res - Express recipeResponse
  */
@@ -408,6 +418,7 @@ const delRec = async (req, res) => {
  * 
  * @async
  * @function delUsedIn
+ * @memberof module:controllers/recipes
  * @param {recipeRequest} req - Express recipeRequest (expects recipeId and ingredientId in body)
  * @param {recipeResponse} res - Express recipeResponse
  */
@@ -448,6 +459,7 @@ const delUsedIn = async (req, res) => {
  * 
  * @async
  * @function delIng
+ * @memberof module:controllers/recipes
  * @param {recipeRequest} req - Express recipeRequest (expects ingredientId in body)
  * @param {recipeResponse} res - Express recipeResponse
  */

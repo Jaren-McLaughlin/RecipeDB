@@ -34,6 +34,7 @@ const saltRounds = 10;
  * 
  * @async
  * @function getUserInfo
+ * @memberof module:controllers/users
  * @param {userRequest} req - Express userRequest (expects token in cookies)
  * @param {userResponse} res - Express userResponse
  * @returns {Promise<void>}
@@ -66,6 +67,7 @@ const getUserInfo = async (req, res) => {
  * 
  * @async
  * @function updEmail
+ * @memberof module:controllers/users
  * @param {userRequest} req - Express userRequest (expects email in body)
  * @param {userResponse} res - Express userResponse
  * @returns {Promise<void>}
@@ -102,6 +104,7 @@ const updEmail = async (req, res) => {
  * 
  * @async
  * @function updUserName
+ * @memberof module:controllers/users
  * @param {userRequest} req - Express userRequest (expects userName in body)
  * @param {userResponse} res - Express userResponse
  * @returns {Promise<void>}
@@ -138,6 +141,7 @@ const updUserName = async (req, res) => {
  * 
  * @async
  * @function updPass
+ * @memberof module:controllers/users
  * @param {userRequest} req - Express userRequest (expects password in body)
  * @param {userResponse} res - Express userResponse
  * @returns {Promise<void>}
@@ -176,6 +180,7 @@ const updPass = async (req, res) => {
  * 
  * @async
  * @function delUser
+ * @memberof module:controllers/users
  * @param {userRequest} req - Express userRequest (expects token in cookies)
  * @param {userResponse} res - Express userResponse
  * @returns {Promise<void>}
