@@ -1,6 +1,3 @@
-const express = require(`express`)
-const router = express.Router()
-
 const getRecipeDetails = require(`../models/getRecipeDetails`)
 const getRecipeList = require(`../models/getRecipeList`)
 const addRecipe = require(`../models/addRecipe`)
@@ -17,7 +14,7 @@ const deleteRecipe = require("../models/deleteRecipe")
 
 
 // sends the list of recipes for the dashboard
-router.get(`/dashboard`, async (req, res) => {
+const getRecList = async (req, res) => {
     try{
         const payload = await verifyToken({token: req.cookies.token})
         if(!payload) return res.status(401).send(`not an authorized user`)
@@ -37,10 +34,10 @@ router.get(`/dashboard`, async (req, res) => {
 
         res.status(500).send(`Something went wrong`)
     }
-})
+}
 
 // gets your list of ingredients with their information
-router.get(`/ingredients`, async (req, res) => {
+const getIng = async (req, res) => {
     try{
         const payload = await verifyToken({token: req.cookies.token})
         if(!payload) return res.status(401).send(`not an authorized user`)
@@ -59,10 +56,10 @@ router.get(`/ingredients`, async (req, res) => {
 
         res.status(500).send(`Something went wrong`)
     }
-})
+}
 
 // :id is recipe id
-router.get(`/:id`, async (req, res) => {
+const getRec = async (req, res) => {
     try{
 
         const payload = await verifyToken({ token: req.cookies.token })
@@ -88,10 +85,10 @@ router.get(`/:id`, async (req, res) => {
         res.status(500).send(`Something went wrong`)
     }
 
-})
+}
 
 // adds new ingredient to ingredient table
-router.post(`/ingredient`, async (req, res) => {
+const postIng = async (req, res) => {
     try{
         const payload = await verifyToken({token: req.cookies.token})
         if(!payload) return res.status(401).send(`not an authorized user`)
@@ -115,10 +112,10 @@ router.post(`/ingredient`, async (req, res) => {
         res.status(500).send(`Something went wrong`)
     }
     
-})
+}
 
 // creates a recipe, ties your existing ingredients to the recipe you want to make
-router.post(`/`, async (req, res) => {
+const postRec = async (req, res) => {
     try{
         const payload = await verifyToken({token: req.cookies.token})
         if(!payload) return res.status(401).send(`not an authorized user`)
@@ -149,9 +146,9 @@ router.post(`/`, async (req, res) => {
 
         res.status(500).send(`Something went wrong`)
     }
-})
+}
 
-router.post(`/usedIn`, async (req, res) => {
+const postUsedIn = async (req, res) => {
     try{
         const payload = await verifyToken({token: req.cookies.token})
         if(!payload) return res.status(401).send(`not an authorized user`)
@@ -182,10 +179,10 @@ router.post(`/usedIn`, async (req, res) => {
 
         res.status(500).send(`Something went wrong`)
     }
-})
+}
 
 //update an existing recipe
-router.put(`/`, async (req, res) => {
+const updRec = async (req, res) => {
     try{
         const payload = await verifyToken({token: req.cookies.token})
         if(!payload) return res.status(401).send(`not an authorized user`)
@@ -215,11 +212,11 @@ router.put(`/`, async (req, res) => {
 
         res.status(500).send(`Something went wrong`)
     }
-})
+}
 
 
 //update the usedIn Table
-router.put(`/usedIn`, async (req, res) => {
+const updUsedIn = async (req, res) => {
     try{
         const payload = await verifyToken({token: req.cookies.token})
         if(!payload) return res.status(401).send(`not an authorized user`)
@@ -251,11 +248,11 @@ router.put(`/usedIn`, async (req, res) => {
 
         res.status(500).send(`Something went wrong`)
     }
-})
+}
 
 
 //update a specific ingredient
-router.put(`/ingredient`, async (req, res) => {
+const updIng = async (req, res) => {
     try{
         const payload = await verifyToken({token: req.cookies.token})
         if(!payload) return res.status(401).send(`not an authorized user`)
@@ -281,10 +278,10 @@ router.put(`/ingredient`, async (req, res) => {
 
         res.status(500).send(`Something went wrong`)
     }
-})
+}
 
 // delete a whole recipe
-router.delete(`/`, async (req, res) => {
+const delRec = async (req, res) => {
     try{
         const payload = await verifyToken({token: req.cookies.token})
         if(!payload) return res.status(401).send(`not an authorized user`)
@@ -314,10 +311,10 @@ router.delete(`/`, async (req, res) => {
 
         res.status(500).send(`Something went wrong`)
     }
-})
+}
 
 // delete an ingredient from a recipe
-router.delete(`/usedIn`, async (req, res) => {
+const delUsedIn = async (req, res) => {
     try{
         const payload = await verifyToken({token: req.cookies.token})
         if(!payload) return res.status(401).send(`not an authorized user`)
@@ -347,9 +344,9 @@ router.delete(`/usedIn`, async (req, res) => {
 
         res.status(500).send(`Something went wrong`)
     }
-})
+}
 
-router.delete(`/ingredient`, async (req, res) => {
+const delIng = async (req, res) => {
     try{
         const payload = await verifyToken({token: req.cookies.token})
         if(!payload) return res.status(401).send(`not an authorized user`)
@@ -375,6 +372,6 @@ router.delete(`/ingredient`, async (req, res) => {
 
         res.status(500).send(`Something went wrong`)
     }
-})
+}
 
-module.exports = router
+module.exports = {delIng, delUsedIn, delRec, updIng, updRec, updUsedIn, postRec, postUsedIn, postIng, getIng, getRec, getRecList }

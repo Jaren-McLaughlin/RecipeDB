@@ -1,7 +1,4 @@
-const express = require(`express`)
-const router = express.Router()
 const bcrypt = require('bcrypt')
-
 
 const addUser = require(`../models/addUser`)
 const getLoginDetails = require(`../models/getLoginDetails`)
@@ -12,7 +9,7 @@ const saltRounds = 10;
 
 
 // creating a user
-router.post(`/register`, async (req, res) => {
+const register = async (req, res) => {
     try{
 
         const { userName, email, password } = req.body
@@ -40,10 +37,10 @@ router.post(`/register`, async (req, res) => {
         res.status(500).send(`Something went wrong`)
     }
 
-})
+}
 
 // logging in a user
-router.post(`/login`, async (req, res) => {
+const login = async (req, res) => {
     try{
 
         const { email, password } = req.body
@@ -73,10 +70,10 @@ router.post(`/login`, async (req, res) => {
         console.error(error)
         res.status(500).send(`Something went wrong`)
     }
-})
+}
 
 // logout the user
-router.post(`/logout`, async (req, res) => {
+const logout = async (req, res) => {
     try{
         res.clearCookie('token', {
             httpOnly: true,
@@ -89,6 +86,6 @@ router.post(`/logout`, async (req, res) => {
         console.error(error)
         res.status(500).send(`Something went wrong`)
     }
-})
+}
 
-module.exports = router
+module.exports = {logout, login, register}
