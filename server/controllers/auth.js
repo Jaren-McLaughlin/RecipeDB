@@ -8,7 +8,7 @@ const createToken = require(`../middleware/createToken`)
 const saltRounds = 10;
 
 /**
- * @typedef {Object} Request
+ * @typedef {Object} authRequest
  * @property {Object} body
  * @property {string} [body.userName]
  * @property {string} [body.email]
@@ -16,7 +16,7 @@ const saltRounds = 10;
  */
 
 /**
- * @typedef {Object} Response
+ * @typedef {Object} authResponse
  * @property {function} status
  * @property {function} send
  * @property {function} cookie
@@ -32,8 +32,8 @@ const saltRounds = 10;
  * 
  * @async
  * @function register
- * @param {Request} req - Express-like request object containing userName, email, and password in body
- * @param {Response} res - Express-like response object
+ * @param {authRequest} req - Express-like authRequest object containing userName, email, and password in body
+ * @param {authResponse} res - Express-like authResponse object
  * @returns {Promise<void>}
  */
 const register = async (req, res) => {
@@ -71,8 +71,8 @@ const register = async (req, res) => {
  * 
  * @async
  * @function login
- * @param {Request} req - Express-like request object containing email and password in body
- * @param {Response} res - Express-like response object
+ * @param {authRequest} req - Express-like authRequest object containing email and password in body
+ * @param {authResponse} res - Express-like authResponse object
  * @returns {Promise<void>}
  */
 const login = async (req, res) => {
@@ -112,8 +112,8 @@ const login = async (req, res) => {
  * 
  * @async
  * @function logout
- * @param {Request} req - Express-like request object
- * @param {Response} res - Express-like response object
+ * @param {authRequest} req - Express-like authRequest object
+ * @param {authResponse} res - Express-like authResponse object
  * @returns {Promise<void>}
  */
 const logout = async (req, res) => {

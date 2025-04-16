@@ -3,14 +3,14 @@
  */
 
 /**
- * @typedef {Object} Request
+ * @typedef {Object} recipeRequest
  * @property {Object} body
  * @property {Object} cookies
  * @property {Object} [params]
  */
 
 /**
- * @typedef {Object} Response
+ * @typedef {Object} recipeResponse
  * @property {function} status
  * @property {function} send
  * @property {function} json
@@ -36,8 +36,8 @@ const deleteRecipe = require("../models/deleteRecipe")
  * 
  * @async
  * @function getRecList
- * @param {Request} req - Express request (expects token in cookies)
- * @param {Response} res - Express response
+ * @param {recipeRequest} req - Express recipeRequest (expects token in cookies)
+ * @param {recipeResponse} res - Express recipeResponse
  */
 const getRecList = async (req, res) => {
     try{
@@ -66,8 +66,8 @@ const getRecList = async (req, res) => {
  * 
  * @async
  * @function getIng
- * @param {Request} req - Express request (expects token in cookies)
- * @param {Response} res - Express response
+ * @param {recipeRequest} req - Express recipeRequest (expects token in cookies)
+ * @param {recipeResponse} res - Express recipeResponse
  */
 const getIng = async (req, res) => {
     try{
@@ -95,8 +95,8 @@ const getIng = async (req, res) => {
  * 
  * @async
  * @function getRec
- * @param {Request} req - Express request (expects token in cookies, recipe ID in URL param)
- * @param {Response} res - Express response
+ * @param {recipeRequest} req - Express recipeRequest (expects token in cookies, recipe ID in URL param)
+ * @param {recipeResponse} res - Express recipeResponse
  */
 const getRec = async (req, res) => {
     try{
@@ -131,8 +131,8 @@ const getRec = async (req, res) => {
  * 
  * @async
  * @function postIng
- * @param {Request} req - Express request (expects name and measurement in body)
- * @param {Response} res - Express response
+ * @param {recipeRequest} req - Express recipeRequest (expects name and measurement in body)
+ * @param {recipeResponse} res - Express recipeResponse
  */
 const postIng = async (req, res) => {
     try{
@@ -165,8 +165,8 @@ const postIng = async (req, res) => {
  * 
  * @async
  * @function postRec
- * @param {Request} req - Express request (expects instructions, notes, title, and ingredients array in body)
- * @param {Response} res - Express response
+ * @param {recipeRequest} req - Express recipeRequest (expects instructions, notes, title, and ingredients array in body)
+ * @param {recipeResponse} res - Express recipeResponse
  */
 const postRec = async (req, res) => {
     try{
@@ -206,8 +206,8 @@ const postRec = async (req, res) => {
  * 
  * @async
  * @function postUsedIn
- * @param {Request} req - Express request (expects recipeId and ingredients array in body)
- * @param {Response} res - Express response
+ * @param {recipeRequest} req - Express recipeRequest (expects recipeId and ingredients array in body)
+ * @param {recipeResponse} res - Express recipeResponse
  */
 const postUsedIn = async (req, res) => {
     try{
@@ -247,8 +247,8 @@ const postUsedIn = async (req, res) => {
  * 
  * @async
  * @function updRec
- * @param {Request} req - Express request (expects recipeId, title, notes, and instructions in body)
- * @param {Response} res - Express response
+ * @param {recipeRequest} req - Express recipeRequest (expects recipeId, title, notes, and instructions in body)
+ * @param {recipeResponse} res - Express recipeResponse
  */
 const updRec = async (req, res) => {
     try{
@@ -288,8 +288,8 @@ const updRec = async (req, res) => {
  * 
  * @async
  * @function updUsedIn
- * @param {Request} req - Express request (expects recipeId and updated ingredient mapping in body)
- * @param {Response} res - Express response
+ * @param {recipeRequest} req - Express recipeRequest (expects recipeId and updated ingredient mapping in body)
+ * @param {recipeResponse} res - Express recipeResponse
  */
 const updUsedIn = async (req, res) => {
     try{
@@ -331,8 +331,8 @@ const updUsedIn = async (req, res) => {
  * 
  * @async
  * @function updIng
- * @param {Request} req - Express request (expects ingredientId, name, and measurement in body)
- * @param {Response} res - Express response
+ * @param {recipeRequest} req - Express recipeRequest (expects ingredientId, name, and measurement in body)
+ * @param {recipeResponse} res - Express recipeResponse
  */
 const updIng = async (req, res) => {
     try{
@@ -367,8 +367,8 @@ const updIng = async (req, res) => {
  * 
  * @async
  * @function delRec
- * @param {Request} req - Express request (expects recipeId in body)
- * @param {Response} res - Express response
+ * @param {recipeRequest} req - Express recipeRequest (expects recipeId in body)
+ * @param {recipeResponse} res - Express recipeResponse
  */
 const delRec = async (req, res) => {
     try{
@@ -407,8 +407,8 @@ const delRec = async (req, res) => {
  * 
  * @async
  * @function delUsedIn
- * @param {Request} req - Express request (expects recipeId and ingredientId in body)
- * @param {Response} res - Express response
+ * @param {recipeRequest} req - Express recipeRequest (expects recipeId and ingredientId in body)
+ * @param {recipeResponse} res - Express recipeResponse
  */
 const delUsedIn = async (req, res) => {
     try{
@@ -447,8 +447,8 @@ const delUsedIn = async (req, res) => {
  * 
  * @async
  * @function delIng
- * @param {Request} req - Express request (expects ingredientId in body)
- * @param {Response} res - Express response
+ * @param {recipeRequest} req - Express recipeRequest (expects ingredientId in body)
+ * @param {recipeResponse} res - Express recipeResponse
  */
 const delIng = async (req, res) => {
     try{
