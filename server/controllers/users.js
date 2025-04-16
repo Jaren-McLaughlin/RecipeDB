@@ -14,12 +14,27 @@ const deleteUser = require('../models/deleteUser')
 const saltRounds = 10;
 
 /**
+ * @typedef {Object} Request
+ * @property {Object} body
+ * @property {Object} cookies
+ */
+
+/**
+ * @typedef {Object} Response
+ * @property {function} status
+ * @property {function} send
+ * @property {function} json
+ * @property {function} clearCookie
+ */
+
+
+/**
  * Gets user info (userName and email) for the authenticated user.
  * 
  * @async
  * @function getUserInfo
- * @param {import('express').Request} req - Express request (expects token in cookies)
- * @param {import('express').Response} res - Express response
+ * @param {Request} req - Express request (expects token in cookies)
+ * @param {Response} res - Express response
  * @returns {Promise<void>}
  */
 const getUserInfo = async (req, res) => {
@@ -50,8 +65,8 @@ const getUserInfo = async (req, res) => {
  * 
  * @async
  * @function updEmail
- * @param {import('express').Request} req - Express request (expects email in body)
- * @param {import('express').Response} res - Express response
+ * @param {Request} req - Express request (expects email in body)
+ * @param {Response} res - Express response
  * @returns {Promise<void>}
  */
 const updEmail = async (req, res) => {
@@ -86,8 +101,8 @@ const updEmail = async (req, res) => {
  * 
  * @async
  * @function updUserName
- * @param {import('express').Request} req - Express request (expects userName in body)
- * @param {import('express').Response} res - Express response
+ * @param {Request} req - Express request (expects userName in body)
+ * @param {Response} res - Express response
  * @returns {Promise<void>}
  */
 const updUserName = async (req, res) => {
@@ -122,8 +137,8 @@ const updUserName = async (req, res) => {
  * 
  * @async
  * @function updPass
- * @param {import('express').Request} req - Express request (expects password in body)
- * @param {import('express').Response} res - Express response
+ * @param {Request} req - Express request (expects password in body)
+ * @param {Response} res - Express response
  * @returns {Promise<void>}
  */
 const updPass = async (req, res) => {
@@ -160,8 +175,8 @@ const updPass = async (req, res) => {
  * 
  * @async
  * @function delUser
- * @param {import('express').Request} req - Express request (expects token in cookies)
- * @param {import('express').Response} res - Express response
+ * @param {Request} req - Express request (expects token in cookies)
+ * @param {Response} res - Express response
  * @returns {Promise<void>}
  */
 const delUser = async (req, res) => {

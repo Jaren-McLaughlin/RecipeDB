@@ -2,6 +2,20 @@
  * @module recipeController
  */
 
+/**
+ * @typedef {Object} Request
+ * @property {Object} body
+ * @property {Object} cookies
+ * @property {Object} [params]
+ */
+
+/**
+ * @typedef {Object} Response
+ * @property {function} status
+ * @property {function} send
+ * @property {function} json
+ */
+
 const getRecipeDetails = require(`../models/getRecipeDetails`)
 const getRecipeList = require(`../models/getRecipeList`)
 const addRecipe = require(`../models/addRecipe`)
@@ -22,8 +36,8 @@ const deleteRecipe = require("../models/deleteRecipe")
  * 
  * @async
  * @function getRecList
- * @param {import('express').Request} req - Express request (expects token in cookies)
- * @param {import('express').Response} res - Express response
+ * @param {Request} req - Express request (expects token in cookies)
+ * @param {Response} res - Express response
  */
 const getRecList = async (req, res) => {
     try{
@@ -52,8 +66,8 @@ const getRecList = async (req, res) => {
  * 
  * @async
  * @function getIng
- * @param {import('express').Request} req - Express request (expects token in cookies)
- * @param {import('express').Response} res - Express response
+ * @param {Request} req - Express request (expects token in cookies)
+ * @param {Response} res - Express response
  */
 const getIng = async (req, res) => {
     try{
@@ -81,8 +95,8 @@ const getIng = async (req, res) => {
  * 
  * @async
  * @function getRec
- * @param {import('express').Request} req - Express request (expects token in cookies, recipe ID in URL param)
- * @param {import('express').Response} res - Express response
+ * @param {Request} req - Express request (expects token in cookies, recipe ID in URL param)
+ * @param {Response} res - Express response
  */
 const getRec = async (req, res) => {
     try{
@@ -117,8 +131,8 @@ const getRec = async (req, res) => {
  * 
  * @async
  * @function postIng
- * @param {import('express').Request} req - Express request (expects name and measurement in body)
- * @param {import('express').Response} res - Express response
+ * @param {Request} req - Express request (expects name and measurement in body)
+ * @param {Response} res - Express response
  */
 const postIng = async (req, res) => {
     try{
@@ -151,8 +165,8 @@ const postIng = async (req, res) => {
  * 
  * @async
  * @function postRec
- * @param {import('express').Request} req - Express request (expects instructions, notes, title, and ingredients array in body)
- * @param {import('express').Response} res - Express response
+ * @param {Request} req - Express request (expects instructions, notes, title, and ingredients array in body)
+ * @param {Response} res - Express response
  */
 const postRec = async (req, res) => {
     try{
@@ -192,8 +206,8 @@ const postRec = async (req, res) => {
  * 
  * @async
  * @function postUsedIn
- * @param {import('express').Request} req - Express request (expects recipeId and ingredients array in body)
- * @param {import('express').Response} res - Express response
+ * @param {Request} req - Express request (expects recipeId and ingredients array in body)
+ * @param {Response} res - Express response
  */
 const postUsedIn = async (req, res) => {
     try{
@@ -233,8 +247,8 @@ const postUsedIn = async (req, res) => {
  * 
  * @async
  * @function updRec
- * @param {import('express').Request} req - Express request (expects recipeId, title, notes, and instructions in body)
- * @param {import('express').Response} res - Express response
+ * @param {Request} req - Express request (expects recipeId, title, notes, and instructions in body)
+ * @param {Response} res - Express response
  */
 const updRec = async (req, res) => {
     try{
@@ -274,8 +288,8 @@ const updRec = async (req, res) => {
  * 
  * @async
  * @function updUsedIn
- * @param {import('express').Request} req - Express request (expects recipeId and updated ingredient mapping in body)
- * @param {import('express').Response} res - Express response
+ * @param {Request} req - Express request (expects recipeId and updated ingredient mapping in body)
+ * @param {Response} res - Express response
  */
 const updUsedIn = async (req, res) => {
     try{
@@ -317,8 +331,8 @@ const updUsedIn = async (req, res) => {
  * 
  * @async
  * @function updIng
- * @param {import('express').Request} req - Express request (expects ingredientId, name, and measurement in body)
- * @param {import('express').Response} res - Express response
+ * @param {Request} req - Express request (expects ingredientId, name, and measurement in body)
+ * @param {Response} res - Express response
  */
 const updIng = async (req, res) => {
     try{
@@ -353,8 +367,8 @@ const updIng = async (req, res) => {
  * 
  * @async
  * @function delRec
- * @param {import('express').Request} req - Express request (expects recipeId in body)
- * @param {import('express').Response} res - Express response
+ * @param {Request} req - Express request (expects recipeId in body)
+ * @param {Response} res - Express response
  */
 const delRec = async (req, res) => {
     try{
@@ -393,8 +407,8 @@ const delRec = async (req, res) => {
  * 
  * @async
  * @function delUsedIn
- * @param {import('express').Request} req - Express request (expects recipeId and ingredientId in body)
- * @param {import('express').Response} res - Express response
+ * @param {Request} req - Express request (expects recipeId and ingredientId in body)
+ * @param {Response} res - Express response
  */
 const delUsedIn = async (req, res) => {
     try{
@@ -433,8 +447,8 @@ const delUsedIn = async (req, res) => {
  * 
  * @async
  * @function delIng
- * @param {import('express').Request} req - Express request (expects ingredientId in body)
- * @param {import('express').Response} res - Express response
+ * @param {Request} req - Express request (expects ingredientId in body)
+ * @param {Response} res - Express response
  */
 const delIng = async (req, res) => {
     try{

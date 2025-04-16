@@ -7,6 +7,21 @@ const createToken = require(`../middleware/createToken`)
 
 const saltRounds = 10;
 
+/**
+ * @typedef {Object} Request
+ * @property {Object} body
+ * @property {string} [body.userName]
+ * @property {string} [body.email]
+ * @property {string} [body.password]
+ */
+
+/**
+ * @typedef {Object} Response
+ * @property {function} status
+ * @property {function} send
+ * @property {function} cookie
+ * @property {function} clearCookie
+ */
 
 /**
  * @module userController
@@ -17,8 +32,8 @@ const saltRounds = 10;
  * 
  * @async
  * @function register
- * @param {import('express').Request} req - Express request object containing userName, email, and password in body
- * @param {import('express').Response} res - Express response object
+ * @param {Request} req - Express-like request object containing userName, email, and password in body
+ * @param {Response} res - Express-like response object
  * @returns {Promise<void>}
  */
 const register = async (req, res) => {
@@ -56,8 +71,8 @@ const register = async (req, res) => {
  * 
  * @async
  * @function login
- * @param {import('express').Request} req - Express request object containing email and password in body
- * @param {import('express').Response} res - Express response object
+ * @param {Request} req - Express-like request object containing email and password in body
+ * @param {Response} res - Express-like response object
  * @returns {Promise<void>}
  */
 const login = async (req, res) => {
@@ -97,8 +112,8 @@ const login = async (req, res) => {
  * 
  * @async
  * @function logout
- * @param {import('express').Request} req - Express request object
- * @param {import('express').Response} res - Express response object
+ * @param {Request} req - Express-like request object
+ * @param {Response} res - Express-like response object
  * @returns {Promise<void>}
  */
 const logout = async (req, res) => {
