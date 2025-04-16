@@ -25,6 +25,7 @@ const saltRounds = 10;
 
 /**
  * @fileoverview Controller functions for handling registration operations
+ * @module controllers/auth
  */
 
 /**

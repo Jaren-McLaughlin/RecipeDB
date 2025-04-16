@@ -1,5 +1,6 @@
 /**
  * @fileoverview Controller functions for handling user account operations
+ * @module controllers/users
  */
 
 const bcrypt = require('bcrypt')
