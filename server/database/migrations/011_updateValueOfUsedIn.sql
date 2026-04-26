@@ -1,2 +1,0 @@
-ALTER TABLE usedIn
-MODIFY quantity FLOAT;

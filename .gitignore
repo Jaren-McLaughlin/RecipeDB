@@ -32,3 +32,4 @@ yarn-error.log*
 # OS specific
 .DS_Store
 package-lock.json
+service/dbConfig.json
